@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18131104371"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18131104371');
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · Жіночі вечори Київ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--burg:#6B1229;--burg2:#8B1A35;--gold:#C9943A;--gold2:#E8B84B;--cream:#FDF8F3;--white:#FFFFFF;--text:#1A0810;--muted:#7A5A60;--pink:#F9EEF1;--border:#EDE0D8;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--text);}
+
+/* NAV */
+.nav{background:var(--white);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-badge{width:36px;height:36px;background:var(--burg);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.nav-badge span{font-family:'Playfair Display',serif;font-style:italic;font-size:12px;color:var(--gold2);}
+.nav-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--burg);}
+.nav-links{display:flex;gap:24px;align-items:center;}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--burg);}
+.nav-btn{background:var(--burg);color:var(--white);padding:10px 22px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;}
+.nav-btn:hover{background:var(--burg2);}
+.hamburger{display:none;background:none;border:1px solid var(--border);padding:8px 12px;border-radius:8px;cursor:pointer;font-size:18px;}
+.nav-social{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:all .2s;}
+.nav-social:hover{border-color:var(--burg);color:var(--burg);background:var(--pink);}
+
+/* HERO */
+.hero{background:var(--white);padding:64px 32px 0;overflow:hidden;}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--pink);border:1px solid #E8C8D0;color:var(--burg);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:20px;}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,60px);line-height:1.1;margin-bottom:14px;}
+.hero-h1 em{color:var(--burg);font-style:italic;}
+.hero-desc{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:28px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-main{background:var(--burg);color:var(--white);padding:13px 26px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;display:inline-block;}
+.btn-main:hover{background:var(--burg2);transform:translateY(-2px);box-shadow:0 8px 20px rgba(107,18,41,.25);}
+.btn-out{background:transparent;color:var(--burg);border:1.5px solid var(--burg);padding:13px 26px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;display:inline-block;}
+.btn-out:hover{background:var(--pink);}
+.hero-stats{display:flex;gap:28px;margin-top:32px;padding-top:28px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--burg);}
+.stat-l{font-size:12px;color:var(--muted);margin-top:2px;}
+.hero-card{background:var(--burg);border-radius:24px;padding:28px;color:var(--white);position:relative;overflow:hidden;}
+.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(201,148,58,.3),transparent 70%);border-radius:50%;}
+.hc-sub{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(232,184,75,.7);margin-bottom:10px;}
+.hc-title{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;color:var(--gold2);margin-bottom:6px;}
+.hc-date{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:18px;}
+.hc-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.hc-tag{background:rgba(255,255,255,.12);padding:5px 12px;border-radius:100px;font-size:12px;}
+.hero-float{position:absolute;bottom:-20px;right:-12px;background:var(--white);border-radius:16px;padding:14px 18px;box-shadow:0 8px 28px rgba(0,0,0,.12);display:flex;align-items:center;gap:10px;}
+.hf-icon{font-size:22px;}
+.hf-l{font-size:11px;color:var(--muted);}
+.hf-v{font-size:14px;font-weight:700;color:var(--burg);}
+.hero-right{position:relative;padding-bottom:48px;}
+
+/* SECTION */
+.section{padding:72px 32px;}
+.wrap{max-width:1100px;margin:0 auto;}
+.sec-tag{display:inline-block;background:var(--pink);color:var(--burg);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:12px;}
+.sec-h2{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);line-height:1.15;margin-bottom:8px;}
+.sec-h2 em{color:var(--burg);font-style:italic;}
+.sec-desc{font-size:14px;color:var(--muted);line-height:1.7;}
+
+/* EVENTS */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:36px;}
+.ev-card{background:var(--white);border-radius:20px;border:1px solid var(--border);overflow:hidden;transition:all .3s;cursor:pointer;}
+.ev-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(107,18,41,.1);border-color:#DEC0C8;}
+.ev-top{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.ev-emoji{width:48px;height:48px;background:var(--pink);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.ev-badge{font-size:11px;font-weight:600;padding:4px 11px;border-radius:100px;}
+.b-open{background:#E8F5E8;color:#2E7D32;}
+.b-few{background:#FFF8E1;color:#F57F17;}
+.b-sold{background:#F5F5F5;color:#9E9E9E;}
+.ev-body{padding:14px 20px 20px;}
+.ev-date{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:5px;}
+.ev-name{font-family:'Playfair Display',serif;font-size:20px;font-style:italic;margin-bottom:7px;}
+.ev-desc{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px;}
+.ev-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.ev-tag{background:var(--cream);border:1px solid var(--border);color:var(--muted);padding:3px 9px;border-radius:100px;font-size:11px;}
+.ev-foot{display:flex;justify-content:space-between;align-items:center;}
+.ev-price{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--burg);}
+.ev-price small{font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);display:block;font-weight:400;}
+.ev-btn{background:var(--burg);color:var(--white);padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;}
+.ev-btn:hover{background:var(--burg2);}
+.ev-btn.sold{background:#EEE;color:#AAA;cursor:not-allowed;}
+
+/* HOW */
+.how-bg{background:var(--burg);}
+.how-tag{display:inline-block;background:rgba(255,255,255,.15);color:var(--gold2);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:12px;}
+.how-h{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);color:var(--white);}
+.how-h em{color:var(--gold2);font-style:italic;}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:20px;overflow:hidden;margin-top:36px;}
+.how-step{background:var(--burg);padding:32px 24px;}
+.how-n{font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:rgba(232,184,75,.2);line-height:1;margin-bottom:12px;}
+.how-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:8px;}
+.how-text{font-size:13px;color:rgba(255,255,255,.55);line-height:1.65;}
+
+/* PRICES */
+.prices-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px;}
+.p-card{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:28px 22px;text-align:center;transition:all .3s;position:relative;}
+.p-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(107,18,41,.1);}
+.p-card.feat{border-color:var(--burg);}
+.p-card.feat::before{content:'Популярний';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--burg);color:var(--white);font-size:11px;font-weight:700;padding:4px 14px;border-radius:100px;}
+.p-wave{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:14px;}
+.p-num{font-family:'Playfair Display',serif;font-size:46px;font-weight:700;color:var(--burg);line-height:1;}
+.p-uah{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.p-note{font-size:12px;color:var(--gold);font-weight:500;}
+
+/* FAQ */
+.faq-wrap{margin-top:36px;max-width:700px;}
+.faq-item{border-bottom:1px solid var(--border);}
+.faq-q{padding:18px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px;font-weight:500;transition:color .2s;}
+.faq-q:hover{color:var(--burg);}
+.faq-icon{color:var(--burg);font-size:20px;flex-shrink:0;margin-left:16px;transition:transform .3s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.75;padding-bottom:18px;display:none;}
+.faq-item.open .faq-a{display:block;}
+
+/* CTA BANNER */
+.cta-wrap{padding:0 32px 72px;max-width:1164px;margin:0 auto;}
+.cta-ban{background:linear-gradient(135deg,var(--burg),#4A0A1C);border-radius:24px;padding:52px 44px;display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;}
+.cta-tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,184,75,.6);margin-bottom:10px;}
+.cta-h{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,34px);color:var(--white);}
+.cta-h em{color:var(--gold2);font-style:italic;}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-w{background:var(--white);color:var(--burg);padding:13px 26px;border-radius:100px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s;}
+.btn-w:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2);}
+.btn-wo{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.4);padding:13px 26px;border-radius:100px;font-size:14px;font-weight:600;text-decoration:none;transition:all .2s;}
+.btn-wo:hover{border-color:var(--white);}
+
+/* FOOTER */
+.footer{background:var(--white);border-top:1px solid var(--border);padding:36px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.foot-logo{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--burg);}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap;}
+.foot-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
+.foot-links a:hover{color:var(--burg);}
+.foot-copy{font-size:12px;color:#CCC;}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;position:relative;}
+.m-close{position:absolute;top:18px;right:18px;background:var(--cream);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.m-emoji{font-size:32px;margin-bottom:10px;}
+.m-title{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;margin-bottom:4px;}
+.m-date{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.fl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--burg);margin-bottom:6px;display:block;}
+.fi{width:100%;padding:11px 13px;margin-bottom:12px;border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .2s;background:var(--cream);}
+.fi:focus{border-color:var(--burg);background:var(--white);}
+.fi::placeholder{color:#BBA8A8;}
+.mdiv{border:none;border-top:1px solid var(--border);margin:18px 0;}
+.pay-lbl{font-size:13px;font-weight:500;color:var(--muted);margin-bottom:10px;}
+.pay-opts{display:flex;flex-direction:column;gap:10px;}
+.pay-opt{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border:1.5px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text);transition:all .2s;background:var(--cream);}
+.pay-opt:hover{border-color:var(--burg);background:var(--pink);}
+.po-name{font-size:13px;font-weight:600;}
+.po-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.po-price{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--burg);}
+.m-note{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
+
+/* ADMIN */
+.admin-toggle{position:fixed;bottom:20px;right:20px;z-index:400;background:var(--burg);color:var(--white);border:none;padding:10px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.admin-panel{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:20px;}
+.admin-panel.open{display:flex;}
+.admin-box{background:var(--white);border-radius:20px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;}
+.admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.admin-head h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--burg);}
+.admin-close{background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;}
+.admin-ev{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;}
+.admin-ev-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.admin-ev-name{font-size:15px;font-weight:600;}
+.admin-sold{font-size:13px;color:var(--muted);}
+.admin-wave{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.wave-btn{padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--cream);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.wave-btn.active{background:var(--burg);color:var(--white);border-color:var(--burg);}
+.admin-count{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.admin-count label{font-size:12px;color:var(--muted);}
+.admin-count input{width:60px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;}
+.admin-save{background:var(--burg);color:var(--white);border:none;padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;margin-top:18px;width:100%;font-family:'Inter',sans-serif;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--white);padding:70px 28px;gap:20px;z-index:200;}
+  .hamburger{display:block;}
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .prices-grid{grid-template-columns:1fr;}
+  .ev-grid{grid-template-columns:1fr;}
+  .section{padding:52px 20px;}
+  .cta-ban{padding:36px 24px;}
+}
+@media(max-width:600px){.how-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- TOP BANNER -->
+<div style="background:var(--burg);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;">
+  <span style="font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.05em;">💗 Жіночі закриті вечори · Київ · Щосуботи 17:00</span>
+  <div style="display:flex;gap:10px;">
+    <a href="https://instagram.com/herera.club.kyiv" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);color:white;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      Instagram
+    </a>
+    <a href="https://t.me/dianashuvaloff" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);color:white;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c-.242-.213-.054-.333-.373-.12L7.17 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.978.942z"/></svg>
+      Telegram
+    </a>
+  </div>
+</div>
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-badge"><span>Era</span></div>
+    <span class="nav-name">HER ERA</span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#events" onclick="closeNav()">Вечори</a>
+    <a href="#how" onclick="closeNav()">Як це працює</a>
+    <a href="#prices" onclick="closeNav()">Ціни</a>
+    <a href="#faq" onclick="closeNav()">FAQ</a>
+    <a href="https://instagram.com/dianashuvaloff" target="_blank" class="nav-social" title="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://t.me/dianashuvaloff" target="_blank" class="nav-social" title="Telegram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.978.942z"/></svg>
+    </a>
+    <a href="#events" class="nav-btn" onclick="closeNav()">Забронювати ✨</a>
+  </div>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">💗 Київ · Закриті жіночі вечори</div>
+      <h1 class="hero-h1">Знайди своїх<br>у <em>Her Era</em></h1>
+      <p class="hero-desc">Закриті вечори для дівчат — знайомства, фотосесії, ігри та атмосфера яка запам'ятовується назавжди.</p>
+      <div class="hero-btns">
+        <a href="#events" class="btn-main">✨ Переглянути вечори</a>
+        <a href="#how" class="btn-out">Як це працює</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-n">6</div><div class="stat-l">вечорів сезону</div></div>
+        <div><div class="stat-n">12–20</div><div class="stat-l">дівчат на вечорі</div></div>
+        <div><div class="stat-n">щосб</div><div class="stat-l">о 17:00</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="hc-sub">⭐ Наступний вечір</div>
+        <div class="hc-title">Свої Дівчата</div>
+        <div class="hc-date">📅 9 травня 2026 · 17:00</div>
+        <div class="hc-tags">
+          <span class="hc-tag">💌 Знайомство</span>
+          <span class="hc-tag">📸 Фотосесія</span>
+          <span class="hc-tag">🥂 Шампанське</span>
+        </div>
+      </div>
+      <div class="hero-float">
+        <div class="hf-icon">🌸</div>
+        <div><div class="hf-l">Зараз від</div><div class="hf-v">1 590 грн</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="events" class="section" style="background:var(--cream)">
+  <div class="wrap">
+    <div class="sec-tag">🗓 Розклад 2026</div>
+    <h2 class="sec-h2">Обери <em>свій вечір</em></h2>
+    <p class="sec-desc">Щосуботи о 17:00 · до 12–20 дівчат · фото і шампанське включено</p>
+    <div class="ev-grid" id="evGrid"></div>
+  </div>
+</section>
+
+<section id="how" class="section how-bg">
+  <div class="wrap">
+    <div class="how-tag">✦ Просто і зручно</div>
+    <h2 class="how-h">Як це <em>працює</em></h2>
+    <div class="how-grid">
+      <div class="how-step"><div class="how-n">01</div><div class="how-title">Обираєш вечір</div><div class="how-text">Переглядаєш теми і дати. Обираєш той що відгукується.</div></div>
+      <div class="how-step"><div class="how-n">02</div><div class="how-title">Бронюєш місце</div><div class="how-text">Оплата через Monobank — і місце твоє за хвилину.</div></div>
+      <div class="how-step"><div class="how-n">03</div><div class="how-title">Надсилаєш скрін</div><div class="how-text">Після оплати — скріншот в Instagram @herera.club.kyiv</div></div>
+      <div class="how-step"><div class="how-n">04</div><div class="how-title">Кайфуєш 💗</div><div class="how-text">Знайомишся, фоткаєшся, граєш. Знаходиш своїх людей.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="prices" class="section" style="background:var(--white)">
+  <div class="wrap">
+    <div class="sec-tag">💰 Прозоро і чесно</div>
+    <h2 class="sec-h2">Ціни на <em>вечори</em></h2>
+    <p class="sec-desc">Чим раніше бронюєш — тим вигідніше. Ціна зростає в міру заповнення місць.</p>
+    <div class="prices-grid">
+      <div class="p-card"><div class="p-wave">🌸 Early Bird · перші 4 місця</div><div class="p-num">1 590</div><div class="p-uah">гривень</div><div class="p-note">Передоплата 1 000 грн</div></div>
+      <div class="p-card feat"><div class="p-wave">⭐ Standard · наступні 4</div><div class="p-num">1 790</div><div class="p-uah">гривень</div><div class="p-note">Передоплата 1 000 грн</div></div>
+      <div class="p-card"><div class="p-wave">🔥 Last Seats · решта місць</div><div class="p-num">1 990</div><div class="p-uah">гривень</div><div class="p-note">Передоплата 1 000 грн</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:16px;text-align:center">Повернення за 7+ днів · перенесення зберігається · Apple Pay / Google Pay / карта</p>
+  </div>
+</section>
+
+<section id="faq" class="section" style="background:var(--cream)">
+  <div class="wrap">
+    <div class="sec-tag">❓ Питання</div>
+    <h2 class="sec-h2">Все що <em>цікавить</em></h2>
+    <div class="faq-wrap" id="faqList"></div>
+  </div>
+</section>
+
+<div class="cta-wrap">
+  <div class="cta-ban">
+    <div><div class="cta-tag">HER ERA · KYIV · 2026</div><h2 class="cta-h">Готова до своєї <em>ери?</em></h2></div>
+    <div class="cta-btns">
+      <a href="#events" class="btn-w">✨ Обрати вечір</a>
+      <a href="https://instagram.com/herera.club.kyiv" target="_blank" class="btn-wo">Instagram</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="foot-logo">HER ERA · Kyiv</div>
+  <div class="foot-links">
+    <a href="https://instagram.com/herera.club.kyiv" target="_blank">📸 Instagram</a><a href="https://t.me/dianashuvaloff" target="_blank">✈️ Telegram</a>
+    <a href="#events">Вечори</a>
+    <a href="#prices">Ціни</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="foot-copy">© 2026 HER ERA</div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div class="m-emoji" id="mEmoji"></div>
+    <div class="m-title" id="mTitle"></div>
+    <div class="m-date" id="mDate"></div>
+    <label class="fl">Твоє ім'я</label>
+    <input type="text" class="fi" placeholder="Наприклад: Соня">
+    <label class="fl">Instagram</label>
+    <input type="text" class="fi" placeholder="@нікнейм в Instagram">
+    <label class="fl">Telegram</label>
+    <input type="text" class="fi" placeholder="@нікнейм в Telegram">
+    <label class="fl">Телефон</label>
+    <input type="tel" class="fi" placeholder="+380...">
+    <div class="mdiv"></div>
+    <div class="pay-lbl">Обери спосіб оплати 👇</div>
+    <div class="pay-opts" id="payOpts"></div>
+    <div class="m-note">Після оплати надішли скріншот у Instagram<br><strong>@herera.club.kyiv</strong></div>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="overlay" class="overlay" id="passModal" style="z-index:700">
+  <div class="modal" style="max-width:320px;text-align:center;padding:36px">
+    <div style="font-size:36px;margin-bottom:12px">🔐</div>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:6px;color:var(--text)">Адмін-панель</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Введи пароль для входу</div>
+    <input type="password" id="passInput" class="fi" placeholder="Пароль"
+      onkeydown="if(event.key==='Enter')checkPass()"
+      style="text-align:center;letter-spacing:0.2em;margin-bottom:8px">
+    <div id="passError" style="display:none;color:#c84030;font-size:12px;margin-bottom:10px">❌ Невірний пароль</div>
+    <button onclick="checkPass()"
+      style="background:var(--burg);color:white;border:none;padding:12px 32px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif;margin-bottom:10px">
+      Увійти
+    </button>
+    <button onclick="document.getElementById('passModal').classList.remove('open')"
+      style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">
+      Скасувати
+    </button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<button class="admin-toggle" onclick="openAdmin()">🔧</button>
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-box">
+    <div class="admin-head">
+      <h2>Управління вечорами</h2>
+      <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('open');adminUnlocked=false;">✕</button>
+    </div>
+    <div id="adminEvents"></div>
+    <button class="admin-save" onclick="saveAdmin()">💾 Зберегти зміни</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ── (saved in localStorage)
+const DEFAULT_EVENTS = [
+  {id:'svoi',emoji:'💌',name:'Свої Дівчата',date:'09.05.2026 · Субота · 17:00',desc:'Знайомство, фотосесія з аксесуарами, шампанське і жива гра.',tags:['До 12 дівчат','Flora Hub','Total Black 🖤'],sold:0,capacity:12},
+  {id:'poker',emoji:'♠️',name:'Козирна',date:'16.05.2026 · Субота · 17:00',desc:'Luxury Poker Night — чорна сукня, шампанське і покер з фішками.',tags:['До 12 дівчат','Flora Hub','Black + Red Lips'],sold:0,capacity:12},
+  {id:'money',emoji:'💸',name:'Мені Можна Більше',date:'23.05.2026 · Субота · 17:00',desc:'Вечір про гроші, зростання і нетворкінг. Wolf of Wall Street girls.',tags:['До 12 дівчат','Flora Hub','Business Chic'],sold:0,capacity:12},
+  {id:'tinder',emoji:'💍',name:'Нормальний Існує',date:'30.05.2026 · Субота · 17:00',desc:'Tinder Night — психотест типажу і аудит анкет на проекторі.',tags:['До 20 дівчат','Студія 004','Date Night Look 💋'],sold:0,capacity:20},
+  {id:'carpet',emoji:'✨',name:'Головна Героїня',date:'06.06.2026 · Субота · 17:00',desc:'Red Carpet Night — червона доріжка, відеограф, зіркові фото.',tags:['До 20 дівчат','Студія 004','Вечірній образ'],sold:0,capacity:20},
+  {id:'bestie',emoji:'👯',name:'Ми Match?',date:'13.06.2026 · Субота · 17:00',desc:'Speed Bestie Dating — 11 раундів по 5 хвилин і Match Card.',tags:['До 12 дівчат','Flora Hub','Your Vibe Your Rules'],sold:0,capacity:12},
+];
+
+const MONO = {
+  pre:'https://pay.mbnk.biz/ehD_FvcdKbCn',
+  early:'https://pay.mbnk.biz/07lny6GYqQO1',
+  standard:'https://pay.mbnk.biz/bxvNm_j3sKoF',
+  last:'https://pay.mbnk.biz/HI68Vpu_ZOst',
+  dop_early:'https://pay.mbnk.biz/_elc0pxDxETx',
+  dop_standard:'https://pay.mbnk.biz/YSWuxA7mmhGH',
+  dop_last:'https://pay.mbnk.biz/2N5389BDWvgo',
+};
+
+const FAQ_DATA = [
+  {q:'Чи можна прийти одній?',a:'Звичайно! Більшість дівчат приходять самі — і це найкраще рішення. Саме так знаходять своїх людей 💗'},
+  {q:'Як повернути передоплату?',a:'За 7+ днів до вечора — повернення 1 000 грн. За 3-6 днів — 500 грн. За 1-2 дні — не повертається. Перенесення на інший вечір — передоплата зберігається.'},
+  {q:'Де знаходяться студії?',a:'Flora Hub: просп. Лобановського 4ж (м. Олімпійська). Студія 004: вул. Володимирська 10 (м. Театральна). Адресу надсилаємо за день до вечора.'},
+  {q:'Що включено у вартість?',a:'Фотограф, шампанське і закуски, реквізит для фотосесії, авторські ігри HER ERA. Все включено 💗'},
+  {q:'Можна прийти з подругою?',a:'Так! Два окремих місця. При одночасному бронюванні — знижка -100 грн кожній 🎁'},
+  {q:'Як оплатити?',a:'Натисни "Забронювати" → побачиш посилання на оплату через Monobank (Apple Pay, карта). Після оплати надішли скріншот у Instagram @herera.club.kyiv'},
+];
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('herera_events')) || DEFAULT_EVENTS; }
+  catch(e) { return DEFAULT_EVENTS; }
+}
+function saveState(events) {
+  try { localStorage.setItem('herera_events', JSON.stringify(events)); } catch(e) {}
+}
+
+let EVENTS = loadState();
+
+// ── PRICE LOGIC ──
+function getWave(sold) {
+  if (sold < 4) return 'early';
+  if (sold < 8) return 'standard';
+  return 'last';
+}
+
+function getPriceInfo(sold) {
+  const wave = getWave(sold);
+  const map = {
+    early: { label:'🌸 Early Bird', price:'1 590 грн', mono_pre: MONO.pre, mono_full: MONO.early, dop: MONO.dop_early },
+    standard: { label:'⭐ Standard', price:'1 790 грн', mono_pre: MONO.pre, mono_full: MONO.standard, dop: MONO.dop_standard },
+    last: { label:'🔥 Last Seats', price:'1 990 грн', mono_pre: MONO.pre, mono_full: MONO.last, dop: MONO.dop_last },
+  };
+  return map[wave];
+}
+
+function getStatus(sold, capacity) {
+  if (sold >= capacity) return 'sold';
+  const left = capacity - sold;
+  if (left <= 3) return 'few';
+  return 'open';
+}
+
+// ── RENDER EVENTS ──
+function renderEvents() {
+  const statusLabel = {open:'✅ Є місця', few:'⚡ Останні місця', sold:'❌ Продано'};
+  const statusClass = {open:'b-open', few:'b-few', sold:'b-sold'};
+
+  document.getElementById('evGrid').innerHTML = EVENTS.map((e,i) => {
+    const status = getStatus(e.sold, e.capacity);
+    const pi = getPriceInfo(e.sold);
+    const left = e.capacity - e.sold;
+    return `
+    <div class="ev-card" onclick="openModal(${i})">
+      <div class="ev-top">
+        <div class="ev-emoji">${e.emoji}</div>
+        <span class="ev-badge ${statusClass[status]}">${statusLabel[status]}</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-date">📅 ${e.date}</div>
+        <div class="ev-name">${e.name}</div>
+        <div class="ev-desc">${e.desc}</div>
+        <div class="ev-tags">${e.tags.map(t=>`<span class="ev-tag">${t}</span>`).join('')}</div>
+        <div class="ev-foot">
+          <div class="ev-price">${pi.price}<small>Залишилось: ${left} місць</small></div>
+          ${status!=='sold'
+            ? `<button class="ev-btn" onclick="event.stopPropagation();openModal(${i})">Забронювати</button>`
+            : `<span class="ev-btn sold">Продано</span>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODAL ──
+function openModal(i) {
+  const e = EVENTS[i];
+  const status = getStatus(e.sold, e.capacity);
+  if (status === 'sold') return;
+
+  const pi = getPriceInfo(e.sold);
+  document.getElementById('mEmoji').textContent = e.emoji;
+  document.getElementById('mTitle').textContent = e.name;
+  document.getElementById('mDate').textContent = e.date + ' · ' + pi.label;
+
+  document.getElementById('payOpts').innerHTML = `
+    <a href="${pi.mono_pre}" target="_blank" class="pay-opt">
+      <div><div class="po-name">💳 Передоплата</div><div class="po-sub">Фіксує місце · решта за тиждень до вечора</div></div>
+      <div class="po-price">1 000 грн</div>
+    </a>
+    <a href="${pi.mono_full}" target="_blank" class="pay-opt">
+      <div><div class="po-name">${pi.label} — повний квиток</div><div class="po-sub">Одна оплата — місце повністю оплачено</div></div>
+      <div class="po-price">${pi.price}</div>
+    </a>
+  `;
+
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('overlay').addEventListener('click', function(e) {
+  if(e.target===this) closeModal();
+});
+
+// ── FAQ ──
+function renderFAQ() {
+  document.getElementById('faqList').innerHTML = FAQ_DATA.map((f,i)=>`
+    <div class="faq-item" id="fi${i}">
+      <div class="faq-q" onclick="document.getElementById('fi${i}').classList.toggle('open')">
+        ${f.q}<span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">${f.a}</div>
+    </div>
+  `).join('');
+}
+
+// ── ADMIN ──
+function renderAdmin() {
+  document.getElementById('adminEvents').innerHTML = EVENTS.map((e,i) => {
+    const wave = getWave(e.sold);
+    const left = e.capacity - e.sold;
+    return `
+    <div class="admin-ev">
+      <div class="admin-ev-head">
+        <div class="admin-ev-name">${e.emoji} ${e.name} · ${e.date}</div>
+        <div class="admin-sold">Продано: ${e.sold}/${e.capacity} · Залишилось: ${left}</div>
+      </div>
+      <div class="admin-count">
+        <label>Кількість продаж:</label>
+        <input type="number" id="sold_${i}" value="${e.sold}" min="0" max="${e.capacity}">
+        <span style="font-size:12px;color:#999">→ Ціна: ${getPriceInfo(e.sold).label} ${getPriceInfo(e.sold).price}</span>
+      </div>
+      <div class="admin-count" style="margin-top:6px">
+        <label>Місткість:</label>
+        <input type="number" id="cap_${i}" value="${e.capacity}" min="1" max="30">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADMIN PASSWORD ──
+const ADMIN_PASS = '17072004';
+let adminUnlocked = false;
+
+function openAdmin() {
+  if (adminUnlocked) {
+    document.getElementById('adminPanel').classList.add('open');
+    renderAdmin();
+    return;
+  }
+  document.getElementById('passModal').classList.add('open');
+  setTimeout(()=>document.getElementById('passInput').focus(),100);
+}
+
+function checkPass() {
+  const val = document.getElementById('passInput').value;
+  if (val === ADMIN_PASS) {
+    adminUnlocked = true;
+    document.getElementById('passModal').classList.remove('open');
+    document.getElementById('passInput').value = '';
+    document.getElementById('passError').style.display = 'none';
+    document.getElementById('adminPanel').classList.add('open');
+    renderAdmin();
+  } else {
+    document.getElementById('passError').style.display = 'block';
+    document.getElementById('passInput').select();
+  }
+}
+
+function saveAdmin() {
+  EVENTS.forEach((e,i) => {
+    const s = parseInt(document.getElementById('sold_'+i)?.value) || 0;
+    const c = parseInt(document.getElementById('cap_'+i)?.value) || e.capacity;
+    e.sold = s;
+    e.capacity = c;
+  });
+  saveState(EVENTS);
+  renderEvents();
+  renderAdmin();
+  document.getElementById('adminPanel').classList.remove('open');
+  alert('✅ Збережено!');
+}
+
+function closeNav() {
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+// Init
+renderEvents();
+renderFAQ();
+renderAdmin();
+</script>
+</body>
+</html>

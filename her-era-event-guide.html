@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · Гід по івентах</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #f5ede0; font-family: 'Lato', sans-serif; color: #3a2010; }
+
+.nav { background: #3d0f0f; padding: 14px 20px; position: sticky; top: 0; z-index: 100; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.nav-brand { font-family: 'Playfair Display', serif; font-style: italic; color: #e8c060; font-size: 18px; margin-right: 8px; }
+.nav button { font-size: 11px; color: #c9a84c; background: none; border: 1px solid rgba(201,168,76,0.3); border-radius: 20px; padding: 5px 10px; cursor: pointer; white-space: nowrap; font-family: 'Lato', sans-serif; }
+.nav button:hover { background: rgba(201,168,76,0.15); }
+
+.page { max-width: 700px; margin: 0 auto; padding: 0 16px 60px; }
+
+.hero { background: linear-gradient(180deg, #250808, #3d1010); padding: 48px 24px 40px; text-align: center; margin-bottom: 28px; border-bottom: 1px solid rgba(201,168,76,0.3); }
+.hero .her { display: block; font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.6em; color: #c9a84c; text-transform: uppercase; }
+.hero .era { display: block; font-family: 'Playfair Display', serif; font-size: 44px; font-style: italic; color: #e8c060; line-height: 1.1; }
+.hero h2 { font-family: 'Playfair Display', serif; font-size: 15px; color: #a07840; font-weight: 400; margin-top: 10px; }
+
+/* GENERAL BOX */
+.general { background: #fff8f0; border: 1px solid rgba(160,100,40,0.2); border-top: 3px solid #c9a84c; border-radius: 14px; padding: 22px 20px; margin-bottom: 28px; }
+.general h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #7a4010; margin-bottom: 16px; }
+
+/* EVENT CARD */
+.event { background: #fff8f0; border: 1px solid rgba(160,100,40,0.2); border-radius: 16px; margin-bottom: 32px; overflow: hidden; }
+.event-header { padding: 22px 24px 16px; border-bottom: 1px solid rgba(160,100,40,0.15); }
+.event-emoji { font-size: 32px; display: block; margin-bottom: 8px; }
+.event-name { font-family: 'Playfair Display', serif; font-size: 26px; color: #7a4010; line-height: 1.2; }
+.event-sub { font-size: 13px; color: #a07840; margin-top: 4px; }
+
+.event-meta { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 24px; background: rgba(201,168,76,0.06); border-bottom: 1px solid rgba(160,100,40,0.1); }
+.tag { font-size: 12px; font-weight: 700; color: #7a4010; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); padding: 4px 12px; border-radius: 20px; }
+
+.event-body { padding: 20px 24px; }
+
+.stitle { font-family: 'Playfair Display', serif; font-size: 14px; color: #c9a84c; text-transform: uppercase; letter-spacing: 0.12em; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+.stitle::after { content: ''; flex: 1; height: 1px; background: rgba(201,168,76,0.2); }
+.stitle:first-child { margin-top: 0; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 8px; }
+.ti { display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px; background: #fff; border: 1px solid rgba(160,100,40,0.12); border-radius: 10px; }
+.tt { font-size: 12px; font-weight: 700; color: #c9a84c; min-width: 48px; padding-top: 2px; }
+.tc strong { font-size: 14px; color: #5a2e08; display: block; margin-bottom: 2px; }
+.tc span { font-size: 13px; color: #7a5030; line-height: 1.5; }
+
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width:500px) { .g2 { grid-template-columns: 1fr; } }
+.ibox { background: #fff; border: 1px solid rgba(160,100,40,0.15); border-radius: 10px; padding: 14px; }
+.ibox h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #c9a84c; text-transform: uppercase; margin-bottom: 8px; }
+.ibox ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.ibox ul li { font-size: 13px; color: #4a2e10; padding-left: 14px; position: relative; line-height: 1.4; }
+.ibox ul li::before { content: '·'; position: absolute; left: 0; color: #c9a84c; font-weight: 700; }
+
+/* CARDS */
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card { background: #fff; border: 1px solid rgba(160,100,40,0.18); border-top: 2px solid #c9a84c; border-radius: 10px; padding: 14px 12px; text-align: center; }
+.card-emoji { font-size: 24px; display: block; margin-bottom: 7px; }
+.card-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: #c9a84c; text-transform: uppercase; margin-bottom: 4px; }
+.card-txt { font-size: 13px; color: #6a4020; line-height: 1.45; }
+
+/* HIGHLIGHT */
+.hl { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: #5a2e08; line-height: 1.6; margin-top: 8px; }
+
+/* DRESS CODE */
+.dresscode { background: linear-gradient(135deg, #3d1010, #5a1818); border-radius: 10px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
+.dc-icon { font-size: 28px; }
+.dc-text h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #c9a84c; text-transform: uppercase; margin-bottom: 6px; }
+.dc-text p { font-size: 14px; color: #f0d0a0; line-height: 1.5; }
+
+/* SPEECH */
+.speech { background: #fff; border: 1px solid rgba(160,100,40,0.15); border-left: 3px solid #c9a84c; border-radius: 0 10px 10px 0; padding: 14px 16px; }
+.speech h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #c9a84c; text-transform: uppercase; margin-bottom: 8px; }
+.speech p { font-size: 14px; color: #4a2e10; line-height: 1.7; font-style: italic; }
+
+/* REELS */
+.reels { display: flex; flex-direction: column; gap: 6px; }
+.reel { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #fff; border-radius: 8px; border: 1px solid rgba(160,100,40,0.12); font-size: 13px; color: #5a3010; }
+.reel::before { content: '🎬'; font-size: 14px; }
+
+/* ROUNDS */
+.rounds { background: #3d1010; border-radius: 12px; padding: 18px 20px; }
+.rounds h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #c9a84c; text-transform: uppercase; margin-bottom: 12px; }
+.rrow { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(201,168,76,0.15); }
+.rrow:last-child { border-bottom: none; }
+.rrow span { font-size: 13px; color: #e0c090; }
+.rrow strong { font-size: 14px; color: #e8c060; }
+
+.ornament { text-align: center; color: #7a4a18; font-size: 13px; letter-spacing: 0.45em; padding: 10px 0; }
+.divider { text-align: center; color: #c9a84c; font-size: 12px; letter-spacing: 0.4em; padding: 8px 0; opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Era</span>
+  <button onclick="document.getElementById('general').scrollIntoView({behavior:'smooth'})">Загальне</button>
+  <button onclick="document.getElementById('ev1').scrollIntoView({behavior:'smooth'})">Свої Дівчата</button>
+  <button onclick="document.getElementById('ev2').scrollIntoView({behavior:'smooth'})">Козирна</button>
+  <button onclick="document.getElementById('ev3').scrollIntoView({behavior:'smooth'})">Мені Можна</button>
+  <button onclick="document.getElementById('ev4').scrollIntoView({behavior:'smooth'})">Нормальний</button>
+  <button onclick="document.getElementById('ev5').scrollIntoView({behavior:'smooth'})">Головна Героїня</button>
+  <button onclick="document.getElementById('ev6').scrollIntoView({behavior:'smooth'})">Ми Match</button>
+</nav>
+
+<div class="page">
+<div class="hero">
+  <span class="her">Her</span>
+  <span class="era">Era</span>
+  <h2>✦ Повний гід по івентах · Diana ✦</h2>
+</div>
+
+<!-- GENERAL -->
+<div id="general" class="general">
+  <h2>📌 Загальне для всіх вечорів</h2>
+
+  <div class="stitle">Студії</div>
+  <div class="g2">
+    <div class="ibox">
+      <h4>🌿 Flora Hub</h4>
+      <ul>
+        <li>Темна, затишна, диванчики</li>
+        <li>1400 грн/год × 3 год = <strong>4 200 грн</strong></li>
+        <li>До 15 осіб (12 гостей + ти + Кристина + фотограф)</li>
+        <li>Без проектора</li>
+      </ul>
+    </div>
+    <div class="ibox">
+      <h4>🏛️ Студія 004</h4>
+      <ul>
+        <li>2500 × 3 год + 8 ос. × 250 = <strong>9 500 грн</strong></li>
+        <li>До 28 осіб (24 гостей + ти + Кристина + фотограф + відеограф)</li>
+        <li>З проектором</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stitle" style="margin-top:18px">Склад гостей</div>
+  <div class="hl">
+    <strong>Flora Hub:</strong> 12 платних + 2 блогери безкоштовно = 14 гостей<br>
+    <strong>Студія 004:</strong> 20 платних (міс.2-3) + 2 блогери = 22 гостей<br>
+    Перший місяць Студія 004: 16 платних + 2 блогери = 18 гостей
+  </div>
+
+  <div class="stitle" style="margin-top:18px">Фотограф</div>
+  <div class="g2">
+    <div class="ibox">
+      <h4>12 гостей → 2 год</h4>
+      <ul><li><strong>5 000 грн</strong></li><li>Решту часу — живі кадри, атмосфера</li></ul>
+    </div>
+    <div class="ibox">
+      <h4>20-24 гостей → 3 год</h4>
+      <ul><li><strong>7 000 грн</strong></li><li>Решту часу — живі кадри, атмосфера</li></ul>
+    </div>
+  </div>
+
+  <div class="stitle" style="margin-top:18px">Тайм-слот аренди 3 год</div>
+  <div class="timeline">
+    <div class="ti"><div class="tt">-0:30</div><div class="tc"><strong>Підготовка</strong><span>Ти приїжджаєш в кросівках, каблуки в чемодані. Розкладаєш все, знімаєш атмосферу до гостей.</span></div></div>
+    <div class="ti"><div class="tt">0:00</div><div class="tc"><strong>Старт</strong><span>Дівчата приходять, welcome drink.</span></div></div>
+    <div class="ti"><div class="tt">+2:00</div><div class="tc"><strong>Фінал</strong><span>Загальне фото, фінальна промова, анонс наступних вечорів.</span></div></div>
+    <div class="ti"><div class="tt">+2:30</div><div class="tc"><strong>Прибирання</strong><span>Збираєш все, знімаєш фінальні рілс.</span></div></div>
+  </div>
+
+  <div class="stitle" style="margin-top:18px">Алкоголь (опитуй заздалегідь хто п'є)</div>
+  <div class="hl">
+    На 12 осіб: просекко ×2 + біле вино ×1 + безалкогольне ×1-2 ≈ 900 грн<br>
+    На 24 особи: вдвічі більше ≈ 1 800 грн
+  </div>
+
+  <div class="stitle" style="margin-top:18px">Фінальна промова (однакова на всіх вечорах)</div>
+  <div class="speech">
+    <h4>01:55–02:00</h4>
+    <p>"Дівчата, дякую що ви були тут сьогодні — ви частина HER ERA. Попереду у нас ще багато крутих вечорів — [назвати 2-3 наступних]. Слідкуйте за нашим Instagram. Давайте загальне фото — і до зустрічі!"</p>
+  </div>
+</div>
+
+<!-- EVENT 1 -->
+<div id="ev1" class="event">
+  <div class="event-header">
+    <span class="event-emoji">💌</span>
+    <div class="event-name">СВОЇ ДІВЧАТА. СЕЗОН ПЕРШИЙ</div>
+    <div class="event-sub">Перший вечір бренду · знайомство + фотосесія з аксесуарами</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🌿 Flora Hub</span>
+    <span class="tag">👥 12 платних + 2 блогери</span>
+    <span class="tag">⏱ 3 год аренда · 4 200 грн</span>
+    <span class="tag">📸 Фотограф 2 год · 5 000 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">🖤</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Total black — плаття, костюм, топ+спідниця. Підбори або стильне взуття. Яскравих принтів немає. Образ чистий і доглянутий.</p>
+      </div>
+    </div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink</strong><span>Дівчата приходять. Музика. Ти видаєш аксесуари — рукавички, прикраси, шовковий шарфик, сумка.</span></div></div>
+      <div class="ti"><div class="tt">00:20</div><div class="tc"><strong>Вступна промова</strong><span>"Привіт, я Діана — засновниця HER ERA. Я давно хотіла створити простір де жінки знайомляться і знаходять своїх людей. Сьогодні ви перші — і це особливо. Попереду гра, фотосесія і живе спілкування. Вмикайтесь!" + роздаєш карточки партнерів.</span></div></div>
+      <div class="ti"><div class="tt">00:30</div><div class="tc"><strong>Гра "МИ MATCH?" рівень 1 — ЄС ВАЙБ?</strong><span>Легкі знайомчі питання. Дівчата грають, спілкуються, музика. Атмосфера розігрівається.</span></div></div>
+      <div class="ti"><div class="tt">01:10</div><div class="tc"><strong>Фотосесія по 5 хв кожна</strong><span>Дівчата вже знайомі — хочуть фоткатись разом! Аксесуари видаєш перед кожною по черзі. Індивідуально + пари за бажанням.</span></div></div>
+      <div class="ti"><div class="tt">01:55</div><div class="tc"><strong>Загальне фото + фінальна промова</strong><span>Анонсуєш наступні вечори HER ERA.</span></div></div>
+    </div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Розкладка аксесуарів крупним планом до початку</div>
+      <div class="reel">Дівчата вибирають та приміряють аксесуари</div>
+      <div class="reel">Боке: свічки + бокали + чорні образи</div>
+      <div class="reel">Transition: чорний образ → надягає аксесуар</div>
+      <div class="reel">Групове відео всіх під трендову музику</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT 2 -->
+<div id="ev2" class="event">
+  <div class="event-header">
+    <span class="event-emoji">♠️</span>
+    <div class="event-name">КОЗИРНА</div>
+    <div class="event-sub">Luxury poker night · шампанське · знайомства · фотосесія</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🌿 Flora Hub</span>
+    <span class="tag">👥 12 платних + 2 блогери</span>
+    <span class="tag">⏱ 3 год аренда · 4 200 грн</span>
+    <span class="tag">📸 Фотограф 2 год · 5 000 грн</span>
+    <span class="tag">🎟 1590 / 1790 / 1990 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">💄</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Чорна сукня — обов'язково. Підбори. Червона помада — must have. Вечірній образ. Gatsby style.</p>
+      </div>
+    </div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink</strong><span>Дівчата сідають за стіл. Музика.</span></div></div>
+      <div class="ti"><div class="tt">00:15</div><div class="tc"><strong>Вступна промова + правила покеру</strong><span>Ти представляєшся. Твій партнер пояснює правила (10 хв). Роздаєш карточки партнерів.</span></div></div>
+      <div class="ti"><div class="tt">00:25</div><div class="tc"><strong>Перший раунд покеру з фішками</strong><span>Не на гроші — заради атмосфери. Якщо є незручна пауза — запускаєш картки "МИ MATCH?" рівень 1 між раундами (по одному питанню вголос).</span></div></div>
+      <div class="ti"><div class="tt">00:55</div><div class="tc"><strong>Пауза</strong><span>Шампанське, вільне спілкування. Фотограф знімає живі кадри.</span></div></div>
+      <div class="ti"><div class="tt">01:10</div><div class="tc"><strong>Другий раунд покеру</strong><span>Дівчата вже розкуті — живе спілкування.</span></div></div>
+      <div class="ti"><div class="tt">01:35</div><div class="tc"><strong>Фотосесія по 5 хв кожна</strong><span>Індивідуально за столом. Аксесуари видаєш перед кожною.</span></div></div>
+      <div class="ti"><div class="tt">01:55</div><div class="tc"><strong>Загальне фото + фінальна промова</strong></div></div>
+    </div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Крупний план: червона помада + бокал шампанського</div>
+      <div class="reel">Руки з фішками покеру — slow motion</div>
+      <div class="reel">Дівчата сміються за столом (живий момент)</div>
+      <div class="reel">Transition: чорна сукня + карта + погляд у камеру</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT 3 -->
+<div id="ev3" class="event">
+  <div class="event-header">
+    <span class="event-emoji">💸</span>
+    <div class="event-name">МЕНІ МОЖНА БІЛЬШЕ</div>
+    <div class="event-sub">Вечір про гроші, зростання, нетворкінг · Wolf of Wall Street girls</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🌿 Flora Hub</span>
+    <span class="tag">👥 12 платних + 2 блогери</span>
+    <span class="tag">⏱ 3 год аренда · 4 200 грн</span>
+    <span class="tag">📸 Фотограф 2 год · 5 000 грн</span>
+    <span class="tag">🎟 1590 / 1790 / 1990 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">💼</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Жакет, костюм, стильний діловий образ але красиво. Classy, не casual. Підбори або лодочки.</p>
+      </div>
+    </div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink</strong></div></div>
+      <div class="ti"><div class="tt">00:15</div><div class="tc"><strong>Вступна промова</strong><span>Представляєшся. Роздаєш карточки партнерів.</span></div></div>
+      <div class="ti"><div class="tt">00:25</div><div class="tc"><strong>Знайомство по колу</strong><span>Ім'я + чим займається (по 1 хв кожна = 12 хв на 12 дівчат).</span></div></div>
+      <div class="ti"><div class="tt">00:45</div><div class="tc"><strong>Гра "МЕНІ МОЖНА БІЛЬШЕ" — BLACK колода</strong><span>Питання про гроші, стратегію, фінансову свободу. Глибокі розмови, природний нетворкінг. Фотограф знімає живі кадри.</span></div></div>
+      <div class="ti"><div class="tt">01:20</div><div class="tc"><strong>Фотосесія по 5 хв кожна</strong><span>Решта вільно спілкуються, обмінюються контактами.</span></div></div>
+      <div class="ti"><div class="tt">01:55</div><div class="tc"><strong>Загальне фото + фінальна промова</strong></div></div>
+    </div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Крупний план: жакет + шампанське</div>
+      <div class="reel">Карточки "Мені можна більше" на столі</div>
+      <div class="reel">Дівчата жваво дискутують — живий момент</div>
+      <div class="reel">Wolf of Wall Street girls — групове відео</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT 4 -->
+<div id="ev4" class="event">
+  <div class="event-header">
+    <span class="event-emoji">💍</span>
+    <div class="event-name">НОРМАЛЬНИЙ ІСНУЄ</div>
+    <div class="event-sub">Tinder Night · психотест · типажі · аудит анкет на проекторі</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🏛️ Студія 004</span>
+    <span class="tag">👥 20 платних + 2 блогери (міс.2-3)</span>
+    <span class="tag">👥 16 платних + 2 блогери (міс.1)</span>
+    <span class="tag">⏱ 3 год · 9 500 грн</span>
+    <span class="tag">📸 Фотограф 3 год · 7 000 грн</span>
+    <span class="tag">🎟 1590 / 1790 / 1990 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">💋</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Як на перше побачення — сукня або стильний образ, підбори, красивий макіяж. Саме відчуття "іду на побачення".</p>
+      </div>
+    </div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink</strong><span>Фотограф знімає атмосферу.</span></div></div>
+      <div class="ti"><div class="tt">00:15</div><div class="tc"><strong>Вступна промова</strong><span>"Я сама довго шукала нормального чоловіка, допомагала подружкам з Tinder — і зрозуміла що більшість дівчат просто не знають як заповнити анкету і кого вибирати. Тому я створила цей тест." Роздаєш карточки партнерів.</span></div></div>
+      <div class="ti"><div class="tt">00:20</div><div class="tc"><strong>Psychology Match Test</strong><span>Роздаєш картки. 20 питань ~ 15-20 хв. Ходиш, відповідаєш на питання.</span></div></div>
+      <div class="ti"><div class="tt">00:40</div><div class="tc"><strong>Обговорення типажів</strong><span>Дівчата рахують літери, сканують QR. Питаєш: "Хто вийшла A?" / "Хто впізнала себе?" / "Хто здивована?" / "Чи бачиш свою помилку в dating?"</span></div></div>
+      <div class="ti"><div class="tt">00:50</div><div class="tc"><strong>Tinder на проекторі — твій профіль</strong><span>Показуєш як заповнити, які фото, кого вибирати (15 хв).</span></div></div>
+      <div class="ti"><div class="tt">01:10</div><div class="tc"><strong>Аудит анкет хлопців</strong><span>Разом листаєте анкети на проекторі. По черзі: "Який у нього типаж?" / "Писала б — чому?" / "Що не так з анкетою?"</span></div></div>
+      <div class="ti"><div class="tt">01:30</div><div class="tc"><strong>Фотосесія по 5 хв кожна</strong><span>Решта обговорюють типажі.</span></div></div>
+      <div class="ti"><div class="tt">01:55</div><div class="tc"><strong>Загальне фото + фінальна промова</strong></div></div>
+    </div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Крупний план: картки тесту + ручка</div>
+      <div class="reel">Дівчата сканують QR на телефон</div>
+      <div class="reel">Реакції на анкети хлопців на проекторі (найвірусніший!)</div>
+      <div class="reel">Дівчина тримає картку зі своїм типажем</div>
+      <div class="reel">Групове відео під трендову музику</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT 5 -->
+<div id="ev5" class="event">
+  <div class="event-header">
+    <span class="event-emoji">✨</span>
+    <div class="event-name">ГОЛОВНА ГЕРОЇНЯ</div>
+    <div class="event-sub">Red Carpet Night · відеограф · проходка · зіркові кадри</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🏛️ Студія 004</span>
+    <span class="tag">👥 20 платних + 2 блогери</span>
+    <span class="tag">⏱ 4 год · 11 000 грн</span>
+    <span class="tag">📸 Фотограф 3 год · 7 000 грн</span>
+    <span class="tag">🎥 Відеограф 1 год · ~2 500 грн</span>
+    <span class="tag">🎟 1590 / 1790 / 1990 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">👗</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Те плаття зі шкафу яке чекало свого моменту. Вечірнє, коктейльне, провокаційне — як завгодно. Підбори. Glam look.</p>
+      </div>
+    </div>
+
+    <div class="stitle">Аренда — 4 ГОДИНИ</div>
+    <div class="rounds">
+      <h4>Розрахунок для 20 платних + 2 блогери</h4>
+      <div class="rrow"><span>-0:30 Підготовка</span><strong>розкладаєш все</strong></div>
+      <div class="rrow"><span>0:00–2:00 Червона доріжка</span><strong>22 ос. × 5 хв = ~1:50</strong></div>
+      <div class="rrow"><span>2:00–3:30 Гра + спілкування</span><strong>розважаєш решту</strong></div>
+      <div class="rrow"><span>3:30–4:00 Прибирання</span><strong>фінальні відео</strong></div>
+    </div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink + натхнення</strong><span>Показуєш на проекторі 3-5 вірусних відео зірок з червоних доріжок — як ходити, як позувати.</span></div></div>
+      <div class="ti"><div class="tt">00:15</div><div class="tc"><strong>Червона доріжка — по черзі</strong><span>Відеограф: проходка ~2 хв. Фотограф: соло кадри ~3 хв. Решта аплодують, знімають сторіс.</span></div></div>
+      <div class="ti"><div class="tt">02:15</div><div class="tc"><strong>Вступна промова + партнери</strong><span>Роздаєш карточки партнерів.</span></div></div>
+      <div class="ti"><div class="tt">02:25</div><div class="tc"><strong>Гра "МИ MATCH?" рівень 2 або гра Анни Тринчер</strong><span>Відмічаєш Аню — вона нам безкоштовна реклама 🔥</span></div></div>
+      <div class="ti"><div class="tt">03:20</div><div class="tc"><strong>Групове фото ВСІХ на доріжці</strong><span>Найвірусніший кадр вечора.</span></div></div>
+      <div class="ti"><div class="tt">03:30</div><div class="tc"><strong>Фінальна промова</strong></div></div>
+    </div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Крупний план каблуків на червоній доріжці</div>
+      <div class="reel">Slow motion проходки (відеограф)</div>
+      <div class="reel">Реакції дівчат коли дивляться одна на одну</div>
+      <div class="reel">Бокал шампанського + плаття крупним планом</div>
+      <div class="reel">Групове відео всіх на доріжці — найвірусніший!</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT 6 -->
+<div id="ev6" class="event">
+  <div class="event-header">
+    <span class="event-emoji">👯</span>
+    <div class="event-name">МИ MATCH? ЗНАЙДИ СВОЮ 💗</div>
+    <div class="event-sub">Speed bestie dating · 100 питань · Match Card</div>
+  </div>
+  <div class="event-meta">
+    <span class="tag">🌿 Flora Hub (12 ос.)</span>
+    <span class="tag">🏛️ Студія 004 (20-24 ос.)</span>
+    <span class="tag">👥 12 платних + 2 блогери</span>
+    <span class="tag">⏱ 3 год аренда</span>
+    <span class="tag">📸 Фотограф 2 год · 5 000 грн</span>
+    <span class="tag">🎟 1590 / 1790 / 1990 грн</span>
+  </div>
+  <div class="event-body">
+    <div class="dresscode">
+      <span class="dc-icon">🌸</span>
+      <div class="dc-text">
+        <h4>Dress-code</h4>
+        <p>Твій образ — твої правила. Прийди в тому образі який відображає тебе. Clean girl, red lips, business chic — як комфортно і красиво.</p>
+      </div>
+    </div>
+
+    <div class="stitle">Розрахунок раундів</div>
+    <div class="rounds">
+      <h4>Speed dating</h4>
+      <div class="rrow"><span>12 дівчат = 6 пар</span><strong>11 раундів × 5 хв = 55 хв</strong></div>
+      <div class="rrow"><span>24 дівчини = 12 пар</span><strong>11 раундів × 5 хв = 55 хв</strong></div>
+      <div class="rrow"><span>Сигнал до зміни</span><strong>коротка музика або дзвіночок</strong></div>
+    </div>
+
+    <div class="stitle">Як пересідають</div>
+    <div class="hl">Довгий стіл. <strong>Одна сторона — не рухається.</strong> Друга — <strong>пересувається на одне місце вправо</strong> після сигналу. Остання пересідає на перше місце.</div>
+
+    <div class="stitle">Тайминг</div>
+    <div class="timeline">
+      <div class="ti"><div class="tt">00:00</div><div class="tc"><strong>Welcome drink</strong><span>Ти видаєш кожній номерок (Guest #01–12) + листок зі 100 питаннями + Match Card.</span></div></div>
+      <div class="ti"><div class="tt">00:15</div><div class="tc"><strong>Вступна промова + правила</strong><span>Пояснюєш speed dating. Роздаєш карточки партнерів. "Взаємні метчі надішлю особисто після вечора!"</span></div></div>
+      <div class="ti"><div class="tt">00:25</div><div class="tc"><strong>5 хв — переглянути питання</strong><span>Позначають ті що відгукуються.</span></div></div>
+      <div class="ti"><div class="tt">00:30</div><div class="tc"><strong>11 раундів × 5 хв</strong><span>💗 Норм чи стрьом / ✨ Що обереш / 🔥 Hot Take / 🥂 Fun Personal. За раунд 2-4 питання або 1 тема глибше.</span></div></div>
+      <div class="ti"><div class="tt">01:25</div><div class="tc"><strong>Заповнення Match Card</strong><span>💗 bestie vibe / 💼 корисний контакт / ✨ хочу зустрітись ще. Здають тобі або Кристині.</span></div></div>
+      <div class="ti"><div class="tt">01:35</div><div class="tc"><strong>Фотосесія по 5 хв кожна</strong><span>Дівчини вже знайомі — фоткаються разом! Аксесуари видаєш перед кожною.</span></div></div>
+      <div class="ti"><div class="tt">01:55</div><div class="tc"><strong>Загальне фото + фінальна промова</strong><span>"Mutual matches надішлю кожній особисто після вечора!"</span></div></div>
+    </div>
+
+    <div class="stitle">Після вечора</div>
+    <div class="hl">Відправляєш matches через Match Generator:<br>🔗 gorgeous-crepe-2538d1.netlify.app/her-era-match-generator.html</div>
+
+    <div class="stitle">Рілс</div>
+    <div class="reels">
+      <div class="reel">Карточки + номерки розкладені на столі до початку</div>
+      <div class="reel">Момент пересідання по сигналу (найвірусніший!)</div>
+      <div class="reel">Match Card заповнюється крупним планом</div>
+      <div class="reel">Дівчата сміються під час раунду</div>
+      <div class="reel">Фінальне групове відео</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider">· · ✦ HER ERA · ТВОЯ ЕРА · ТВОЇ ЛЮДИ ✦ · ·</div>
+
+</div>
+</body>
+</html>

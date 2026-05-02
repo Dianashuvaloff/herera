@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · План дій</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f5ede0; font-family:'Lato',sans-serif; color:#3a2010; }
+.nav { background:#3d0f0f; padding:14px 20px; position:sticky; top:0; z-index:100; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.nav-brand { font-family:'Playfair Display',serif; font-style:italic; color:#e8c060; font-size:18px; margin-right:8px; }
+.nav button { font-size:11px; color:#c9a84c; background:none; border:1px solid rgba(201,168,76,0.3); border-radius:20px; padding:5px 10px; cursor:pointer; font-family:'Lato',sans-serif; white-space:nowrap; }
+.nav button:hover { background:rgba(201,168,76,0.15); }
+.page { max-width:780px; margin:0 auto; padding:0 16px 60px; }
+.hero { background:linear-gradient(180deg,#250808,#3d1010); padding:36px 24px 30px; text-align:center; margin-bottom:24px; border-bottom:1px solid rgba(201,168,76,0.3); }
+.hero .her { display:block; font-family:'Playfair Display',serif; font-size:11px; letter-spacing:0.6em; color:#c9a84c; text-transform:uppercase; }
+.hero .era { display:block; font-family:'Playfair Display',serif; font-size:38px; font-style:italic; color:#e8c060; }
+.hero h2 { font-size:13px; color:#a07840; font-weight:400; margin-top:8px; }
+.section { background:#fff8f0; border:1px solid rgba(160,100,40,0.2); border-radius:14px; margin-bottom:24px; overflow:hidden; }
+.sec-header { padding:16px 20px; border-bottom:1px solid rgba(160,100,40,0.12); display:flex; align-items:center; gap:10px; }
+.sec-header.diana { background:linear-gradient(135deg,#3d1010,#5a1818); }
+.sec-header.kristina { background:linear-gradient(135deg,#1a2a50,#2a3d70); }
+.sec-header.together { background:linear-gradient(135deg,#1a3a1a,#2a5a2a); }
+.sec-header.buy { background:linear-gradient(135deg,#4a2a00,#6a3e00); }
+.sec-title { font-family:'Playfair Display',serif; font-size:20px; color:#e8c060; }
+.sec-sub { font-size:12px; color:rgba(232,192,96,0.6); margin-top:2px; }
+.sec-body { padding:16px 20px; }
+.stitle { font-family:'Playfair Display',serif; font-size:13px; color:#c9a84c; text-transform:uppercase; letter-spacing:0.1em; margin:16px 0 8px; display:flex; align-items:center; gap:8px; }
+.stitle::after { content:''; flex:1; height:1px; background:rgba(201,168,76,0.2); }
+.stitle:first-child { margin-top:0; }
+.tasks { display:flex; flex-direction:column; gap:8px; }
+.task { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:#fff; border:1px solid rgba(160,100,40,0.12); border-radius:8px; }
+.task input[type="checkbox"] { width:17px; height:17px; accent-color:#c9a84c; cursor:pointer; flex-shrink:0; margin-top:2px; }
+.task label { font-size:13px; color:#4a2e10; line-height:1.5; cursor:pointer; flex:1; }
+.task label span { font-size:11px; color:#a07840; display:block; margin-top:2px; }
+.task.urgent { border-left:3px solid #c84030; }
+.task.soon { border-left:3px solid #c9a84c; }
+.task.later { border-left:3px solid #50a050; }
+.legend { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+.leg { font-size:11px; color:#7a5030; display:flex; align-items:center; gap:5px; }
+.dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.hl { background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:10px 14px; font-size:13px; color:#5a2e08; line-height:1.6; margin-top:8px; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-brand">Era</span>
+  <button onclick="document.getElementById('diana').scrollIntoView({behavior:'smooth'})">👑 Діана</button>
+  <button onclick="document.getElementById('kristina').scrollIntoView({behavior:'smooth'})">💗 Кристина</button>
+  <button onclick="document.getElementById('together').scrollIntoView({behavior:'smooth'})">🤝 Разом</button>
+  <button onclick="document.getElementById('buy').scrollIntoView({behavior:'smooth'})">🛒 Купити</button>
+  <button onclick="document.getElementById('content').scrollIntoView({behavior:'smooth'})">🎬 Контент</button>
+  <button onclick="document.getElementById('future').scrollIntoView({behavior:'smooth'})">🚀 Майбутнє</button>
+</nav>
+
+<div class="page">
+<div class="hero">
+  <span class="her">Her</span>
+  <span class="era">Era</span>
+  <h2>📋 Повний план дій · Діана + Кристина</h2>
+</div>
+
+<div class="legend">
+  <div class="leg"><div class="dot" style="background:#c84030"></div> Терміново (сьогодні/завтра)</div>
+  <div class="leg"><div class="dot" style="background:#c9a84c"></div> Незабаром (3-5 днів)</div>
+  <div class="leg"><div class="dot" style="background:#50a050"></div> Потім (тиждень+)</div>
+</div>
+
+<!-- DIANA -->
+<div id="diana" class="section">
+  <div class="sec-header diana">
+    <div>
+      <div class="sec-title">👑 ДІАНА — Мій список</div>
+      <div class="sec-sub">Що робиш сама</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">📣 Реклама і продажі</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Написати всім знайомим про перший вечір<span>Ранній птах 1590 грн — для своїх. Сторіс + особисті повідомлення</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Зробити анонс в сторіс: ціна зараз 1590, потім 2500+<span>Текст: "Для своїх — ще є місця за ранньою ціною. Потім тільки дорожче"</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Розібратися з Telegram розсилкою<span>Перевірити софт ($8/міс) — зібрати жіночі чати Київ по ключовим словам</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Написати в Telegram чати — дізнатися за скільки днів закріпити рекламу і вартість<span>Домовитися + оплатити + записати в ежедневник день коли перевірити</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Google Ads — налаштувати рекламу за ключовими словами<span>"ивенти Київ", "заходи для дівчат Київ", "вечірка для дівчат Київ" — посилання на Instagram</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Продумати які пости/Reels пускати на таргет<span>Спочатку знімаємо, потім таргет — обрати 1-2 найсильніших відео</span></label></div>
+    </div>
+
+    <div class="stitle">📱 Instagram і TikTok — закріплені пости</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Зробити 3 закріплених пости в Instagram і TikTok</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Закріплений #1 — Про мене: хто я, чому створила HER ERA<span>Особисте відео або карусель з фото + текст</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Закріплений #2 — Анонс всіх 6 вечорів + ціни<span>1590/1790/1990 — Early bird ще є! Всі теми вечорів</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Закріплений #3 — Локації фотостудій з відміткою<span>Відмітити Flora Hub і Студію 004 → попросити їх репостнути</span></label></div>
+    </div>
+
+    <div class="stitle">🎬 Актуальні в Instagram</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Актуальне #1 — Про HER ERA (хто я, що це, навіщо)</label></div>
+      <div class="task soon"><input type="checkbox"><label>Актуальне #2 — Всі 6 вечорів і що на кожному буде</label></div>
+      <div class="task soon"><input type="checkbox"><label>Актуальне #3 — Ціни і як купити квиток</label></div>
+      <div class="task soon"><input type="checkbox"><label>Актуальне #4 — Партнери (салон по кератину — скидка -500 грн)</label></div>
+      <div class="task soon"><input type="checkbox"><label>Актуальне #5 — Локації (фото студій)</label></div>
+      <div class="task later"><input type="checkbox"><label>Актуальне #6 — Після першого вечора: фото + відгуки</label></div>
+    </div>
+
+    <div class="stitle">🎤 Підготовка до вечора</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Порепетирувати вступну промову українською<span>Вголос кілька разів — щоб звучало впевнено і природно</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прикріпити карабіни до номерків #01-27<span>Перевірити: срібні чи золоті? Золоті краще пасують до бордово-золотої теми HER ERA</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Перевірити чи прийшла килимова доріжка<span>Замовлення в процесі — відстежити статус</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Замовити набір для покеру<span>Шукати на Rozetka/OLX — фішки + карти + кейс</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Продумати і зробити макети коробок<span>Для подарункової упаковки карток партнерів або реквізиту</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Перевірити всі карточки і друковану продукцію<span>Psychology Match Test, Match Card, 100 питань, карточки НАВАЖСЯ</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Скласти список що купити в Сільпо і за скільки днів<span>Виноград, сир, макарони або гніздечка — купувати напередодні</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Перевірити чи все вміщується в чемодан 20 кг<span>Колонка, свічки, реквізит, аксесуари, каблуки, плівка, скотч, термопакет</span></label></div>
+    </div>
+
+    <div class="stitle">💳 Фінансове</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Закинути гроші на карту перед тим як Кристина додасть її в Facebook Ads<span>Для тестового списання — потрібна невелика сума</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Написати Кристині коли карта готова для додавання в Facebook</label></div>
+    </div>
+
+    <div class="stitle">📦 Посилка і контент</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Забрати посилку з поштомату (приблизно 27-29 числа)<span>Зняти розпакування з бокалами — контент для сторіс і Reels</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Поїхати на Студію 004 (приблизно 29 числа, 30 хвилин)<span>Список нижче у розділі "Разом з Кристиною"</span></label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- KRISTINA -->
+<div id="kristina" class="section">
+  <div class="sec-header kristina">
+    <div>
+      <div class="sec-title">💗 КРИСТИНА — Її список</div>
+      <div class="sec-sub">Що робить Кристина</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">📣 Розсилка по своїх</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Відправити повідомлення всім своїм знайомим дівчатам про перший вечір<span>Шаблон: "Дівчата, є кілька місць на закритий жіночий вечір за ранньою ціною 1590 грн — потім дорожче. Пишіть якщо цікаво!"</span></label></div>
+    </div>
+
+    <div class="stitle">🎬 Блогери — технічне завдання</div>
+    <div class="hl">Для кожного блогера готуємо чіткий список що знімати. Блогери = безкоштовне місце в обмін на контент.</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Придумати унікальний промокод для кожного блогера<span>5 англійських букв, наприклад SONYA, KATYA, BLOOM тощо. Промокод = ціна 1590 грн + ми бачимо від кого прийшла дівчина</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прописати ТЗ для блогерів — анонс ДО вечора<span>Мінімум: 1 сторіс-анонс за 3-5 днів до вечора зі своїм промокодом + заклик до дії</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прописати ТЗ — контент НА вечорі<span>2 Reels (атмосфера + момент гри/фотосесії) + 5 сторіс з відміткою @her_era під час вечора</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прописати ТЗ — контент ПІСЛЯ вечора<span>1 пост або Reels з відгуком "побувала на закритому вечорі HER ERA" + промокод для підписників</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прописати текст що говорити в сторіс-анонсі<span>Приклад: "Дівчата, йду на закритий вечір HER ERA! Є кілька місць за моїм промокодом [КОД] — ціна 1590 грн, потім дорожче. Посилання в шапці профілю"</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Прописати обов'язковий контент з Діаною<span>1 відео/фото з засновницею — "познайомилась з Діаною яка створила HER ERA"</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Відстежувати скільки дівчат прийшло по кожному промокоду<span>Вносити в CRM — поле "промокод блогера". Так бачимо хто найефективніший</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Знайти і надіслати Діані 2-3 трекових відео для переходів/трендів<span>По 2-3 треки на кожен вечір — без слів, підходить по вайбу</span></label></div>
+    </div>
+
+    <div class="stitle">🎵 Музика для вечорів</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Знайти в TikTok музику без слів для кожного вечора<span>По 2-3 треки на кожен з 6 вечорів → надіслати Діані → вона збере плейліст на 3 год</span></label></div>
+    </div>
+
+    <div class="stitle">📱 Соцмережі — контент</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Виставити мінімум 1 пост сьогодні в Instagram і TikTok<span>Анонс першого вечора або атмосферне відео</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Зробити 3 закріплених пости (разом з Діаною узгодити контент)<span>Про мене / Анонс вечорів + ціни / Локації зі студіями</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Зробити 5 актуальних в Instagram<span>HER ERA / Вечори / Ціни / Партнери / Локації</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Відмітити Flora Hub і Студію 004 в постах<span>Написати їм особисто щоб вони репостнули до себе в сторіс</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Змонтувати всі Reels які Діана вже записала<span>Все що є — змонтувати, Діана потім виставляє по черзі</span></label></div>
+    </div>
+
+    <div class="stitle">💳 Facebook Ads</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Написати Діані коли вона може закинути гроші на карту<span>Після цього — додати карту в Facebook Ads для тестового списання</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Додати карту Діани в Facebook Ads після підтвердження<span>Потім обговорити які пости пускати на таргет</span></label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOGETHER -->
+<div id="together" class="section">
+  <div class="sec-header together">
+    <div>
+      <div class="sec-title">🤝 РАЗОМ — Спільні завдання</div>
+      <div class="sec-sub">Робимо разом</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">📸 Зйомка на Студії 004 (~29 числа, 30 хвилин)</div>
+    <div class="hl">Студія 004 — для вечорів з 20+ дівчатами (Tinder Night, Red Carpet). Маємо 30 хвилин — продумати заздалегідь!</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Взяти реквізит: червона доріжка, аксесуари, свічки, бокали<span>Все що є — скласти список заздалегідь</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Зняти: атмосферні фото студії для постів і актуальних</label></div>
+      <div class="task soon"><input type="checkbox"><label>Зняти: Діана на червоній доріжці — фото + відео для Red Carpet анонсу</label></div>
+      <div class="task soon"><input type="checkbox"><label>Зняти: Reels "до початку вечора" — розкладка реквізиту, атмосфера</label></div>
+      <div class="task soon"><input type="checkbox"><label>Зняти: відео з Діаною — "тут будемо проводити наші вечори"</label></div>
+      <div class="task soon"><input type="checkbox"><label>Зняти: фото з проектором (для Tinder Night анонсу)</label></div>
+    </div>
+
+    <div class="stitle">📅 Дати наступних вечорів</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Кристина пропонує ідеї дат, Діана затверджує<span>Орієнтовно: кожні 2 тижні один вечір. Перший — якнайшвидше</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Після затвердження дат — одразу анонс в сторіс і пост</label></div>
+    </div>
+
+    <div class="stitle">🎬 Вуличний контент (центр Києва)</div>
+    <div class="tasks">
+      <div class="task later"><input type="checkbox"><label>Зняти Reels на вулиці — роздача флаєрів/скидок перехожим<span>Потрібен 2-й мікрофон — купити заздалегідь. Питати перехожих про теми вечорів</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Купити другий мікрофон для двох спікерів у кадрі</label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BUY -->
+<div id="buy" class="section">
+  <div class="sec-header buy">
+    <div>
+      <div class="sec-title">🛒 КУПИТИ — Список покупок</div>
+      <div class="sec-sub">Що і коли купувати</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">⚡ Терміново</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Покерний набір (фішки + карти + кейс)<span>Rozetka або OLX — до першого вечора Козирна</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Карабіни для номерків (золоті — пасують до теми)<span>Потрібно 27 штук мінімум</span></label></div>
+    </div>
+
+    <div class="stitle">📦 Очікуємо/перевірити</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Перевірити статус килимової доріжки<span>EuroCarpet — червоний 105, 1м × 6м</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Забрати посилку з поштомату (~27-29 числа)<span>Бокали — знімати розпакування для контенту!</span></label></div>
+    </div>
+
+    <div class="stitle">🛍️ Незабаром</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Другий мікрофон для вуличних зйомок<span>Для відео де дві людини говорять у кадрі</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Перевірити і замовити Netlify підписку якщо потрібно<span>Зараз 4 кредити — скидаються на початку нового місяця автоматично. Поки що чекай</span></label></div>
+    </div>
+
+    <div class="stitle">🛒 Продукти (купувати напередодні вечора)</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Виноград 1-1.5 кг — Сільпо<span>~180 грн</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Сир нарізаний кубиками 400г — Сільпо<span>~180 грн</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Макарони 12 шт або Дубайські гніздечка (1 коробка)<span>Макарони ~720 грн / Гніздечка 500 грн · snackhouse.in.ua</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Просекко ×2 + біле вино ×1 + безалкогольне ×1-2<span>~900 грн · везти в пупирчастій плівці</span></label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONTENT PLAN -->
+<div id="content" class="section">
+  <div class="sec-header diana">
+    <div>
+      <div class="sec-title">🎬 КОНТЕНТ — що знімати</div>
+      <div class="sec-sub">Reels, сторіс, пости</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">🏠 Вдома (сама)</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Розмовне відео — хто я і чому створила HER ERA<span>Від серця, без скрипту — саме таке залітає. 60-90 секунд</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Відео-анонс першого вечора "Свої Дівчата"<span>Що буде, dress-code, ціна, як потрапити</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Розпакування посилки з бокалами<span>Коли прийде посилка — знімати одразу!</span></label></div>
+      <div class="task soon"><input type="checkbox"><label>Відео-анонс гри НАВАЖСЯ<span>Показати картки, пояснити рівні, заінтригувати</span></label></div>
+    </div>
+
+    <div class="stitle">📍 На вулиці (ЖК або центр)</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Fashion/lifestyle відео біля красивого ЖК<span>Transition з буденного образу в вечірній — популярний формат</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Вуличний інтерактив — питаємо перехожих і роздаємо флаєри<span>Потрібен 2-й мікрофон. Питання: "Чи є у тебе подруга-queen?"</span></label></div>
+    </div>
+
+    <div class="stitle">📸 На фотостудії (~29 числа)</div>
+    <div class="tasks">
+      <div class="task soon"><input type="checkbox"><label>Атмосферні фото студії для постів</label></div>
+      <div class="task soon"><input type="checkbox"><label>Reels "до початку вечора" — розкладка реквізиту</label></div>
+      <div class="task soon"><input type="checkbox"><label>Відео-анонс Red Carpet на червоній доріжці</label></div>
+      <div class="task soon"><input type="checkbox"><label>Відео-анонс Tinder Night з проектором</label></div>
+    </div>
+
+    <div class="stitle">🎭 На вечорі (Кристина знімає)</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Атмосфера до початку — свічки, бокали, реквізит</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Момент пересідання/гри — найвірусніший контент</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Живі емоції дівчат — сміх, здивування, діалоги</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Фотосесія — дівчата з аксесуарами</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Загальне відео всіх дівчат</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Відео з Діаною — засновниця HER ERA на вечорі</label></div>
+    </div>
+    <div class="stitle">🎬 НА ІВЕНТІ — повний список контенту</div>
+    <div class="hl">Кристина знімає весь вечір. Діана зосереджена на гостях — не на телефоні!</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>ДО початку (за 30 хв) — розкладка реквізиту крупним планом<span>Свічки, бокали, карточки, номерки, аксесуари — естетично розкладені</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>ДО початку — загальний план студії з атмосферою<span>Тихо, порожньо, красиво — до приходу дівчат</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>ПРИХІД дівчат — як заходять, перша реакція на атмосферу<span>Живі емоції — "вау" моменти</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Welcome drink — бокали, сміх, перше знайомство<span>Slow motion наливання шампанського</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Вступна промова Діани — коротке відео<span>30-60 секунд — щиро і впевнено</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>ГРА — живі моменти: сміх, здивування, суперечки<span>Не постановочно — справжні емоції</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>ФОТОСЕСІЯ — дівчата з аксесуарами по черзі<span>І загальні кадри поки одна фоткається</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>REELS з transition: буденний образ → надягає аксесуар<span>Популярний формат — знімати кожну охочу</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Загальне відео всіх дівчат під трендову музику<span>Фінальний кадр вечора — найвірусніший!</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>ВІДГУКИ — записати 3-5 дівчат на камеру після вечора<span>Питання: "Що тобі найбільше сподобалось?" · 15-30 секунд кожна</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>УСНІ відгуки разом з Діаною — коротке інтерв'ю<span>"Чого ти очікувала і що отримала?"</span></label></div>
+      <div class="task urgent"><input type="checkbox"><label>Відео Діани після вечора — підсумок від засновниці<span>"Дівчата, сьогодні було..." · знімати поки є емоції</span></label></div>
+    </div>
+
+    <div class="stitle">📸 ПІСЛЯ ІВЕНТУ — контент для постів</div>
+    <div class="tasks">
+      <div class="task urgent"><input type="checkbox"><label>Карусель фото з вечора → пост в Instagram на наступний день</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Reels з найкращими моментами → TikTok + Instagram</label></div>
+      <div class="task urgent"><input type="checkbox"><label>Відгуки дівчат → сторіс серія "що кажуть наші гості"</label></div>
+      <div class="task soon"><input type="checkbox"><label>Запитати дівчат чи можна репостнути їхні фото/сторіс з відміткою<span>Попросити відмічати @her_era коли виклядатимуть свої фото</span></label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FUTURE -->
+<div id="future" class="section">
+  <div class="sec-header" style="background:linear-gradient(135deg,#2a1a40,#3d2560)">
+    <div>
+      <div class="sec-title">🚀 МАЙБУТНЄ — Потім</div>
+      <div class="sec-sub">Не горить — але пам'ятати</div>
+    </div>
+  </div>
+  <div class="sec-body">
+
+    <div class="stitle">🏡 Власне приміщення (після 3 місяців)</div>
+    <div class="tasks">
+      <div class="task later"><input type="checkbox"><label>Шукати локації для оренди в Києві ~15-20к/міс<span>Після 3 місяців роботи — власний простір + ремонт ~2500$</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Замовити новий реквізит з Китаю в іншій кольоровій гамі<span>Різноманіття для контенту + нові теми вечорів</span></label></div>
+    </div>
+
+    <div class="stitle">🌿 Виїзні вечори (літо)</div>
+    <div class="tasks">
+      <div class="task later"><input type="checkbox"><label>Переглянути локації за Києвом — ціни, формат, можливості<span>Весь день, проживання, партнерства з локаціями</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Придумати назву і формат виїзного вечора<span>Хто їде, скільки коштує, що включено</span></label></div>
+      <div class="task later"><input type="checkbox"><label>Домовитись про партнерство з локаціями<span>Знижка на оренду в обмін на відмітки і контент</span></label></div>
+    </div>
+
+    <div class="stitle">🤝 Нові партнери</div>
+    <div class="tasks">
+      <div class="task later"><input type="checkbox"><label>Шукати нових партнерів для карточок зі знижками<span>Салони краси, фотографи, психологи, коучі, стилісти</span></label></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>

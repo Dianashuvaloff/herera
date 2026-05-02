@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · Іменні картки</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .no-print { display: none !important; }
+  body { margin: 0; background: white; }
+  .cards-grid { padding: 8mm; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #f0ece6; font-family: 'Lato', sans-serif; }
+
+/* CONTROLS */
+.controls {
+  background: #fff;
+  padding: 24px 32px;
+  max-width: 900px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.controls h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: #3d1010;
+  margin-bottom: 6px;
+}
+.controls p { font-size: 13px; color: #888; margin-bottom: 20px; }
+
+.names-area {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid #e0d8cc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  color: #333;
+  resize: vertical;
+  margin-bottom: 14px;
+}
+.names-area:focus { outline: none; border-color: #c9a84c; }
+
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-gold { background: linear-gradient(135deg, #c9a84c, #a07828); color: #fff; }
+.btn-print { background: #3d1010; color: #e8c060; }
+.btn-clear { background: #f0ece6; color: #888; }
+
+.hint { font-size: 12px; color: #aaa; margin-top: 10px; }
+
+/* CARDS GRID - A4 */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  margin: 16px auto;
+  padding: 10mm;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8mm;
+  align-content: start;
+}
+
+/* PLACE CARD */
+.place-card {
+  width: 90mm;
+  height: 60mm;
+  position: relative;
+  background: linear-gradient(160deg, #2d0f18, #1a0810);
+  border-radius: 4mm;
+  border: 0.5mm solid #c9a84c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 6mm 8mm;
+}
+
+/* Inner border */
+.place-card::before {
+  content: '';
+  position: absolute;
+  inset: 2.5mm;
+  border: 0.3mm solid rgba(201,168,76,0.25);
+  border-radius: 3mm;
+  pointer-events: none;
+}
+
+/* Corner decorations */
+.place-card::after {
+  content: '✦';
+  position: absolute;
+  bottom: 3mm;
+  right: 4mm;
+  font-size: 7pt;
+  color: rgba(201,168,76,0.3);
+}
+
+.card-top {
+  position: absolute;
+  top: 3.5mm;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.card-her {
+  font-family: 'Playfair Display', serif;
+  font-size: 6pt;
+  letter-spacing: 0.25em;
+  color: rgba(201,168,76,0.6);
+  text-transform: uppercase;
+}
+.card-dot {
+  font-size: 5pt;
+  color: rgba(201,168,76,0.3);
+}
+.card-era {
+  font-family: 'Playfair Display', serif;
+  font-size: 6pt;
+  letter-spacing: 0.25em;
+  color: rgba(201,168,76,0.6);
+  text-transform: uppercase;
+}
+
+.card-divider-top {
+  position: absolute;
+  top: 8mm;
+  left: 8mm;
+  right: 8mm;
+  height: 0.2mm;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+}
+
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 26pt;
+  color: #e8c060;
+  text-align: center;
+  line-height: 1.1;
+  z-index: 1;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.card-name.long { font-size: 18pt; }
+.card-name.very-long { font-size: 14pt; }
+
+.card-divider-bottom {
+  position: absolute;
+  bottom: 9mm;
+  left: 8mm;
+  right: 8mm;
+  height: 0.2mm;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+}
+
+.card-bottom {
+  position: absolute;
+  bottom: 3.5mm;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.card-bottom-text {
+  font-size: 5pt;
+  color: rgba(201,168,76,0.35);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Gold corner marks */
+.corner {
+  position: absolute;
+  width: 4mm;
+  height: 4mm;
+  border-color: rgba(201,168,76,0.4);
+  border-style: solid;
+}
+.corner-tl { top: 1.5mm; left: 1.5mm; border-width: 0.4mm 0 0 0.4mm; }
+.corner-tr { top: 1.5mm; right: 1.5mm; border-width: 0.4mm 0.4mm 0 0; }
+.corner-bl { bottom: 1.5mm; left: 1.5mm; border-width: 0 0 0.4mm 0.4mm; }
+.corner-br { bottom: 1.5mm; right: 1.5mm; border-width: 0 0.4mm 0.4mm 0; }
+
+/* FOLD LINE version */
+.place-card-tent {
+  width: 90mm;
+  height: 120mm; /* foldable - top half + bottom half */
+  position: relative;
+}
+.tent-front {
+  width: 90mm;
+  height: 60mm;
+  position: relative;
+  background: linear-gradient(160deg, #2d0f18, #1a0810);
+  border-radius: 0 0 4mm 4mm;
+  border: 0.5mm solid #c9a84c;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6mm 8mm;
+}
+.tent-back {
+  width: 90mm;
+  height: 60mm;
+  background: linear-gradient(160deg, #2d0f18, #1a0810);
+  border-radius: 4mm 4mm 0 0;
+  border: 0.5mm solid #c9a84c;
+  border-bottom: 0.5mm dashed rgba(201,168,76,0.5);
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fold-line {
+  border-top: 0.5mm dashed rgba(201,168,76,0.4);
+  margin: 0;
+}
+
+/* EMPTY CARD */
+.empty-slot {
+  width: 90mm;
+  height: 60mm;
+  border: 0.3mm dashed rgba(0,0,0,0.1);
+  border-radius: 4mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  font-size: 10pt;
+}
+</style>
+</head>
+<body>
+
+<!-- CONTROLS -->
+<div class="controls no-print">
+  <h1>💗 HER ERA · Іменні картки</h1>
+  <p>Введи імена дівчат — по одному на рядок. Натисни "Згенерувати" і друкуй!</p>
+  <textarea class="names-area" id="namesInput" placeholder="Соня
+Катя
+Діана
+Аліна
+Настя
+Марина
+Вікторія
+Юля
+Оля
+Ірина
+Лера
+Таня"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-gold" onclick="generateCards()">✨ Згенерувати картки</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Друкувати</button>
+    <button class="btn btn-clear" onclick="clearAll()">✕ Очистити</button>
+  </div>
+  <div class="hint">📄 Формат друку: A4, книжна, масштаб 100%, без полів · 2 картки на рядку · Розмір картки: 90×60 мм</div>
+</div>
+
+<!-- CARDS OUTPUT -->
+<div id="cardsOutput"></div>
+
+<script>
+function generateCards() {
+  const raw = document.getElementById('namesInput').value;
+  const names = raw.split('\n').map(n => n.trim()).filter(n => n.length > 0);
+
+  if (names.length === 0) {
+    alert('Введи хоча б одне ім\'я!');
+    return;
+  }
+
+  const output = document.getElementById('cardsOutput');
+  output.innerHTML = '';
+
+  // Split into pages of 8 cards (4 rows × 2 cols)
+  const perPage = 8;
+  for (let p = 0; p < Math.ceil(names.length / perPage); p++) {
+    const page = document.createElement('div');
+    page.className = 'a4-page';
+
+    const pageNames = names.slice(p * perPage, (p + 1) * perPage);
+
+    pageNames.forEach(name => {
+      const card = createCard(name);
+      page.appendChild(card);
+    });
+
+    // Fill remaining slots if last page
+    while (pageNames.length < perPage && p === Math.ceil(names.length / perPage) - 1) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-slot';
+      page.appendChild(empty);
+      pageNames.push('');
+      if (pageNames.length >= perPage) break;
+    }
+
+    output.appendChild(page);
+  }
+}
+
+function createCard(name) {
+  const len = name.length;
+  const sizeClass = len > 12 ? 'very-long' : len > 8 ? 'long' : '';
+
+  const card = document.createElement('div');
+  card.className = 'place-card';
+  card.innerHTML = `
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div class="card-top">
+      <span class="card-her">Her</span>
+      <span class="card-dot">✦</span>
+      <span class="card-era">Era</span>
+    </div>
+    <div class="card-divider-top"></div>
+    <div class="card-name ${sizeClass}">${name}</div>
+    <div class="card-divider-bottom"></div>
+    <div class="card-bottom">
+      <span class="card-bottom-text">· · · ✦ · · ·</span>
+    </div>
+  `;
+  return card;
+}
+
+function clearAll() {
+  document.getElementById('namesInput').value = '';
+  document.getElementById('cardsOutput').innerHTML = '';
+}
+
+// Generate sample on load
+window.onload = function() {
+  generateCards();
+};
+</script>
+</body>
+</html>

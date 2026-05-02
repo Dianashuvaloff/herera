@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · Match Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #f5ede0;
+  font-family: 'Lato', sans-serif;
+  min-height: 100vh;
+  padding: 24px 16px 60px;
+}
+
+.page { max-width: 560px; margin: 0 auto; }
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 32px 0 28px;
+  border-bottom: 1px solid rgba(160,100,40,0.2);
+  margin-bottom: 28px;
+}
+.header .her { font-family: 'Playfair Display', serif; font-size: 11px; letter-spacing: 0.5em; color: #a06428; text-transform: uppercase; display: block; }
+.header .era { font-family: 'Playfair Display', serif; font-size: 32px; font-style: italic; color: #7a4010; display: block; line-height: 1.1; }
+.header h2 { font-family: 'Playfair Display', serif; font-size: 14px; color: #a06428; font-weight: 400; margin-top: 8px; letter-spacing: 0.1em; }
+
+/* RECIPIENT */
+.card {
+  background: #fff8f0;
+  border: 1px solid rgba(160,100,40,0.2);
+  border-top: 3px solid #c9a84c;
+  border-radius: 14px;
+  padding: 22px 20px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: #7a4010;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; color: #a06428; text-transform: uppercase; display: block; margin-bottom: 6px; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 11px 14px;
+  background: #fff;
+  border: 1px solid rgba(160,100,40,0.25);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Lato', sans-serif;
+  color: #3a2010;
+  outline: none;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus { border-color: #c9a84c; }
+
+/* MATCHES LIST */
+.matches-list { display: flex; flex-direction: column; gap: 14px; }
+
+.match-block {
+  background: #fff;
+  border: 1px solid rgba(160,100,40,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.match-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.match-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+.match-row input { margin-bottom: 0; }
+
+.checkboxes { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(160,100,40,0.15);
+  background: #fdf8f2;
+  transition: background 0.15s, border-color 0.15s;
+  font-size: 14px;
+  color: #5a3010;
+  user-select: none;
+}
+.check-label:has(input:checked) {
+  background: #fef3dc;
+  border-color: #c9a84c;
+}
+.check-label input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: #c9a84c;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 24px; height: 24px;
+  background: rgba(200,80,80,0.1);
+  border: none;
+  border-radius: 50%;
+  color: #c05050;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 2px dashed rgba(160,100,40,0.3);
+  border-radius: 10px;
+  color: #a06428;
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.add-btn:hover { background: rgba(160,100,40,0.06); border-color: #c9a84c; }
+
+/* GENERATE BTN */
+.gen-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #c9a84c, #a07828);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s;
+}
+.gen-btn:hover { opacity: 0.9; }
+
+/* RESULT */
+.result-box {
+  display: none;
+  background: #fff8f0;
+  border: 1px solid rgba(160,100,40,0.25);
+  border-left: 4px solid #c9a84c;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.result-box.show { display: block; }
+.result-title { font-family: 'Playfair Display', serif; font-size: 14px; color: #7a4010; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.result-text {
+  font-size: 14px;
+  color: #3a2010;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  font-family: 'Lato', sans-serif;
+  background: #fff;
+  border: 1px solid rgba(160,100,40,0.15);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.copy-btn {
+  width: 100%;
+  padding: 12px;
+  background: #7a4010;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: #5a2e08; }
+.copy-btn.copied { background: #4a8a40; }
+
+.ornament { text-align: center; color: #c9a84c; font-size: 12px; letter-spacing: 0.4em; margin: 20px 0 0; opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <span class="her">Her</span>
+    <span class="era">Era</span>
+    <h2>✨ Match Generator · Diana</h2>
+  </header>
+
+  <!-- RECIPIENT NAME -->
+  <div class="card">
+    <div class="card-title">👤 Кому відправляєш?</div>
+    <label>Ім'я дівчинки</label>
+    <input type="text" id="recipientName" placeholder="Наприклад: Соня">
+  </div>
+
+  <!-- MATCHES -->
+  <div class="card">
+    <div class="card-title">💗 Її метчі</div>
+    <div class="matches-list" id="matchesList"></div>
+    <button class="add-btn" onclick="addMatch()">+ Додати метч</button>
+  </div>
+
+  <button class="gen-btn" onclick="generate()">✨ Згенерувати повідомлення</button>
+
+  <!-- RESULT -->
+  <div class="result-box" id="resultBox">
+    <div class="result-title">📋 Готове повідомлення</div>
+    <div class="result-text" id="resultText"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyText()">📋 Скопіювати</button>
+  </div>
+
+  <div class="ornament">· · ✦ HER ERA ✦ · ·</div>
+
+</div>
+
+<script>
+let matchCount = 0;
+
+function addMatch() {
+  matchCount++;
+  const id = matchCount;
+  const div = document.createElement('div');
+  div.className = 'match-block';
+  div.id = `match-${id}`;
+  div.innerHTML = `
+    <div class="match-num">Метч #${id}</div>
+    <button class="remove-btn" onclick="removeMatch(${id})">✕</button>
+    <div class="match-row">
+      <div>
+        <label>Ім'я</label>
+        <input type="text" id="name-${id}" placeholder="Ім'я">
+      </div>
+      <div>
+        <label>Instagram</label>
+        <input type="text" id="ig-${id}" placeholder="@нікнейм">
+      </div>
+    </div>
+    <label>Telegram</label>
+    <input type="text" id="tg-${id}" placeholder="@нікнейм" style="margin-bottom:12px">
+    <label>Збіглись по:</label>
+    <div class="checkboxes">
+      <label class="check-label"><input type="checkbox" id="bestie-${id}"> 💗 Bestie vibe</label>
+      <label class="check-label"><input type="checkbox" id="work-${id}"> 💼 Корисний контакт</label>
+      <label class="check-label"><input type="checkbox" id="meet-${id}"> ✨ Хочу зустрітись ще</label>
+    </div>
+  `;
+  document.getElementById('matchesList').appendChild(div);
+}
+
+function removeMatch(id) {
+  const el = document.getElementById(`match-${id}`);
+  if (el) el.remove();
+}
+
+function generate() {
+  const recipient = document.getElementById('recipientName').value.trim();
+  if (!recipient) { alert('Введи ім\'я дівчинки!'); return; }
+
+  const blocks = document.querySelectorAll('.match-block');
+  if (blocks.length === 0) { alert('Додай хоча б один метч!'); return; }
+
+  let matches = [];
+  blocks.forEach(block => {
+    const id = block.id.split('-')[1];
+    const name = document.getElementById(`name-${id}`).value.trim();
+    const ig = document.getElementById(`ig-${id}`).value.trim();
+    const tg = document.getElementById(`tg-${id}`).value.trim();
+    const bestie = document.getElementById(`bestie-${id}`).checked;
+    const work = document.getElementById(`work-${id}`).checked;
+    const meet = document.getElementById(`meet-${id}`).checked;
+
+    if (!name) return;
+
+    const spheres = [];
+    if (bestie) spheres.push('💗 Bestie vibe');
+    if (work) spheres.push('💼 Корисний контакт');
+    if (meet) spheres.push('✨ Хочу зустрітись ще');
+
+    matches.push({ name, ig, tg, spheres });
+  });
+
+  if (matches.length === 0) { alert('Заповни хоча б один метч!'); return; }
+
+  let msg = `💗 HER ERA · Match Card\n\nПривіт, ${recipient}! Це Діана, організатор сьогоднішнього вечора ✨\n\n`;
+
+  if (matches.length === 1) {
+    msg += `У тебе є mutual match!\n\n`;
+    const m = matches[0];
+    msg += `👤 ${m.name}\n`;
+    if (m.ig) msg += `📱 Instagram: ${m.ig.startsWith('@') ? m.ig : '@' + m.ig}\n`;
+    if (m.tg) msg += `✈️ Telegram: ${m.tg.startsWith('@') ? m.tg : '@' + m.tg}\n`;
+    if (m.spheres.length > 0) msg += `\nВи збіглись по:\n${m.spheres.join('\n')}\n`;
+    if (m.spheres.length === 3) msg += `\nЦе рідкість — perfect match по всіх трьох! 🔥\n`;
+  } else {
+    msg += `У тебе ${matches.length} mutual match${matches.length > 4 ? 'ів' : matches.length > 1 ? 'і' : ''} — тримай:\n`;
+    matches.forEach((m, i) => {
+      msg += `\n${'─'.repeat(16)}\n`;
+      msg += `👤 ${m.name}\n`;
+      if (m.ig) msg += `📱 Instagram: ${m.ig.startsWith('@') ? m.ig : '@' + m.ig}\n`;
+      if (m.tg) msg += `✈️ Telegram: ${m.tg.startsWith('@') ? m.tg : '@' + m.tg}\n`;
+      if (m.spheres.length > 0) msg += `Метч: ${m.spheres.join(' · ')}\n`;
+    });
+    msg += `${'─'.repeat(16)}\n`;
+  }
+
+  msg += `\nПиши першою — вони теж чекають 😊\n— Her Era · Diana`;
+
+  document.getElementById('resultText').textContent = msg;
+  document.getElementById('resultBox').classList.add('show');
+  document.getElementById('copyBtn').textContent = '📋 Скопіювати';
+  document.getElementById('copyBtn').className = 'copy-btn';
+  document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyText() {
+  const text = document.getElementById('resultText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Скопійовано!';
+    btn.className = 'copy-btn copied';
+    setTimeout(() => {
+      btn.textContent = '📋 Скопіювати';
+      btn.className = 'copy-btn';
+    }, 2500);
+  });
+}
+
+// Start with one match
+addMatch();
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA — Freedom Lover</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #0e0818; color: #f0e8ff; font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.page { max-width: 600px; margin: 0 auto; background: #0e0818; }
+
+.hero { background: linear-gradient(180deg, #060410 0%, #160c28 50%, #0e0818 100%); padding: 52px 28px 44px; text-align: center; border-bottom: 1px solid rgba(160,100,255,0.3); position: relative; }
+.hero::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 1px; background: linear-gradient(90deg, transparent, #a064ff, transparent); }
+
+.brand-tag { font-size: 11px; letter-spacing: 0.45em; color: #8040d0; text-transform: uppercase; margin-bottom: 22px; opacity: 0; animation: up 0.7s 0.1s forwards; }
+.logo-wrap { margin-bottom: 28px; opacity: 0; animation: up 0.7s 0.25s forwards; }
+.logo-wrap .her { display: block; font-family: 'Playfair Display', serif; font-size: 14px; letter-spacing: 0.55em; color: #a064ff; text-transform: uppercase; }
+.logo-wrap .era { display: block; font-family: 'Playfair Display', serif; font-size: 40px; font-style: italic; color: #c090ff; line-height: 1.1; text-shadow: 0 0 30px rgba(160,100,255,0.45); }
+.gold-line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #a064ff, transparent); margin: 0 auto 24px; }
+.typaz-badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.3em; color: #0e0818; background: #a064ff; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; margin-bottom: 18px; opacity: 0; animation: up 0.7s 0.4s forwards; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 10vw, 54px); color: #f0e8ff; line-height: 1.15; opacity: 0; animation: up 0.8s 0.5s forwards; margin-bottom: 14px; }
+.hero-title span { color: #c090ff; }
+.hero-sub { font-size: 16px; color: #8060b0; font-style: italic; opacity: 0; animation: up 0.7s 0.7s forwards; line-height: 1.55; font-family: 'Playfair Display', serif; }
+.hero-icon { font-size: 44px; display: block; margin-top: 24px; opacity: 0; animation: up 0.7s 0.9s forwards; }
+
+.result-card { background: linear-gradient(135deg, #0a0616, #160a28); border: 1px solid rgba(160,100,255,0.4); border-left: 4px solid #a064ff; padding: 28px 24px; border-bottom: 1px solid rgba(160,100,255,0.12); }
+.result-label { font-size: 10px; font-weight: 600; letter-spacing: 0.35em; color: #a064ff; text-transform: uppercase; margin-bottom: 12px; }
+.result-text { font-family: 'Playfair Display', serif; font-size: 22px; color: #f0e8ff; line-height: 1.5; font-style: italic; }
+.result-text strong { color: #c090ff; font-style: normal; }
+
+.big-quote { background: #0c0620; padding: 32px 28px; text-align: center; border-bottom: 1px solid rgba(160,100,255,0.12); }
+.big-quote p { font-family: 'Playfair Display', serif; font-size: clamp(17px, 4.5vw, 22px); font-style: italic; color: #f0e8ff; line-height: 1.65; }
+.big-quote .ql { width: 50px; height: 1px; background: linear-gradient(90deg,transparent,#a064ff,transparent); margin: 18px auto; }
+.big-quote small { font-size: 13px; color: #604090; letter-spacing: 0.08em; }
+
+.section { padding: 28px 22px; border-bottom: 1px solid rgba(160,100,255,0.1); background: #0e0818; }
+.alt-section { background: #120e22; }
+
+.sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.sec-icon { width: 46px; height: 46px; background: #0a0616; border: 1px solid rgba(160,100,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 0 12px rgba(160,100,255,0.2); }
+.sec-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #c090ff; line-height: 1.2; }
+
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card { background: #0a0616; border: 1px solid rgba(160,100,255,0.22); border-top: 2px solid #a064ff; border-radius: 12px; padding: 18px 14px; text-align: center; }
+.card-emoji { font-size: 28px; display: block; margin-bottom: 9px; }
+.card-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.22em; color: #a064ff; text-transform: uppercase; margin-bottom: 6px; }
+.card-txt { font-size: 14px; color: #d0b8f8; line-height: 1.5; }
+
+.traits { display: flex; flex-direction: column; gap: 12px; }
+.trait { background: #0a0616; border-left: 3px solid #a064ff; border-radius: 0 12px 12px 0; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+.trait-dot { width: 8px; height: 8px; background: #a064ff; border-radius: 50%; margin-top: 6px; flex-shrink: 0; box-shadow: 0 0 8px rgba(160,100,255,0.9); }
+.trait-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: #c090ff; text-transform: uppercase; margin-bottom: 5px; }
+.trait-desc { font-size: 15px; color: #d0b8f8; line-height: 1.6; }
+
+.green-box { background: #060e08; border: 1px solid rgba(80,180,100,0.35); border-radius: 14px; padding: 22px 20px; }
+.green-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #60d080; margin-bottom: 16px; }
+.green-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.green-list li { font-size: 15px; color: #a0d8b0; padding-left: 22px; position: relative; line-height: 1.55; }
+.green-list li::before { content: '✓'; position: absolute; left: 0; color: #50c070; font-size: 13px; top: 2px; }
+
+.warn-box { background: #140810; border: 1px solid rgba(180,40,120,0.45); border-radius: 14px; padding: 22px 20px; }
+.warn-title { font-family: 'Playfair Display', serif; font-size: 17px; color: #e060a0; margin-bottom: 16px; }
+.warn-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.warn-list li { font-size: 15px; color: #d0a8c8; padding-left: 22px; position: relative; line-height: 1.55; }
+.warn-list li::before { content: '✗'; position: absolute; left: 0; color: #c03080; font-size: 13px; top: 2px; }
+
+.phrases { display: flex; flex-direction: column; gap: 10px; }
+.phrase { background: #0a0616; border: 1px solid rgba(160,100,255,0.25); border-radius: 12px; padding: 16px 18px 16px 26px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; color: #f0e8ff; line-height: 1.55; position: relative; }
+.phrase::before { content: '"'; position: absolute; top: -4px; left: 10px; font-size: 52px; color: rgba(160,100,255,0.2); font-family: 'Playfair Display', serif; line-height: 1; }
+
+.checklist { display: flex; flex-direction: column; gap: 10px; }
+.check-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: #0a0616; border-radius: 10px; border: 1px solid rgba(160,100,255,0.18); }
+.check-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.check-text { font-size: 15px; color: #d0b8f8; line-height: 1.5; }
+
+.contrast-box { background: #0a0818; border: 1px solid rgba(160,100,255,0.25); border-radius: 14px; padding: 22px 20px; }
+.contrast-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+.contrast-row:last-child { margin-bottom: 0; }
+.contrast-minus { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #c03080; text-transform: uppercase; min-width: 65px; margin-top: 2px; flex-shrink: 0; }
+.contrast-plus { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #50c070; text-transform: uppercase; min-width: 65px; margin-top: 2px; flex-shrink: 0; }
+.contrast-text { font-size: 15px; color: #d0b8f8; line-height: 1.5; }
+
+.big-affirmation { background: linear-gradient(135deg, #0c0620, #160a28); border: 1px solid rgba(160,100,255,0.35); border-radius: 16px; padding: 28px 24px; text-align: center; }
+.big-affirmation p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; color: #f0e8ff; line-height: 1.7; }
+.big-affirmation p span { display: block; color: #c090ff; font-size: 20px; margin-bottom: 8px; }
+
+.footer { background: #060410; padding: 44px 24px 60px; text-align: center; border-top: 1px solid rgba(160,100,255,0.2); }
+.footer-title { font-family: 'Playfair Display', serif; font-size: 24px; color: #c090ff; margin-bottom: 14px; }
+.footer-text { font-size: 15px; color: #604090; line-height: 1.7; max-width: 340px; margin: 0 auto 28px; font-family: 'Playfair Display', serif; font-style: italic; }
+.footer-divider { width: 100px; height: 1px; background: linear-gradient(90deg, transparent, #a064ff, transparent); margin: 0 auto 22px; }
+.footer-brand { font-family: 'Playfair Display', serif; font-size: 16px; letter-spacing: 0.35em; color: #503880; }
+.footer-sub { font-size: 11px; color: #2a1850; margin-top: 8px; letter-spacing: 0.25em; }
+.ornament { text-align: center; color: #402870; font-size: 14px; letter-spacing: 0.45em; padding: 12px 0; background: #0e0818; }
+
+@keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.on { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <div class="brand-tag">Her Era · Dating Guide</div>
+    <div class="logo-wrap"><span class="her">Her</span><span class="era">Era</span></div>
+    <div class="gold-line"></div>
+    <div class="typaz-badge">Типаж E · Твій результат</div>
+    <h1 class="hero-title">Freedom<br><span>Lover</span></h1>
+    <p class="hero-sub">Психологічний розбір + dating стратегія 2026</p>
+    <span class="hero-icon">✈️</span>
+  </header>
+
+  <div class="result-card reveal">
+    <div class="result-label">💣 Твій результат</div>
+    <p class="result-text">Тебе тягне до <strong>світу, глибини і широти життя</strong>.<br>Ти не для <strong>вузьких рамок</strong>.</p>
+  </div>
+
+  <div class="big-quote reveal">
+    <p>Ти не "нестабільна". Ти жінка, якій мало вузького світу.</p>
+    <div class="ql"></div>
+    <small>Тобі потрібен чоловік, поруч з яким світ стає більшим.</small>
+  </div>
+
+  <section class="section reveal">
+    <div class="sec-head"><div class="sec-icon">🪞</div><h2 class="sec-title">Хто ти насправді</h2></div>
+    <div class="traits">
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Що тебе притягує</div><div class="trait-desc">Не просто чоловік — а відчуття широти життя, нових горизонтів, руху, свободи, глибини, іншого масштабу мислення.</div></div></div>
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Твоя суперсила</div><div class="trait-desc">Ти приносиш у стосунки легкість, натхнення, рух, цікавість, інший погляд на життя. З тобою не душно.</div></div></div>
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Глибинна потреба</div><div class="trait-desc">Не втекти — а жити ширше. Дихати вільно, розвиватись у стосунках, не зменшуватись заради любові, відчувати простір, а не клітку.</div></div></div>
+    </div>
+  </section>
+
+  <section class="section alt-section reveal">
+    <div class="sec-head"><div class="sec-icon">⚠️</div><h2 class="sec-title">Чому тебе тягне не туди</h2></div>
+    <div class="traits">
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Новизна ≠ сумісність</div><div class="trait-desc">Чоловік з іншої країни, незвичний, багато подорожує — це автоматично здається цінним. Але іноді це просто новизна, не глибина.</div></div></div>
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Тіньовий сценарій</div><div class="trait-desc">Ти можеш тікати від близькості під виглядом свободи. Коли стає глибоко — хочеться дистанцію, нові враження. Бо свобода іноді безпечніша за вразливість.</div></div></div>
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Головна помилка</div><div class="trait-desc">Закохуватись у потенціал життя, а не в чоловіка. Країна, стиль, lifestyle можуть здаватися глибиною. Але важливе — який він як людина.</div></div></div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="sec-head"><div class="sec-icon">✅</div><h2 class="sec-title">Який чоловік тобі підходить</h2></div>
+    <div class="green-box">
+      <div class="green-title">💚 Green flags</div>
+      <ul class="green-list">
+        <li>Відкритий світу, гнучкий, не контролює</li>
+        <li>Розумний, має своє життя і напрямок</li>
+        <li>Підтримує твій ріст, не боїться змін</li>
+        <li>International mindset — підприємець, remote, traveler energy</li>
+        <li>Інтелектуально живий, цікавий</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section alt-section reveal">
+    <div class="sec-head"><div class="sec-icon">🚩</div><h2 class="sec-title">Червоні прапори</h2></div>
+    <div class="warn-box">
+      <div class="warn-title">⛔ Тікай від цього</div>
+      <ul class="warn-list">
+        <li>Ревнивий контроль, "жінка має сидіти вдома"</li>
+        <li>Боїться світу, вузьке мислення</li>
+        <li>Хоче володіти, а не будувати партнерство</li>
+        <li>Не має власного напрямку і розвитку</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="sec-head"><div class="sec-icon">💬</div><h2 class="sec-title">Як писати першою</h2></div>
+    <div class="phrases">
+      <div class="phrase">Скільки місць ти вже називав домом?</div>
+      <div class="phrase">Ти більше про пригоди чи про глибину?</div>
+      <div class="phrase">У тебе вайб людини, яка не живе шаблонно.</div>
+    </div>
+  </section>
+
+  <section class="section alt-section reveal">
+    <div class="sec-head"><div class="sec-icon">📅</div><h2 class="sec-title">Як перевести в побачення</h2></div>
+    <div class="phrases">
+      <div class="phrase">Ти більше за каву тут чи за квиток кудись? 😄</div>
+      <div class="phrase">Мені здається, в тебе є історії, які не влізуть у чат.</div>
+      <div class="phrase">Перевіримо, ти реально цікавий чи просто красиво живеш?</div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="sec-head"><div class="sec-icon">🧲</div><h2 class="sec-title">Що його чіпляє / що вбиває</h2></div>
+    <div class="cards">
+      <div class="card"><span class="card-emoji">🌍</span><div class="card-lbl">Чіпляє</div><div class="card-txt">Легкість, відкритість, жіночність без clingy vibes, цікавість до світу</div></div>
+      <div class="card"><span class="card-emoji">⛓️</span><div class="card-lbl">Вбиває</div><div class="card-txt">Потреба контролювати, важкість, драматизація, залежність</div></div>
+      <div class="card"><span class="card-emoji">✨</span><div class="card-lbl">Приваблює</div><div class="card-txt">Власні мрії у тебе, свобода без хаосу, власний розвиток</div></div>
+      <div class="card"><span class="card-emoji">🚫</span><div class="card-lbl">Відштовхує</div><div class="card-txt">Відсутність розвитку, залежна енергія, вузький погляд</div></div>
+    </div>
+  </section>
+
+  <section class="section alt-section reveal">
+    <div class="sec-head"><div class="sec-icon">📍</div><h2 class="sec-title">Де знайти</h2></div>
+    <div class="traits">
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Місця</div><div class="trait-desc">Аеропорти, travel communities, expat places, language events, remote worker spots, міжнародні простори.</div></div></div>
+      <div class="trait"><div class="trait-dot"></div><div><div class="trait-lbl">Середовище</div><div class="trait-desc">Місця, де люди живуть нестандартно і мають міжнародний mindset.</div></div></div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="sec-head"><div class="sec-icon">✅</div><h2 class="sec-title">Quick checklist перед побаченням</h2></div>
+    <div class="checklist">
+      <div class="check-item"><span class="check-icon">💭</span><span class="check-text">Він реально широкий чи просто новий?</span></div>
+      <div class="check-item"><span class="check-icon">💭</span><span class="check-text">Мені цікаво чи я тікаю від рутини?</span></div>
+      <div class="check-item"><span class="check-icon">💭</span><span class="check-text">Він поважає свободу чи уникає близькості?</span></div>
+      <div class="check-item"><span class="check-icon">💭</span><span class="check-text">Поруч з ним світ більший чи просто шумніший?</span></div>
+    </div>
+  </section>
+
+  <section class="section alt-section reveal">
+    <div class="sec-head"><div class="sec-icon">🚀</div><h2 class="sec-title">Твій рівень у 2026</h2></div>
+    <div class="contrast-box">
+      <div class="contrast-row"><span class="contrast-minus">Менше</span><span class="contrast-text">Романтизувати іноземне</span></div>
+      <div class="contrast-row"><span class="contrast-minus">Менше</span><span class="contrast-text">Тікати, коли стає близько</span></div>
+      <div class="contrast-row"><span class="contrast-minus">Менше</span><span class="contrast-text">Вибирати тільки картинку життя</span></div>
+      <div class="contrast-row" style="margin-top:14px"><span class="contrast-plus">Більше</span><span class="contrast-text">Глибина + свобода</span></div>
+      <div class="contrast-row"><span class="contrast-plus">Більше</span><span class="contrast-text">Любов + простір</span></div>
+      <div class="contrast-row"><span class="contrast-plus">Більше</span><span class="contrast-text">Партнерство + рух</span></div>
+    </div>
+  </section>
+
+  <section class="section reveal">
+    <div class="big-affirmation">
+      <p><span>✈️ Афірмація</span>Мені не треба клітка, щоб мати любов.<br>І не треба втеча, щоб мати свободу.</p>
+    </div>
+  </section>
+
+  <div class="ornament">· · ✦ · ·</div>
+
+  <footer class="footer reveal">
+    <p style="font-size:44px; margin-bottom:16px;">✈️</p>
+    <p class="footer-title">Ти — Freedom Lover</p>
+    <p class="footer-text">Не шукати інше життя через чоловіка. А обирати чоловіка, з яким твоє життя стає більшим.</p>
+    <div class="footer-divider"></div>
+    <div class="footer-brand">✦ HER ERA ✦</div>
+    <p class="footer-sub">TINDER NIGHT · PSYCHOLOGY MATCH TEST</p>
+  </footer>
+
+</div>
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('on'); }), { threshold: 0.08 });
+  els.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · Чемодан + Витрати</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #f5ede0; font-family: 'Lato', sans-serif; color: #3a2010; }
+.nav { background: #3d0f0f; padding: 14px 20px; position: sticky; top: 0; z-index: 100; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.nav-brand { font-family: 'Playfair Display', serif; font-style: italic; color: #e8c060; font-size: 18px; margin-right: 8px; }
+.nav button { font-size: 11px; color: #c9a84c; background: none; border: 1px solid rgba(201,168,76,0.3); border-radius: 20px; padding: 5px 10px; cursor: pointer; white-space: nowrap; font-family: 'Lato', sans-serif; }
+.nav button:hover { background: rgba(201,168,76,0.15); }
+.page { max-width: 780px; margin: 0 auto; padding: 0 16px 60px; }
+.hero { background: linear-gradient(180deg, #250808, #3d1010); padding: 40px 24px 36px; text-align: center; margin-bottom: 28px; border-bottom: 1px solid rgba(201,168,76,0.3); }
+.hero .her { display: block; font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.6em; color: #c9a84c; text-transform: uppercase; }
+.hero .era { display: block; font-family: 'Playfair Display', serif; font-size: 40px; font-style: italic; color: #e8c060; }
+.hero h2 { font-family: 'Playfair Display', serif; font-size: 15px; color: #a07840; font-weight: 400; margin-top: 8px; }
+.section { background: #fff8f0; border: 1px solid rgba(160,100,40,0.2); border-radius: 16px; margin-bottom: 28px; overflow: hidden; }
+.section-header { background: linear-gradient(135deg, #3d1010, #5a1818); padding: 18px 22px; }
+.section-header h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8c060; }
+.section-header p { font-size: 13px; color: #c9a870; margin-top: 4px; }
+.section-body { padding: 20px 22px; }
+.stitle { font-family: 'Playfair Display', serif; font-size: 14px; color: #c9a84c; text-transform: uppercase; letter-spacing: 0.12em; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+.stitle::after { content: ''; flex: 1; height: 1px; background: rgba(201,168,76,0.2); }
+.stitle:first-child { margin-top: 0; }
+.highlight { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: #5a2e08; line-height: 1.6; margin-top: 8px; }
+.plus { background: rgba(60,160,60,0.08); border: 1px solid rgba(60,160,60,0.25); border-radius: 10px; padding: 12px 16px; font-size: 14px; color: #1a5a10; line-height: 1.6; margin-top: 8px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width:500px) { .grid2 { grid-template-columns: 1fr; } }
+.info-box { background: #fff; border: 1px solid rgba(160,100,40,0.15); border-radius: 10px; padding: 14px; }
+.info-box h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #c9a84c; text-transform: uppercase; margin-bottom: 8px; }
+.info-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.info-box ul li { font-size: 13px; color: #4a2e10; padding-left: 14px; position: relative; line-height: 1.4; }
+.info-box ul li::before { content: '·'; position: absolute; left: 0; color: #c9a84c; font-weight: 700; }
+.bt { width: 100%; border-collapse: collapse; }
+.bt th { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #c9a84c; text-transform: uppercase; text-align: left; padding: 8px 10px; border-bottom: 2px solid rgba(201,168,76,0.2); }
+.bt td { font-size: 13px; color: #4a2e10; padding: 9px 10px; border-bottom: 1px solid rgba(160,100,40,0.08); vertical-align: top; line-height: 1.4; }
+.bt tr:last-child td { border-bottom: none; }
+.bt .p { font-weight: 700; color: #7a4010; white-space: nowrap; }
+.bt .total td { background: rgba(201,168,76,0.08); font-weight: 700; font-size: 14px; color: #3d1010; border-top: 2px solid rgba(201,168,76,0.3); }
+.bt .total .p { font-size: 16px; color: #c9a84c; }
+.bt .income td { background: rgba(60,140,60,0.06); }
+.bt .income .p { color: #2a7a20; font-size: 15px; }
+.note { font-size: 11px; color: #a07840; display: block; margin-top: 2px; }
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.citem { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; background: #fff; border: 1px solid rgba(160,100,40,0.12); border-radius: 8px; }
+.citem input[type="checkbox"] { width: 18px; height: 18px; accent-color: #c9a84c; cursor: pointer; flex-shrink: 0; margin-top: 1px; }
+.citem label { font-size: 14px; color: #4a2e10; line-height: 1.4; cursor: pointer; flex: 1; }
+.citem label span { font-size: 12px; color: #a07840; display: block; margin-top: 2px; }
+.speech-block { background: #fff; border: 1px solid rgba(160,100,40,0.15); border-left: 3px solid #c9a84c; border-radius: 0 10px 10px 0; padding: 14px 16px; margin-bottom: 10px; }
+.speech-block h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #c9a84c; text-transform: uppercase; margin-bottom: 8px; }
+.speech-block p { font-size: 14px; color: #4a2e10; line-height: 1.7; font-style: italic; }
+.divider { text-align: center; color: #c9a84c; font-size: 12px; letter-spacing: 0.4em; padding: 8px 0; opacity: 0.4; }
+.zero { color: #c9a84c !important; }
+.green { color: #2a8020 !important; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="nav-brand">Era</span>
+  <button onclick="document.getElementById('model').scrollIntoView({behavior:'smooth'})">💰 Модель</button>
+  <button onclick="document.getElementById('studios').scrollIntoView({behavior:'smooth'})">Студії</button>
+  <button onclick="document.getElementById('suitcase').scrollIntoView({behavior:'smooth'})">Чемодан</button>
+  <button onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">Їжа</button>
+  <button onclick="document.getElementById('speech').scrollIntoView({behavior:'smooth'})">Промови</button>
+  <button onclick="document.getElementById('b1').scrollIntoView({behavior:'smooth'})">Свої Дівчата</button>
+  <button onclick="document.getElementById('b2').scrollIntoView({behavior:'smooth'})">Козирна</button>
+  <button onclick="document.getElementById('b3').scrollIntoView({behavior:'smooth'})">Мені Можна</button>
+  <button onclick="document.getElementById('b4').scrollIntoView({behavior:'smooth'})">Нормальний</button>
+  <button onclick="document.getElementById('b5').scrollIntoView({behavior:'smooth'})">Головна Героїня</button>
+  <button onclick="document.getElementById('b6').scrollIntoView({behavior:'smooth'})">Ми Match</button>
+</nav>
+
+<div class="page">
+<div class="hero">
+  <span class="her">Her</span>
+  <span class="era">Era</span>
+  <h2>🧳 Чемодан · Витрати · Промови · Діана</h2>
+</div>
+
+<!-- FINANCIAL MODEL -->
+<div id="model" class="section">
+  <div class="section-header">
+    <h2>💰 Фінансова модель</h2>
+    <p>Скільки місць продавати щоб вийти в нуль і плюс</p>
+  </div>
+  <div class="section-body">
+
+    <div class="stitle">Ціни на квитки — всі вечори</div>
+    <table class="bt">
+      <tr><th>Вечір</th><th>Early bird</th><th>Standard</th><th>Last seats</th></tr>
+      <tr><td>Всі 6 вечорів</td><td class="p">1 590 грн</td><td class="p">1 790 грн</td><td class="p">1 990 грн</td></tr>
+    </table>
+    <div class="highlight" style="margin-top:10px">
+      📈 <strong>План підняття:</strong> кожен місяць +200 грн на всі хвилі<br>
+      Міс.3: 1790/1990/2190 · Міс.5: 1990/2190/2390 · і так далі
+    </div>
+
+    <div class="stitle" style="margin-top:24px">🌿 Flora Hub — вечори на 12 людей</div>
+    <div class="highlight">
+      <strong>Фіксовані витрати на кожен вечір:</strong><br>
+      Flora Hub 4 200 + Фотограф 5 000 + Алкоголь 900 + Їжа 1 100 + Кристина 2 000 + Витратники 1 000 = <strong>14 200 грн</strong>
+    </div>
+    <table class="bt" style="margin-top:12px">
+      <tr><th>Місяць</th><th>Реклама</th><th>Всього витрат</th><th>Продати місць</th><th>Дохід</th><th>Результат</th></tr>
+      <tr>
+        <td>Місяць 1</td><td>4 000</td><td>18 200</td>
+        <td><strong>12 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~21 200</td>
+        <td class="p green">+3 000 грн (~75$)</td>
+      </tr>
+      <tr>
+        <td>Місяць 2</td><td>2 000</td><td>16 200</td>
+        <td><strong>12 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~21 200</td>
+        <td class="p green">+5 000 грн (~125$) ✅</td>
+      </tr>
+      <tr>
+        <td>Місяць 3</td><td>1 000</td><td>15 200</td>
+        <td><strong>12 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~21 200</td>
+        <td class="p green">+6 000 грн (~150$) ✅</td>
+      </tr>
+    </table>
+    <div class="plus" style="margin-top:8px">✅ При 12 платних місцях — з першого місяця вже в плюсі. Ціль досягнута!</div>
+
+    <div class="stitle" style="margin-top:24px">🏛️ Студія 004 — вечори на 24 людей</div>
+    <div class="highlight">
+      <strong>Студія 004:</strong> 2500 × 3 год = 7 500 + 8 дод. осіб × 250 грн (доплата за весь час) = 2 000 → <strong>9 500 грн ✅</strong><br><br>
+      <strong>Фіксовані витрати:</strong><br>
+      Студія 9 500 + Фотограф 7 000 + Алкоголь 1 800 + Їжа 2 200 + Кристина 2 000 + Витратники 1 500 = <strong>24 000 грн</strong>
+    </div>
+    <table class="bt" style="margin-top:12px">
+      <tr><th>Місяць</th><th>Реклама</th><th>Всього витрат</th><th>Продати місць</th><th>Дохід</th><th>Результат</th></tr>
+      <tr>
+        <td>Місяць 1</td><td>4 000</td><td>28 000</td>
+        <td><strong>16 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~28 300</td>
+        <td class="p zero">≈ нуль (+300)</td>
+      </tr>
+      <tr>
+        <td>Місяць 2</td><td>2 000</td><td>26 000</td>
+        <td><strong>20 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~35 500</td>
+        <td class="p green">+9 500 грн (~240$) ✅</td>
+      </tr>
+      <tr>
+        <td>Місяць 3</td><td>1 000</td><td>25 000</td>
+        <td><strong>20 платних</strong><br><span class="note">+2 блогери безкоштовно</span></td>
+        <td>~35 500</td>
+        <td class="p green">+10 500 грн (~260$) ✅</td>
+      </tr>
+    </table>
+    <div class="highlight" style="margin-top:8px">⚠️ Місяць 1 для 004 — продати мінімум 16 місць щоб вийти в нуль. З місяця 2 продаємо 20 і заробляємо ~240$</div>
+
+    <div class="stitle" style="margin-top:24px">🚀 Після 3 місяців — власне приміщення</div>
+    <div class="plus">
+      Аренда власного приміщення: ~15 000–20 000 грн/міс замість 4 200–9 500 за кожен вечір<br>
+      При 4+ вечорах/міс → <strong>економія 16 000–38 000 грн</strong> тільки на оренді<br>
+      + Підняття цін +200 щомісяця → +2 000–2 400 грн прибутку з кожного вечора<br>
+      + Реквізит з Китаю → різноманіття, новий контент<br>
+      + Виїзні івенти → новий потік доходу<br>
+      🔨 Ремонт 2 500$ → окупається за 2-3 місяці роботи з власного приміщення
+    </div>
+
+  </div>
+</div>
+
+<!-- STUDIOS -->
+<div id="studios" class="section">
+  <div class="section-header">
+    <h2>🏛️ Студії — ціни</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="stitle">🌿 Flora Hub</div>
+    <div class="grid2">
+      <div class="info-box">
+        <h4>До 15 осіб</h4>
+        <ul>
+          <li>1 400 грн/год × 3 год = <strong>4 200 грн</strong></li>
+          <li>12 гостей + ти + Кристина + фотограф = 15 ✅</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>До 20 осіб</h4>
+        <ul>
+          <li>1 600 грн/год × 3 год = <strong>4 800 грн</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stitle">🏛️ Студія 004</div>
+    <div class="highlight">
+      <strong>Формула:</strong> 2 500 грн/год × 3 год = 7 500 грн<br>
+      + доплата за кожного понад 20 осіб: 250 грн за людину (за весь час, не за годину)<br>
+      24 гостей + ти + Кристина + фотограф = 28 осіб → 8 дод. × 250 = 2 000 грн<br>
+      <strong>Разом: 9 500 грн ✅</strong>
+    </div>
+
+    <div class="stitle">📸 Фотограф</div>
+    <div class="grid2">
+      <div class="info-box">
+        <h4>12 гостей → 2 год</h4>
+        <ul><li><strong>5 000 грн</strong></li></ul>
+      </div>
+      <div class="info-box">
+        <h4>20-24 гостей → 3 год</h4>
+        <ul><li><strong>7 000 грн</strong></li></ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUITCASE -->
+<div id="suitcase" class="section">
+  <div class="section-header">
+    <h2>🧳 Твій чемодан</h2>
+    <p>Що брати на кожен вечір</p>
+  </div>
+  <div class="section-body">
+
+    <div class="highlight">👟 Їдеш в кросівках. Каблуки в чемодані — перевзуваєшся на місці.</div>
+
+    <div class="stitle">👗 Одяг і взуття</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c1"><label for="c1">Каблуки (перевзуєшся на місці)</label></div>
+      <div class="citem"><input type="checkbox" id="c2"><label for="c2">Твій образ відповідно до dress-code вечора</label></div>
+    </div>
+
+    <div class="stitle">🎒 Технічне</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c3"><label for="c3">Колонка<span>Перевір заряд заздалегідь</span></label></div>
+      <div class="citem"><input type="checkbox" id="c4"><label for="c4">Провід для підключення колонки</label></div>
+      <div class="citem"><input type="checkbox" id="c5"><label for="c5">Powerbank + зарядний кабель</label></div>
+    </div>
+
+    <div class="stitle">🕯️ Декор і атмосфера</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c6"><label for="c6">Свічки 3-5 штук</label></div>
+      <div class="citem"><input type="checkbox" id="c7"><label for="c7">Зажигалка</label></div>
+      <div class="citem"><input type="checkbox" id="c8"><label for="c8">Серветки паперові (2 упаковки)</label></div>
+      <div class="citem"><input type="checkbox" id="c9"><label for="c9">Рамочки для декору</label></div>
+      <div class="citem"><input type="checkbox" id="c10"><label for="c10">Резинки для волосся (запас 5-10 шт)</label></div>
+    </div>
+
+    <div class="stitle">📦 Пакування</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c11"><label for="c11">Пупирчаста плівка<span>Загортати пляшки щоб не побились</span></label></div>
+      <div class="citem"><input type="checkbox" id="c12"><label for="c12">Скотч</label></div>
+      <div class="citem"><input type="checkbox" id="c13"><label for="c13">Термопакет / сумка-холодильник<span>Щоб їжа і десерти не розтанули</span></label></div>
+    </div>
+
+    <div class="stitle">🎮 Ігри та матеріали</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c14"><label for="c14">Гра "МИ MATCH?" — картки всіх рівнів<span>Рівень 1 Є ВАЙБ / 2 ВЖЕ ЦІКАВО / 3 ЩЕ ГЛИБШЕ / 4 ВСЕ ЯСНО</span></label></div>
+      <div class="citem"><input type="checkbox" id="c15"><label for="c15">Гра "МЕНІ МОЖНА БІЛЬШЕ" — всі 3 колоди<span>WHITE / BLACK / BURGUNDY</span></label></div>
+      <div class="citem"><input type="checkbox" id="c16"><label for="c16">Роздруківки Psychology Match Test (Tinder Night)<span>По 1 аркушу на кожну = 12-24 шт</span></label></div>
+      <div class="citem"><input type="checkbox" id="c17"><label for="c17">Роздруківки 100 питань (Bestie Night)<span>По 1 аркушу на кожну = 12-24 шт</span></label></div>
+      <div class="citem"><input type="checkbox" id="c18"><label for="c18">Match Card роздруківки<span>По 1 на кожну дівчину</span></label></div>
+      <div class="citem"><input type="checkbox" id="c19"><label for="c19">Ручки / олівці (мінімум 15 шт)</label></div>
+    </div>
+
+    <div class="stitle">🏷️ Аксесуари та реквізит</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c20"><label for="c20">Номерки Guest #01–12<span>Тільки для Bestie Night — зашито у витратники</span></label></div>
+      <div class="citem"><input type="checkbox" id="c21"><label for="c21">Аксесуари для фотосесії<span>Рукавички, прикраси, шовковий шарфик, сумка</span></label></div>
+      <div class="citem"><input type="checkbox" id="c22"><label for="c22">Карточки партнерів (-500 грн на кератин)<span>12-24 шт</span></label></div>
+    </div>
+
+    <div class="stitle">🍾 Алкоголь</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="c23"><label for="c23">Просекко (2 пляшки)<span>~250-350 грн/пляшка</span></label></div>
+      <div class="citem"><input type="checkbox" id="c24"><label for="c24">Біле вино (1 пляшка)<span>~200-300 грн</span></label></div>
+      <div class="citem"><input type="checkbox" id="c25"><label for="c25">Безалкогольне ігристе (1-2 пляшки)<span>~80-150 грн/пляшка</span></label></div>
+      <div class="citem"><input type="checkbox" id="c26"><label for="c26">Фужери (якщо немає в студії — уточни)</label></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOD -->
+<div id="food" class="section">
+  <div class="section-header">
+    <h2>🍇 Їжа та десерти</h2>
+    <p>Що купити, де і коли</p>
+  </div>
+  <div class="section-body">
+
+    <div class="stitle">🛒 Фуршет на 12 осіб — Сільпо</div>
+    <div class="checklist">
+      <div class="citem"><input type="checkbox" id="f1"><label for="f1">Виноград 1-1.5 кг<span>~150-200 грн. Помити вдома, розкласти на тарілці на місці</span></label></div>
+      <div class="citem"><input type="checkbox" id="f2"><label for="f2">Сир нарізаний кубиками 300-400г<span>~150-200 грн. Купи вже нарізаний в упаковці</span></label></div>
+    </div>
+
+    <div class="stitle">🍬 Десерти — вибери один</div>
+    <div class="grid2">
+      <div class="info-box">
+        <h4>🥐 Макарони — Сільпо</h4>
+        <ul>
+          <li>~60 грн/шт</li>
+          <li>12 шт = ~720 грн</li>
+          <li>Перевір наявність заздалегідь!</li>
+          <li>Зберігати в холодильнику</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>🥮 Дубайські гніздечка</h4>
+        <ul>
+          <li>500 грн / коробка 15 шт</li>
+          <li>1 коробка на 12 осіб</li>
+          <li>Замовляй за 1-2 дні</li>
+          <li>Везти в термопакеті</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight" style="margin-top:10px">
+      🕐 <strong>Коли купувати:</strong> ввечері напередодні. Все в холодильник. Везти в термопакеті.<br>
+      💰 <strong>Разом їжа на 12 осіб:</strong> ~900–1 100 грн
+    </div>
+
+  </div>
+</div>
+
+<!-- SPEECHES -->
+<div id="speech" class="section">
+  <div class="section-header">
+    <h2>🎤 Промови</h2>
+    <p>Що говориш покроково</p>
+  </div>
+  <div class="section-body">
+
+    <div class="stitle">Вступна промова (всі вечори)</div>
+    <div class="speech-block">
+      <h4>00:15–00:25</h4>
+      <p>"Привіт, дівчата! Я Діана — засновниця HER ERA. Я давно хотіла створити простір де жінки знайомляться, надихаються і знаходять своїх людей. Я сама через це проходила — шукала своє коло, допомагала подружкам, і зрозуміла що такого місця в Києві просто не вистачає. Тому я створила HER ERA. Сьогодні ви [перші / особливі / наші] — і я рада що ви тут. У нас є [назва активності], фотосесія, шампанське і живе спілкування. Вмикайтесь!"</p>
+    </div>
+
+    <div class="stitle">Про партнерів (всі вечори)</div>
+    <div class="speech-block">
+      <h4>Роздаєш картки</h4>
+      <p>"До речі, у нас є маленький подаруночок від наших партнерів. Вони займаються [кератин/трихолог]. Тут карточка зі знижкою -500 грн на перше відвідування. Заберіть собі!"</p>
+    </div>
+
+    <div class="stitle">Фінальна промова (всі вечори)</div>
+    <div class="speech-block">
+      <h4>01:55–02:00</h4>
+      <p>"Дівчата, дякую що ви були тут сьогодні — ви частина HER ERA. Попереду у нас ще багато крутих вечорів — [назвати 2-3 наступних]. Слідкуйте за нашим Instagram. Давайте зробимо загальне фото — і до зустрічі!"</p>
+    </div>
+
+    <div class="stitle">💍 Нормальний існує — перед тестом</div>
+    <div class="speech-block">
+      <h4>Вступ до тесту</h4>
+      <p>"Я сама довго шукала нормального чоловіка, допомагала подружкам з Tinder — і зрозуміла що більшість дівчат просто не знають як правильно заповнити анкету і кого вибирати. Тому я створила цей психологічний тест. Зараз кожна з вас дізнається свій типаж і отримає особистий гайд по QR-коду. Поїхали!"</p>
+    </div>
+
+    <div class="stitle">💍 Питання після тесту</div>
+    <div class="speech-block">
+      <h4>Обговорення</h4>
+      <p>— "Хто вийшла типаж A — підніміть руку!"<br>
+      — "Хто впізнала себе у своєму результаті?"<br>
+      — "Кого здивував результат?"<br>
+      — "Чи бачиш свою типову помилку в dating?"<br>
+      — "Дивимось на цю анкету — писала б цьому хлопцю? Чому?"</p>
+    </div>
+
+    <div class="stitle">👯 МИ MATCH — правила speed dating</div>
+    <div class="speech-block">
+      <h4>Пояснення формату</h4>
+      <p>"У вас є листок зі 100 питаннями — позначте ті що відгукуються. На кожен раунд — 5 хвилин. Одна сторона столу сидить, друга пересувається вправо після сигналу. Не потрібно встигнути всі питання — краще 1 класний діалог. Наприкінці заповните Match Card — і я особисто надішлю взаємні метчі після вечора!"</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- BUDGET EVENTS -->
+
+<!-- EVENT 1 -->
+<div id="b1" class="section">
+  <div class="section-header">
+    <h2>💌 СВОЇ ДІВЧАТА — Витрати</h2>
+    <p>Flora Hub · 12 платних + 2 блогери · перший вечір</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🌿 Flora Hub</td><td>1400/год × 3 год</td><td class="p">4 200 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>2 год (12 гостей)</td><td class="p">5 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>Просекко ×2 + вино + безалк</td><td class="p">900 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>Виноград, сир, десерти</td><td class="p">1 100 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🖨️ Витратники</td><td>Друк, карточки тощо</td><td class="p">1 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">15 200–18 200 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 12 платних<span class="note">4 × 1590 + 4 × 1790 + 4 × 1990</span></td><td class="p">~21 100 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: +2 900 · Міс.2: +4 900 · Міс.3: +5 900 грн</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EVENT 2 -->
+<div id="b2" class="section">
+  <div class="section-header">
+    <h2>♠️ КОЗИРНА — Витрати</h2>
+    <p>Flora Hub · 12 платних + 2 блогери · Poker Night</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🌿 Flora Hub</td><td>1400/год × 3 год</td><td class="p">4 200 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>2 год (12 гостей)</td><td class="p">5 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>Просекко ×2 + вино + безалк</td><td class="p">900 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>Виноград, сир, десерти</td><td class="p">1 100 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🖨️ Витратники</td><td></td><td class="p">1 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">15 200–18 200 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 12 платних<span class="note">4 × 1590 + 4 × 1790 + 4 × 1990</span></td><td class="p">~21 100 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: +2 900 · Міс.2: +4 900 · Міс.3: +5 900 грн</td></tr>
+    </table>
+    <div class="highlight" style="margin-top:10px">♠️ Фішки для покеру куплені заздалегідь — у витрати не входять.</div>
+  </div>
+</div>
+
+<!-- EVENT 3 -->
+<div id="b3" class="section">
+  <div class="section-header">
+    <h2>💸 МЕНІ МОЖНА БІЛЬШЕ — Витрати</h2>
+    <p>Flora Hub · 12 платних + 2 блогери</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🌿 Flora Hub</td><td>1400/год × 3 год</td><td class="p">4 200 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>2 год (12 гостей)</td><td class="p">5 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>Просекко ×2 + вино + безалк</td><td class="p">900 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>Виноград, сир, десерти</td><td class="p">1 100 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🖨️ Витратники</td><td></td><td class="p">1 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">15 200–18 200 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 12 платних<span class="note">4 × 1590 + 4 × 1790 + 4 × 1990</span></td><td class="p">~21 100 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: +2 900 · Міс.2: +4 900 · Міс.3: +5 900 грн</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EVENT 4 -->
+<div id="b4" class="section">
+  <div class="section-header">
+    <h2>💍 НОРМАЛЬНИЙ ІСНУЄ — Витрати</h2>
+    <p>Студія 004 · 20 платних + 2 блогери · Tinder Night</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🏛️ Студія 004</td><td>2500 × 3 год + 8 осіб × 250 грн (за весь час)</td><td class="p">9 500 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>3 год (20-24 гостей)</td><td class="p">7 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>На 24 особи</td><td class="p">1 800 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>На 24 особи</td><td class="p">2 200 грн</td></tr>
+      <tr><td>🖨️ Тест + витратники</td><td>24 роздруківки тесту</td><td class="p">1 500 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">25 000–28 000 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 20 платних (міс.2-3)<span class="note">7 × 1590 + 7 × 1790 + 6 × 1990</span></td><td class="p">~35 500 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 16 платних (міс.1)<span class="note">6 × 1590 + 5 × 1790 + 5 × 1990</span></td><td class="p">~28 300 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: ≈ нуль · Міс.2: +9 500 · Міс.3: +10 500 грн</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- EVENT 5 -->
+<div id="b5" class="section">
+  <div class="section-header">
+    <h2>✨ ГОЛОВНА ГЕРОЇНЯ — Витрати</h2>
+    <p>Студія 004 · 20 платних + 2 блогери · Red Carpet · 4 год аренда</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🏛️ Студія 004</td><td>2500 × 4 год + 8 осіб × 250 грн (за весь час)</td><td class="p">11 000 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>3 год (20-24 гостей)</td><td class="p">7 000 грн</td></tr>
+      <tr><td>🎥 Відеограф</td><td>1 год (тільки цей вечір)</td><td class="p">2 500 грн</td></tr>
+      <tr><td>🎬 Червона доріжка + декор</td><td>Одноразова купівля</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>На 24 особи</td><td class="p">1 800 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>На 24 особи</td><td class="p">2 200 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🖨️ Витратники</td><td></td><td class="p">1 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">30 500–33 500 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 20 платних<span class="note">7 × 1590 + 7 × 1790 + 6 × 1990</span></td><td class="p">~35 500 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: +2 000 · Міс.2: +5 000 · Міс.3: +5 000 грн</td></tr>
+    </table>
+    <div class="highlight" style="margin-top:10px">🎬 Червона доріжка, стійки і декор — купуєш один раз, потім використовуєш на всіх Red Carpet вечорах.</div>
+  </div>
+</div>
+
+<!-- EVENT 6 -->
+<div id="b6" class="section">
+  <div class="section-header">
+    <h2>👯 МИ MATCH? ЗНАЙДИ СВОЮ — Витрати</h2>
+    <p>Flora Hub · 12 платних + 2 блогери · Bestie Night</p>
+  </div>
+  <div class="section-body">
+    <table class="bt">
+      <tr><th>Стаття</th><th>Деталі</th><th>Сума</th></tr>
+      <tr><td>🌿 Flora Hub</td><td>1400/год × 3 год</td><td class="p">4 200 грн</td></tr>
+      <tr><td>📸 Фотограф</td><td>2 год (12 гостей)</td><td class="p">5 000 грн</td></tr>
+      <tr><td>🍾 Алкоголь</td><td>Просекко ×2 + вино + безалк</td><td class="p">900 грн</td></tr>
+      <tr><td>🍇 Їжа</td><td>Виноград, сир, десерти</td><td class="p">1 100 грн</td></tr>
+      <tr><td>👩‍💼 Кристина</td><td>50$</td><td class="p">2 000 грн</td></tr>
+      <tr><td>🖨️ Витратники</td><td>100 питань + Match Card + номерки</td><td class="p">1 000 грн</td></tr>
+      <tr><td>📣 Реклама</td><td>Міс.1: 4000 / Міс.2: 2000 / Міс.3: 1000</td><td class="p">1 000–4 000 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>РАЗОМ витрати</strong></td><td class="p">15 200–18 200 грн</td></tr>
+      <tr class="income"><td colspan="2">Дохід — 12 платних<span class="note">4 × 1590 + 4 × 1790 + 4 × 1990</span></td><td class="p">~21 100 грн</td></tr>
+      <tr class="total"><td colspan="2"><strong>💚 ПРИБУТОК</strong></td><td class="p green">Міс.1: +2 900 · Міс.2: +4 900 · Міс.3: +5 900 грн</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="divider">· · ✦ HER ERA · ТВОЯ ЕРА · ТВОЇ ЛЮДИ ✦ · ·</div>
+
+</div>
+</body>
+</html>

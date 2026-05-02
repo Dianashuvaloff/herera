@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · НАВАЖСЯ 🔥</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+  min-height: 100%;
+  background: #0d0608;
+  font-family: 'Lato', sans-serif;
+  color: #f5ede0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* BG */
+.bg-glow {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(140,20,40,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 80% 80%, rgba(180,120,20,0.15) 0%, transparent 60%),
+    #0d0608;
+}
+
+.page { position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 0 20px 60px; }
+
+/* HEADER */
+.header { text-align: center; padding: 36px 0 24px; }
+.logo-her { font-family: 'Playfair Display', serif; font-size: 11px; letter-spacing: 0.7em; color: #c9a84c; text-transform: uppercase; display: block; }
+.logo-era { font-family: 'Playfair Display', serif; font-size: 38px; font-style: italic; color: #fff; display: block; line-height: 1.1; }
+.logo-sub { font-size: 12px; letter-spacing: 0.3em; color: #8a5840; text-transform: uppercase; margin-top: 6px; display: block; }
+
+/* LEVEL TABS */
+.levels { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+.level-btn {
+  font-size: 12px; font-family: 'Lato', sans-serif; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 8px 16px; border-radius: 24px; cursor: pointer;
+  border: 1px solid rgba(201,168,76,0.3);
+  background: none; color: #c9a84c;
+  transition: all 0.2s;
+}
+.level-btn.active, .level-btn:hover { background: rgba(201,168,76,0.15); border-color: #c9a84c; }
+.level-btn.lv1.active { background: rgba(80,180,80,0.15); border-color: #50b450; color: #70d470; }
+.level-btn.lv2.active { background: rgba(201,168,76,0.2); border-color: #c9a84c; color: #e8c060; }
+.level-btn.lv3.active { background: rgba(200,60,40,0.2); border-color: #c84030; color: #e86050; }
+
+/* STATS */
+.stats { display: flex; justify-content: center; gap: 24px; margin-bottom: 28px; }
+.stat { text-align: center; }
+.stat-n { font-family: 'Playfair Display', serif; font-size: 28px; color: #c9a84c; }
+.stat-l { font-size: 10px; letter-spacing: 0.15em; color: #7a5030; text-transform: uppercase; margin-top: 2px; }
+
+/* CARD AREA */
+.card-area { perspective: 1200px; margin-bottom: 28px; cursor: pointer; }
+
+.card-wrap {
+  width: 100%; aspect-ratio: 3/4; max-height: 420px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.card-wrap.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+/* BACK */
+.card-back {
+  background: linear-gradient(145deg, #1a0810, #2d0f18, #1a0810);
+  border: 1px solid rgba(201,168,76,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.15);
+}
+.card-back::before {
+  content: '';
+  position: absolute; inset: 12px;
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 12px;
+}
+.card-back-logo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 48px; color: rgba(201,168,76,0.4); margin-bottom: 12px; }
+.card-back-text { font-size: 10px; letter-spacing: 0.4em; color: rgba(201,168,76,0.3); text-transform: uppercase; }
+.card-tap-hint { font-size: 12px; color: rgba(201,168,76,0.5); letter-spacing: 0.1em; margin-top: 20px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+
+/* FRONT */
+.card-front {
+  transform: rotateY(180deg);
+  background: linear-gradient(145deg, #1a0810, #2a1020, #1a0810);
+  border: 1px solid rgba(201,168,76,0.25);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(201,168,76,0.1);
+}
+.card-level-badge {
+  position: absolute; top: 20px; right: 20px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+}
+.badge-easy { background: rgba(80,180,80,0.15); color: #70d470; border: 1px solid rgba(80,180,80,0.3); }
+.badge-medium { background: rgba(201,168,76,0.15); color: #e8c060; border: 1px solid rgba(201,168,76,0.3); }
+.badge-hard { background: rgba(200,60,40,0.15); color: #e86050; border: 1px solid rgba(200,60,40,0.3); }
+
+.card-number { font-size: 11px; letter-spacing: 0.2em; color: rgba(201,168,76,0.4); text-transform: uppercase; margin-bottom: 20px; }
+.card-emoji { font-size: 52px; margin-bottom: 20px; line-height: 1; }
+.card-text { font-family: 'Playfair Display', serif; font-size: 20px; color: #f5ede0; line-height: 1.5; font-style: italic; }
+.card-sub { font-size: 12px; color: #8a6040; margin-top: 14px; line-height: 1.5; }
+
+/* BUTTONS */
+.btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  padding: 13px 24px; border-radius: 30px; border: none;
+  font-size: 14px; font-family: 'Lato', sans-serif; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s;
+}
+.btn-main {
+  background: linear-gradient(135deg, #c9a84c, #a07828);
+  color: #1a0810; flex: 1; max-width: 220px;
+}
+.btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+.btn-skip {
+  background: rgba(255,255,255,0.06);
+  color: rgba(245,237,224,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.btn-skip:hover { background: rgba(255,255,255,0.1); color: #f5ede0; }
+
+/* COMPLETED */
+.done-screen {
+  display: none; text-align: center;
+  padding: 40px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+.done-screen.show { display: block; }
+.done-emoji { font-size: 64px; margin-bottom: 16px; }
+.done-title { font-family: 'Playfair Display', serif; font-size: 28px; color: #c9a84c; margin-bottom: 10px; }
+.done-sub { font-size: 14px; color: #8a6040; line-height: 1.6; }
+
+/* HISTORY */
+.history { margin-top: 32px; }
+.history-title { font-size: 11px; letter-spacing: 0.25em; color: #7a5030; text-transform: uppercase; text-align: center; margin-bottom: 14px; }
+.hist-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+.hist-emoji { font-size: 18px; flex-shrink: 0; }
+.hist-text { font-size: 13px; color: #c9a870; font-style: italic; line-height: 1.4; }
+
+.ornament { text-align: center; color: #3a1a10; font-size: 12px; letter-spacing: 0.4em; padding: 12px 0; }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div class="page">
+  <div class="header">
+    <span class="logo-her">Her</span>
+    <span class="logo-era">Era</span>
+    <span class="logo-sub">🔥 НАВАЖСЯ · Розкріпачення</span>
+  </div>
+
+  <div class="levels">
+    <button class="level-btn lv1 active" onclick="setLevel('easy', this)">🌸 М'яко</button>
+    <button class="level-btn lv2" onclick="setLevel('medium', this)">🔥 Гаряче</button>
+    <button class="level-btn lv3" onclick="setLevel('hard', this)">💥 Максимум</button>
+    <button class="level-btn" onclick="setLevel('all', this)">✨ Всі</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="st-done">0</div><div class="stat-l">виконано</div></div>
+    <div class="stat"><div class="stat-n" id="st-skip">0</div><div class="stat-l">пропущено</div></div>
+    <div class="stat"><div class="stat-n" id="st-left">0</div><div class="stat-l">лишилось</div></div>
+  </div>
+
+  <div class="card-area" onclick="flipCard()">
+    <div class="card-wrap" id="cardWrap">
+      <div class="card-face card-back">
+        <div class="card-back-logo">Era</div>
+        <div class="card-back-text">Her Era · Dare</div>
+        <div class="card-tap-hint">торкнись щоб відкрити</div>
+      </div>
+      <div class="card-face card-front" id="cardFront">
+        <span class="card-level-badge" id="cardBadge"></span>
+        <div class="card-number" id="cardNumber"></div>
+        <div class="card-emoji" id="cardEmoji"></div>
+        <div class="card-text" id="cardText"></div>
+        <div class="card-sub" id="cardSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="done-screen" id="doneScreen">
+    <div class="done-emoji">🎉</div>
+    <div class="done-title">Всі карти розіграно!</div>
+    <div class="done-sub">Дівчата — ви справжні 💗<br>Зіграти ще раз?</div>
+    <br>
+    <button class="btn btn-main" onclick="restart()" style="margin:0 auto;display:block">🔄 Ще раз!</button>
+  </div>
+
+  <div class="btns" id="actionBtns">
+    <button class="btn btn-main" onclick="nextCard()">✅ Виконано → наступна</button>
+    <button class="btn btn-skip" onclick="skipCard()">⏭ Пропустити</button>
+  </div>
+
+  <div class="history" id="historyEl" style="display:none">
+    <div class="history-title">Виконані</div>
+    <div id="historyList"></div>
+  </div>
+
+  <div class="ornament">· · ✦ · ·</div>
+</div>
+
+<script>
+const CARDS = {
+  easy: [
+    { e: '😂', t: 'Розкажи найдурнішу річ яку ти коли-небудь робила заради хлопця', s: 'Без цензури!' },
+    { e: '📸', t: 'Зроби найсмішнішу гримасу і сфотографуйся — фото в сторіс', s: 'Тег @her_era обов\'язковий 😄' },
+    { e: '🎤', t: 'Проспівай перший рядок улюбленої пісні', s: 'Без музики, а капела' },
+    { e: '💃', t: 'Станцюй 15 секунд — всі дивляться', s: 'Вибери будь-яку пісню' },
+    { e: '🤣', t: 'Розкажи свій найганебніший момент у стосунках', s: 'Всі підтримають — обіцяємо 💗' },
+    { e: '👑', t: 'Скажи комплімент кожній дівчині за столом', s: 'По одному щирому комплементу' },
+    { e: '📱', t: 'Покажи останній меседж в Telegram або Instagram DM', s: 'Без права вибирати який!' },
+    { e: '🎭', t: 'Зімітуй як ти реагуєш коли хлопець не пише 3 дні', s: 'Максимально правдиво' },
+    { e: '🍾', t: 'Підніми бокал і скажи тост про жіночу силу', s: 'Від серця і без підготовки' },
+    { e: '😍', t: 'Опиши свій ідеальний вечір мрії — деталі!', s: 'Де, з ким, що п\'єте' },
+    { e: '🤫', t: 'Розкажи секрет який ніхто за столом не знає', s: 'Те що залишається тут 💗' },
+    { e: '🪞', t: 'Скажи вголос три речі які тобі в собі подобаються', s: 'Без скромності!' },
+    { e: '🌸', t: 'Покажи своє улюблене фото з Instagram і розкажи історію', s: 'Те яке найбільше лайкали' },
+    { e: '💌', t: 'Прочитай вголос останній голосовий від будь-якого хлопця', s: 'Або переказати своїми словами' },
+    { e: '🎯', t: 'Вгадай рід занять кожної дівчини за столом', s: 'Говориш голосно — всі оцінюють' },
+
+    { e: '🎵', t: 'Назви 5 пісень які описують твоє особисте життя зараз', s: 'По одній — пояснюй чому' },
+    { e: '😴', t: 'Розкажи найдивніший сон який тобі снився', s: 'Чим дивніше — тим краще' },
+    { e: '🧳', t: 'Куди б ти втекла завтра якби могла', s: 'Місто, країна — деталі!' },
+    { e: '💄', t: 'Покажи як ти робиш селфі коли думаєш що ніхто не дивиться', s: 'Чесно і без фільтрів' },
+    { e: '🍕', t: 'Назви свою найстраннішу харчову звичку', s: 'Всі сміються — всі розуміють' },
+    { e: '🐾', t: 'Зімітуй свого улюбленця або улюблену тварину', s: '30 секунд без зупинки' },
+    { e: '💭', t: 'Розкажи про найдивніший сон в якому був хлопець', s: 'Імена можна змінити 😄' },
+    { e: '🎪', t: 'Покажи свій найкращий танцювальний рух', s: 'Той що ніколи не показуєш' },
+    { e: '📖', t: 'Розкажи найсмішнішу сімейну історію', s: 'Та яку розповідають на кожному святі' },
+    { e: '🌈', t: 'Якби твоє життя було серіалом — яка це була б назва?', s: 'І хто б грав головну роль' },
+    { e: '🎭', t: 'Покажи як ти виглядаєш коли тобі нудно на побаченні', s: 'Без слів — тільки мімікою' },
+    { e: '🦋', t: 'Розкажи про свій найбільший glow up момент', s: 'До і після — в деталях' },
+    { e: '🌙', t: 'Що ти робиш о 2 ночі коли не можеш заснути?', s: 'Чесно і без сорому' },
+    { e: '💫', t: 'Назви свою найбільш нелогічну фобію', s: 'Та яку соромно визнавати' },
+    { e: '🎀', t: 'Який подарунок від хлопця тебе найбільше вразив?', s: 'Або найбільше розчарував' },
+    { e: '🧁', t: 'Назви свою найдорожчу дурну покупку', s: 'Та яку потім шкодувала' },
+    { e: '🦊', t: 'Розкажи про свій найзухваліший flirt', s: 'Коли ти сама підійшла першою' },
+    { e: '🌺', t: 'Який твій улюблений спосіб помститись?', s: 'Пасивна агресія чи відкрито?' },
+    { e: '🎸', t: 'Проспівай рекламний джингл який застряг в голові', s: 'Той що дратує але знаєш напам\'ять' },
+    { e: '🦄', t: 'Якби ти була персонажем Диснея — хто б це був?', s: 'І чому саме вона' },
+    { e: '🍦', t: 'Розкажи про свій найбільший харчовий гріх', s: 'Та їжа яку їси таємно' },
+    { e: '🌊', t: 'Якби ти могла жити в будь-якому місті світу — де?', s: 'І чому саме там' },
+    { e: '🎯', t: 'Назви свій найбільш очевидний toxic trait', s: 'Той про який вже знають всі' },
+    { e: '🏄', t: 'Розкажи про момент коли ти була справжньою сміливицею', s: 'Та пишаєшся досі' },
+    { e: '🌸', t: 'Покажи як ти танцюєш коли вдома сама', s: '30 секунд повної свободи' },
+    { e: '🎊', t: 'Який твій улюблений спосіб святкувати маленькі перемоги?', s: 'Та ритуал який є тільки у тебе' },
+    { e: '💝', t: 'Розкажи про найромантичніший момент у своєму житті', s: 'Реальний — не з кіно' },
+    { e: '🌟', t: 'Який комплімент від незнайомця ти пам\'ятаєш досі?', s: 'І де це було' },
+    { e: '🎈', t: 'Якби тебе описували одним словом — яке це слово?', s: 'Не те яке хочеш — а реальне' },
+    { e: '🦋', t: 'Розкажи про найсміливіше рішення яке ти прийняла', s: 'І про що не шкодуєш' },
+  ],
+  medium: [
+    { e: '💋', t: 'Напиши повідомлення першому хлопцю в контактах: "Як справи? Думала про тебе"', s: 'Відправити прямо зараз' },
+    { e: '🔥', t: 'Опиши свій найгарячіший перший поцілунок', s: 'Деталі вітаються' },
+    { e: '😈', t: 'Розкажи про свій найзухваліший вчинок з яким не зловили', s: 'Повна амністія на цьому вечорі' },
+    { e: '💅', t: 'Зроби runway walk через всю кімнату з найсерйознішим обличчям', s: 'Як на показі мод' },
+    { e: '📞', t: 'Зателефонуй подрузі і скажи: "Мені треба терміново розповісти — я познайомилась з кимось"', s: 'Реакція має бути максимальною' },
+    { e: '🎬', t: 'Зіграй сцену розставання — ти головна героїня', s: 'Решта — мовчазна аудиторія' },
+    { e: '🕵️', t: 'Відкрий Instagram хлопця який тобі подобається і покажи всім його профіль', s: 'Дівчата дають оцінку від 1 до 10' },
+    { e: '💸', t: 'Назви суму яку витратила на останній шопінг', s: 'Максимально чесно' },
+    { e: '🍷', t: 'Виконай завдання від сусідки праворуч — вона обирає сама', s: 'Право вето не діє' },
+    { e: '🌙', t: 'Розкажи про найгірше побачення в твоєму житті', s: 'Всі деталі' },
+    { e: '👀', t: 'Вибери дівчину за столом і скажи що тебе в ній найбільше вражає', s: 'Щиро і від серця' },
+    { e: '🎪', t: 'Зроби максимально пафосне селфі і одразу виклади в сторіс', s: 'Підпис: "звичайний вівторок"' },
+    { e: '💬', t: 'Прочитай вголос своє найбільш embarrassing повідомлення хлопцю', s: 'Те яке потім хотілося видалити' },
+    { e: '🏆', t: 'Розкажи про свій найкращий red flag який ти проігнорувала', s: '...і як це закінчилось' },
+    { e: '✨', t: 'Скажи вголос що ти найбільше хочеш від наступних 6 місяців', s: 'Конкретно, сміливо, реально' },
+
+    { e: '🔑', t: 'Відкрий телефон і покажи останній пошуковий запит в Google', s: 'Без права закрити' },
+    { e: '💌', t: 'Напиши хлопцю якому не писала більше місяця: Привіт, як ти?', s: 'Відправити прямо зараз' },
+    { e: '🎬', t: 'Зіграй сцену де ти дізналась що хлопець тебе обманює', s: 'Без слів — тільки мімікою' },
+    { e: '📸', t: 'Покажи найнепривабливіше фото з телефону', s: 'Те яке точно не виклала б' },
+    { e: '🔮', t: 'Передбач майбутнє дівчини ліворуч від тебе', s: 'На наступні 5 років — деталі!' },
+    { e: '💃', t: 'Станцюй так ніби ти зірка і за тобою знімають кліп', s: '1 хвилина повної впевненості' },
+    { e: '🌶️', t: 'Розкажи про найбільш embarrassing момент на побаченні', s: 'Той який намагаєшся забути' },
+    { e: '🎭', t: 'Зімітуй як пишеш повідомлення хлопцю і чекаєш відповіді', s: 'З усіма емоціями' },
+    { e: '📱', t: 'Покажи свій екран телефону зараз — без підготовки', s: 'Додатки, сповіщення — все' },
+    { e: '🍷', t: 'Розкажи про найдивнішу причину через яку закінчила стосунки', s: 'Або чому б закінчила' },
+    { e: '👠', t: 'Покажи як ти ходиш коли відчуваєш себе королевою', s: 'І коли ні' },
+    { e: '🎪', t: 'Продай себе як партнерку за 1 хвилину', s: 'Дівчата оцінюють' },
+    { e: '💋', t: 'Відправ войсове повідомлення бувшому або симпатії', s: 'Тільки Привіт — без пояснень' },
+    { e: '🌙', t: 'Розкажи найстрашнішу річ яку ти зробила заради уваги хлопця', s: 'Повна амністія!' },
+    { e: '🦅', t: 'Скажи вголос те що думаєш про кожну дівчину за столом', s: 'Тільки позитивне але щире' },
+    { e: '🎯', t: 'Покажи останні 5 сторіс які ти переглядала', s: 'Без права вибирати' },
+    { e: '🌺', t: 'Розкажи про свій найкращий come back у суперечці', s: 'Та фраза яка вбила опонента' },
+    { e: '💫', t: 'Зімітуй як реагуєш коли хлопець якому подобаєшся ігнорує тебе', s: 'Внутрішній монолог вголос' },
+    { e: '🎵', t: 'Заспівай пісню яка асоціюється з твоїм останнім романом', s: 'Без музики — тільки голос' },
+    { e: '🦋', t: 'Розкажи що б ти зробила якби мала один день без наслідків', s: 'Абсолютно все дозволено' },
+    { e: '🌊', t: 'Покажи найбільш embarrassing фото з 5-7 років тому', s: 'Без права відмовитись' },
+    { e: '💎', t: 'Розкажи скільки хлопців залицялось до тебе одночасно', s: 'Максимум за всю історію' },
+    { e: '🔥', t: 'Опиши свій ідеальний тип хлопця — всі деталі', s: 'Зовнішність, характер, звички' },
+    { e: '🎊', t: 'Влаштуй TED talk на 1 хвилину про свій life lesson', s: 'Тема — твій досвід у стосунках' },
+    { e: '🌟', t: 'Розкажи про найдовшу таємницю яку ховала від батьків', s: 'Зараз можна розповісти' },
+    { e: '🎭', t: 'Покажи я в ресторані з хлопцем vs я вдома', s: 'Два образи — максимальний контраст' },
+    { e: '🦊', t: 'Розкажи про найзухваліший флірт який ти бачила', s: 'І чому він спрацював або ні' },
+    { e: '💝', t: 'Напиши анонімну записку дівчині за столом', s: 'Вона читає вголос — не знає від кого' },
+    { e: '🌈', t: 'Розкажи про момент коли ти відчула себе справжньою queen', s: 'Той що хочеться повторити' },
+    { e: '🎀', t: 'Покажи найкращу і найгіршу фотку себе з цього року', s: 'Обидві — без вибору' },
+  ],
+  hard: [
+    { e: '😏', t: 'Напиши бувшому: "Ти мені снився"', s: 'Відправити і показати реакцію всім' },
+    { e: '💣', t: 'Розкажи найбільший секрет про своє особисте життя', s: 'Те що ще ніхто не знає' },
+    { e: '🕺', t: 'Станцюй з найменш знайомою дівчиною за столом', s: '30 секунд, музика на максимум' },
+    { e: '📲', t: 'Відкрий Tinder прямо зараз і лайкни першого хто з\'явиться', s: 'Без права дивитися профіль' },
+    { e: '🎭', t: 'Покажи як ти виглядаєш коли ревнуєш', s: 'Максимально правдиво і деталізовано' },
+    { e: '🔮', t: 'Назви ім\'я хлопця який тебе зараз цікавить', s: 'І що тебе в ньому зачіпає' },
+    { e: '🌶️', t: 'Опиши свій найзухваліший романтичний фантазм', s: 'PG-13 версія але щира' },
+    { e: '🎯', t: 'Виклич дівчину яку ти хочеш більше пізнати — ви обмінюєтесь телефонами на 2 хв', s: 'Повний доступ без пароля' },
+    { e: '💌', t: 'Напиши хлопцю якому давно хотіла написати але не наважувалась', s: 'Прямо зараз. Одне речення.' },
+    { e: '🃏', t: 'Розкажи одну правду і одну брехню про своє особисте життя', s: 'Решта вгадує що є що' },
+    { e: '👑', t: 'Назви три речі які ти б змінила у своєму коханні', s: 'Чесно, без прикрас' },
+    { e: '🔥', t: 'Зроби відеоповідомлення улюбленій людині прямо зараз', s: 'Запис не можна переглянути — одразу відправляєш' },
+    { e: '💎', t: 'Назви суму своїх місячних витрат на себе', s: 'До копійки! 😄' },
+    { e: '🦋', t: 'Скажи вголос що ти ніколи не говорила собі в дзеркало', s: 'Та сама фраза якої боїшся' },
+    { e: '🌹', t: 'Дай номер телефону дівчині яка тебе найбільше вразила сьогодні', s: 'І скажи чому саме вона' },
+  ]
+};
+
+let currentLevel = 'easy';
+let deck = [];
+let current = null;
+let isFlipped = false;
+let doneCount = 0;
+let skipCount = 0;
+let history = [];
+
+function setLevel(level, btn) {
+  currentLevel = level;
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  restart();
+}
+
+function buildDeck() {
+  let cards = [];
+  if (currentLevel === 'all') {
+    cards = [...CARDS.easy, ...CARDS.medium, ...CARDS.hard];
+  } else {
+    cards = [...CARDS[currentLevel]];
+  }
+  // Shuffle
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  return cards.map((c, i) => ({...c, idx: i + 1, level: getLevelOfCard(c)}));
+}
+
+function getLevelOfCard(c) {
+  if (CARDS.easy.includes(c) || (currentLevel === 'easy')) return 'easy';
+  if (CARDS.medium.includes(c)) return 'medium';
+  if (CARDS.hard.includes(c)) return 'hard';
+  return currentLevel;
+}
+
+function getLevelForCard(card) {
+  // Find which level this card belongs to
+  for (const [lv, cards] of Object.entries(CARDS)) {
+    if (cards.some(c => c.t === card.t)) return lv;
+  }
+  return currentLevel;
+}
+
+function restart() {
+  deck = buildDeck();
+  doneCount = 0;
+  skipCount = 0;
+  history = [];
+  isFlipped = false;
+  document.getElementById('cardWrap').classList.remove('flipped');
+  document.getElementById('doneScreen').classList.remove('show');
+  document.getElementById('actionBtns').style.display = 'flex';
+  document.getElementById('historyEl').style.display = 'none';
+  document.getElementById('historyList').innerHTML = '';
+  loadNext();
+  updateStats();
+}
+
+function loadNext() {
+  if (deck.length === 0) {
+    showDone();
+    return;
+  }
+  current = deck[0];
+  const lv = getLevelForCard(current);
+  const badges = { easy: ['badge-easy', '🌸 М\'яко'], medium: ['badge-medium', '🔥 Гаряче'], hard: ['badge-hard', '💥 Максимум'] };
+  const [cls, label] = badges[lv] || badges.easy;
+
+  document.getElementById('cardBadge').className = 'card-level-badge ' + cls;
+  document.getElementById('cardBadge').textContent = label;
+  document.getElementById('cardNumber').textContent = `Карта ${current.idx} з ${deck.length + doneCount + skipCount}`;
+  document.getElementById('cardEmoji').textContent = current.e;
+  document.getElementById('cardText').textContent = current.t;
+  document.getElementById('cardSub').textContent = current.s || '';
+}
+
+function flipCard() {
+  if (!current) return;
+  if (!isFlipped) {
+    document.getElementById('cardWrap').classList.add('flipped');
+    isFlipped = true;
+  }
+}
+
+function nextCard() {
+  if (!current) return;
+  if (!isFlipped) { flipCard(); return; }
+  history.unshift(current);
+  deck.shift();
+  doneCount++;
+  isFlipped = false;
+  document.getElementById('cardWrap').classList.remove('flipped');
+  setTimeout(() => { loadNext(); updateStats(); updateHistory(); }, 400);
+}
+
+function skipCard() {
+  if (!current) return;
+  deck.shift();
+  skipCount++;
+  isFlipped = false;
+  document.getElementById('cardWrap').classList.remove('flipped');
+  setTimeout(() => { loadNext(); updateStats(); }, 400);
+}
+
+function updateStats() {
+  document.getElementById('st-done').textContent = doneCount;
+  document.getElementById('st-skip').textContent = skipCount;
+  document.getElementById('st-left').textContent = deck.length;
+}
+
+function updateHistory() {
+  const el = document.getElementById('historyEl');
+  const list = document.getElementById('historyList');
+  el.style.display = 'block';
+  list.innerHTML = history.slice(0, 5).map(c =>
+    `<div class="hist-item"><span class="hist-emoji">${c.e}</span><span class="hist-text">${c.t}</span></div>`
+  ).join('');
+}
+
+function showDone() {
+  document.getElementById('doneScreen').classList.add('show');
+  document.getElementById('actionBtns').style.display = 'none';
+  document.querySelector('.card-area').style.display = 'none';
+}
+
+// Init
+restart();
+</script>
+</body>
+</html>
