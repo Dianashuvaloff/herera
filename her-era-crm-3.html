@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HER ERA · CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5ede0;--card:#fff8f0;--border:rgba(160,100,40,0.2);
+  --gold:#c9a84c;--gold2:#e8c060;--burg:#3d0f0f;--burg2:#5a1818;
+  --text:#3a2010;--muted:#a07840;--green:#2a7a20;--red:#c04040;--yellow:#b87800;
+}
+body{background:var(--bg);font-family:'Lato',sans-serif;color:var(--text);min-height:100vh}
+.nav{background:var(--burg);padding:14px 20px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-brand{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold2);font-size:20px;margin-right:auto}
+.nav-btn{font-size:11px;color:var(--gold);background:none;border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 14px;cursor:pointer;font-family:'Lato',sans-serif;white-space:nowrap}
+.nav-btn:hover,.nav-btn.active{background:rgba(201,168,76,0.15)}
+.bell-badge{position:relative}
+.badge{position:absolute;top:-6px;right:-6px;background:#c04040;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.section{display:none;padding:20px 16px 60px;max-width:780px;margin:0 auto}
+.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.card-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--burg);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr}}
+label{font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:5px}
+input,select,textarea{width:100%;padding:10px 12px;background:#fff;border:1px solid rgba(160,100,40,0.25);border-radius:8px;font-size:14px;font-family:'Lato',sans-serif;color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+.full{grid-column:1/-1}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-size:14px;font-family:'Lato',sans-serif;font-weight:700;cursor:pointer;transition:opacity 0.2s}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#a07828);color:#fff}
+.btn-gold:hover{opacity:0.85}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-green{background:#2a7a20;color:#fff}
+.btn-red{background:#c04040;color:#fff}
+.btn-gray{background:#ddd;color:#555}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:500px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);font-weight:700}
+.stat-label{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.05em}
+.guest-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.guest-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--burg),var(--burg2));display:flex;align-items:center;justify-content:center;color:var(--gold2);font-family:'Playfair Display',serif;font-size:16px;flex-shrink:0}
+.guest-info{flex:1;min-width:120px}
+.guest-name{font-size:15px;font-weight:700;color:var(--text)}
+.guest-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.guest-actions{display:flex;gap:6px;flex-wrap:wrap}
+.status-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.s-wait{background:rgba(200,165,0,0.15);color:#b87800;border:1px solid rgba(200,165,0,0.3)}
+.s-partial{background:rgba(42,122,32,0.12);color:#2a7a20;border:1px solid rgba(42,122,32,0.3)}
+.s-full{background:rgba(42,122,32,0.2);color:#1a5a10;border:1px solid rgba(42,122,32,0.4)}
+.s-blogger{background:rgba(100,50,200,0.1);color:#5030a0;border:1px solid rgba(100,50,200,0.2)}
+.s-cancelled{background:rgba(200,60,60,0.1);color:#c04040;border:1px solid rgba(200,60,60,0.2)}
+.reminder{border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px}
+.r-urgent{background:rgba(200,60,60,0.08);border:1px solid rgba(200,60,60,0.25)}
+.r-warn{background:rgba(200,165,0,0.08);border:1px solid rgba(200,165,0,0.25)}
+.r-icon{font-size:22px;flex-shrink:0}
+.r-text strong{font-size:14px;color:var(--text);display:block}
+.r-text span{font-size:12px;color:var(--muted)}
+.copy-msg{font-size:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:8px;color:var(--text);line-height:1.5;font-style:italic;cursor:pointer;transition:background 0.2s}
+.copy-msg:hover{background:rgba(201,168,76,0.08)}
+.copy-hint{font-size:10px;color:var(--gold);margin-top:3px}
+.policy-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.policy-row:last-child{border-bottom:none}
+.policy-key{font-size:12px;font-weight:700;color:var(--muted);min-width:140px;flex-shrink:0;padding-top:2px}
+.policy-val{font-size:14px;color:var(--text);line-height:1.5}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal-box{background:var(--card);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--burg);margin-bottom:16px}
+.hl{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:12px 14px;font-size:13px;color:#5a2e08;line-height:1.6;margin-bottom:16px}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-style:italic}
+.sync-bar{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--burg);margin-bottom:12px;display:none;align-items:center;gap:8px}
+.sync-bar.show{display:flex}
+.spinner{width:14px;height:14px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Her Era</span>
+  <button class="nav-btn active" onclick="show('dashboard',this)">🏠 Головна</button>
+  <button class="nav-btn" onclick="show('add',this)">➕ Додати гостя</button>
+  <button class="nav-btn" onclick="show('guests',this)">👥 Гості</button>
+  <button class="nav-btn bell-badge" onclick="show('reminders',this)">
+    🔔 Нагадування
+    <span class="badge" id="badgeCount">0</span>
+  </button>
+  <button class="nav-btn" onclick="show('policy',this)">📋 Умови</button>
+  <button class="nav-btn" onclick="show('messages',this)">💬 Повідомлення</button>
+  <button class="nav-btn" onclick="show('sales',this)">🔥 Скрипти продажу</button>
+</nav>
+
+<!-- DASHBOARD -->
+<div id="sec-dashboard" class="section active">
+  <div id="syncBar" class="sync-bar"><div class="spinner"></div><span id="syncMsg">Завантаження з Google Sheets...</span></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="s1">0</div><div class="stat-label">Всього гостей</div></div>
+    <div class="stat"><div class="stat-num" id="s2">0</div><div class="stat-label">Повна оплата</div></div>
+    <div class="stat"><div class="stat-num" id="s3">0</div><div class="stat-label">Очікують доплати</div></div>
+    <div class="stat"><div class="stat-num" id="s4">0</div><div class="stat-label">Нагадувань</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔔 Термінові нагадування</div>
+    <div id="dashReminders"><div class="empty">Нагадувань поки немає 🎉</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💰 Зведення по оплатах</div>
+    <div id="dashMoney"></div>
+  </div>
+</div>
+
+<!-- ADD GUEST -->
+<div id="sec-add" class="section">
+  <div class="card">
+    <div class="card-title">➕ Додати нового гостя</div>
+    <div class="form-grid">
+      <div><label>Ім'я</label><input type="text" id="f-name" placeholder="Наприклад: Соня"></div>
+      <div><label>Instagram або Telegram</label><input type="text" id="f-contact" placeholder="@нікнейм"></div>
+      <div><label>Телефон</label><input type="text" id="f-phone" placeholder="+38099..."></div>
+      <div><label>Івент</label>
+        <select id="f-event">
+          <option value="">— Обери івент —</option>
+          <option>💌 Свої Дівчата</option><option>♠️ Козирна</option>
+          <option>💸 Мені Можна Більше</option><option>💍 Нормальний Існує</option>
+          <option>✨ Головна Героїня</option><option>👯 Ми Match?</option>
+        </select>
+      </div>
+      <div><label>Дата івенту</label><input type="date" id="f-date"></div>
+      <div><label>Тип гостя</label>
+        <select id="f-type">
+          <option value="paid">💳 Платний</option>
+          <option value="blogger">🎁 Блогер (безкоштовно)</option>
+        </select>
+      </div>
+      <div><label>Ціна квитка</label>
+        <select id="f-price">
+          <option value="1590">🎟 Early bird — 1 590 грн</option>
+          <option value="1790">🎟 Standard — 1 790 грн</option>
+          <option value="1990">🎟 Last seats — 1 990 грн</option>
+          <option value="0">🎁 Блогер — безкоштовно</option>
+        </select>
+      </div>
+      <div><label>Спосіб оплати</label>
+        <select id="f-paytype">
+          <option value="parts">💳 Передоплата + доплата</option>
+          <option value="full">💳 Повна оплата одразу</option>
+        </select>
+      </div>
+      <div><label>Передоплата 1000 грн</label>
+        <select id="f-pre">
+          <option value="no">❌ Не оплачено</option>
+          <option value="yes">✅ Оплачено</option>
+        </select>
+      </div>
+      <div><label>Дата передоплати</label><input type="date" id="f-predate"></div>
+      <div><label>Доплата</label>
+        <select id="f-full">
+          <option value="no">❌ Не оплачено</option>
+          <option value="yes">✅ Оплачено</option>
+        </select>
+      </div>
+      <div><label>Дата доплати</label><input type="date" id="f-fulldate"></div>
+      <div class="full"><label>Примітка</label><input type="text" id="f-note" placeholder="Наприклад: попросила перенести..."></div>
+    </div>
+    <br>
+    <button class="btn btn-gold" onclick="addGuest()">💾 Зберегти гостя</button>
+  </div>
+</div>
+
+<!-- GUESTS -->
+<div id="sec-guests" class="section">
+  <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+    <select id="filterEvent" onchange="renderGuests()" style="flex:1;min-width:160px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-family:Lato,sans-serif;font-size:13px">
+      <option value="">Всі івенти</option>
+      <option>💌 Свої Дівчата</option><option>♠️ Козирна</option>
+      <option>💸 Мені Можна Більше</option><option>💍 Нормальний Існує</option>
+      <option>✨ Головна Героїня</option><option>👯 Ми Match?</option>
+    </select>
+    <select id="filterStatus" onchange="renderGuests()" style="flex:1;min-width:160px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-family:Lato,sans-serif;font-size:13px">
+      <option value="">Всі статуси</option>
+      <option value="wait">⏳ Очікує передоплати</option>
+      <option value="partial">🟡 Є передоплата</option>
+      <option value="full">🟢 Повна оплата</option>
+      <option value="blogger">🎁 Блогер</option>
+      <option value="cancelled">❌ Скасовано</option>
+    </select>
+    <button class="btn btn-gold btn-sm" onclick="loadFromSheets()">🔄 Оновити з Sheets</button>
+  </div>
+  <div id="guestList"></div>
+</div>
+
+<!-- REMINDERS -->
+<div id="sec-reminders" class="section">
+  <div class="hl">💡 Натисни на повідомлення щоб скопіювати і відправити дівчині!</div>
+  <div id="reminderList"></div>
+</div>
+
+<!-- POLICY -->
+<div id="sec-policy" class="section">
+  <div class="card">
+    <div class="card-title">💳 Передоплата</div>
+    <div class="policy-row"><div class="policy-key">Сума</div><div class="policy-val">1 000 грн — обов'язкова для підтвердження місця</div></div>
+    <div class="policy-row"><div class="policy-key">Дедлайн</div><div class="policy-val">Протягом 24 годин після бронювання</div></div>
+    <div class="policy-row"><div class="policy-key">Якщо не сплатила</div><div class="policy-val">Місце звільняється автоматично</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔄 Доплата</div>
+    <div class="policy-row"><div class="policy-key">Нагадування</div><div class="policy-val">За 7 днів до івенту</div></div>
+    <div class="policy-row"><div class="policy-key">Дедлайн</div><div class="policy-val">За 3 дні до івенту</div></div>
+    <div class="policy-row"><div class="policy-key">Якщо не сплатила</div><div class="policy-val">Місце звільняється, повернення за загальними умовами</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">❌ Повернення передоплати</div>
+    <div class="policy-row"><div class="policy-key">За 7+ днів</div><div class="policy-val" style="color:var(--green)">✅ Повне повернення 1 000 грн</div></div>
+    <div class="policy-row"><div class="policy-key">За 3–6 днів</div><div class="policy-val" style="color:var(--yellow)">⚠️ Повернення 500 грн</div></div>
+    <div class="policy-row"><div class="policy-key">За 1–2 дні або в день</div><div class="policy-val" style="color:var(--red)">❌ Передоплата не повертається</div></div>
+    <div class="policy-row"><div class="policy-key">Перенесення</div><div class="policy-val" style="color:var(--green)">✅ Передоплата зберігається на наступний івент</div></div>
+  </div>
+</div>
+
+<!-- MESSAGES -->
+<div id="sec-messages" class="section">
+  <div class="card">
+    <div class="card-title">💬 Генератор повідомлень</div>
+    <div class="form-grid">
+      <div><label>Тип оплати</label>
+        <select id="msg-paytype" onchange="generateMsg()">
+          <option value="pre">💳 Передоплата 1 000 грн</option>
+          <option value="full1590">🎟 Повна оплата — 1 590 грн</option>
+          <option value="full1790">🎟 Повна оплата — 1 790 грн</option>
+          <option value="full1990">🎟 Повна оплата — 1 990 грн</option>
+          <option value="dop590">✅ Доплата 590 грн (Early bird)</option>
+          <option value="dop790">✅ Доплата 790 грн (Standard)</option>
+          <option value="dop990">✅ Доплата 990 грн (Last seats)</option>
+        </select>
+      </div>
+      <div><label>Івент</label>
+        <select id="msg-event" onchange="generateMsg()">
+          <option value="">— Обери —</option>
+          <option>💌 Свої Дівчата</option><option>♠️ Козирна</option>
+          <option>💸 Мені Можна Більше</option><option>💍 Нормальний Існує</option>
+          <option>✨ Головна Героїня</option><option>👯 Ми Match?</option>
+        </select>
+      </div>
+      <div><label>Дата івенту</label><input type="date" id="msg-date" onchange="generateMsg()"></div>
+      <div><label>Ім'я дівчини</label><input type="text" id="msg-name" placeholder="Наприклад: Соня" oninput="generateMsg()"></div>
+    </div>
+    <div style="margin-top:16px">
+      <label>Готове повідомлення</label>
+      <div id="msg-output" style="background:#fff;border:1px solid rgba(160,100,40,0.25);border-radius:10px;padding:16px;font-size:14px;color:#3a2010;line-height:1.8;white-space:pre-wrap;min-height:120px;margin-top:6px">← Вибери параметри вище</div>
+    </div>
+    <br>
+    <button class="btn btn-gold" onclick="copyGeneratedMsg()" id="copyMsgBtn">📋 Скопіювати повідомлення</button>
+  </div>
+</div>
+
+<!-- SALES -->
+<div id="sec-sales" class="section">
+  <div class="card">
+    <div class="card-title">📣 Перше повідомлення — розсилка</div>
+    <div class="form-grid">
+      <div><label>Платформа</label>
+        <select id="s-platform" onchange="genFirst()">
+          <option value="tg">✈️ Telegram розсилка</option>
+          <option value="ig">📱 Instagram DM</option>
+          <option value="after">💗 Після івенту</option>
+        </select>
+      </div>
+      <div><label>Івент</label>
+        <select id="s-event" onchange="genFirst()">
+          <option value="svoi">💌 Свої Дівчата</option><option value="poker">♠️ Козирна</option>
+          <option value="money">💸 Мені Можна Більше</option><option value="tinder">💍 Нормальний Існує</option>
+          <option value="carpet">✨ Головна Героїня</option><option value="bestie">👯 Ми Match?</option>
+        </select>
+      </div>
+      <div><label>Кількість місць</label>
+        <select id="s-capacity" onchange="genFirst()">
+          <option value="12">👥 До 12 дівчат</option>
+          <option value="24">👥 До 24 дівчат</option>
+        </select>
+      </div>
+      <div><label>Ім'я (для "після івенту")</label><input type="text" id="s-first-name" placeholder="Соня" oninput="genFirst()"></div>
+    </div>
+    <br>
+    <div id="first-msg-out" style="background:#fff;border:1px solid rgba(160,100,40,0.25);border-radius:10px;padding:16px;font-size:14px;color:#3a2010;line-height:1.8;white-space:pre-wrap;min-height:80px"></div>
+    <br>
+    <button class="btn btn-gold" onclick="copyEl('first-msg-out', this)">📋 Скопіювати</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💬 Конструктор відповідей</div>
+    <div class="hl">Вибери що написала дівчина → отримай готову відповідь!</div>
+    <div class="form-grid" style="margin-bottom:14px">
+      <div><label>Про який івент</label>
+        <select id="obj-event" onchange="genObjReply()">
+          <option value="svoi">💌 Свої Дівчата</option><option value="poker">♠️ Козирна</option>
+          <option value="money">💸 Мені Можна Більше</option><option value="tinder">💍 Нормальний Існує</option>
+          <option value="carpet">✨ Головна Героїня</option><option value="bestie">👯 Ми Match?</option>
+        </select>
+      </div>
+      <div><label>Кількість місць</label>
+        <select id="obj-capacity" onchange="genObjReply()">
+          <option value="12">👥 До 12</option><option value="24">👥 До 24</option>
+        </select>
+      </div>
+      <div><label>Дата івенту</label><input type="date" id="obj-date" onchange="genObjReply()"></div>
+      <div><label>Локація</label>
+        <select id="obj-location" onchange="genObjReply()">
+          <option value="flora">🌿 Flora Hub</option>
+          <option value="s004">🏛️ Студія 004</option>
+          <option value="tbd">📍 Ще не визначено</option>
+        </select>
+      </div>
+      <div><label>Ім'я дівчини</label><input type="text" id="obj-name" placeholder="Соня" oninput="genObjReply()"></div>
+    </div>
+    <label>Що відповіла дівчина?</label>
+    <select id="s-obj" onchange="genObjReply()" style="margin-bottom:14px">
+      <option value="">— Обери ситуацію —</option>
+      <optgroup label="💬 Зацікавлена">
+        <option value="plus">Написала "+" або "цікаво"</option>
+        <option value="price_q">Питає ціну</option>
+        <option value="what_is">Питає що саме буде</option>
+        <option value="when">Питає коли / яка дата</option>
+        <option value="where">Питає де / яка адреса</option>
+        <option value="alone">Питає чи можна прийти одній</option>
+        <option value="with_friend">Хоче прийти з подругою</option>
+      </optgroup>
+      <optgroup label="😐 Сумнівається">
+        <option value="think">Каже "подумаю"</option>
+        <option value="expensive">Каже "дорого"</option>
+        <option value="busy">Каже "зайнята"</option>
+        <option value="next_time">Каже "наступного разу"</option>
+        <option value="no_money">Каже "немає грошей"</option>
+      </optgroup>
+      <optgroup label="❌ Відмовляє">
+        <option value="no">Каже "ні"</option>
+        <option value="ghosting">Не відповіла 24 год</option>
+        <option value="ghosting48">Не відповіла 48 год</option>
+      </optgroup>
+      <optgroup label="✅ Готова купити">
+        <option value="how_pay">Питає як оплатити</option>
+        <option value="paid">Каже що оплатила</option>
+      </optgroup>
+    </select>
+    <div id="obj-reply-out" style="background:#fff;border:1px solid rgba(160,100,40,0.25);border-radius:10px;padding:16px;font-size:14px;color:#3a2010;line-height:1.8;white-space:pre-wrap;min-height:60px;display:none"></div>
+    <div id="obj-copy-btn" style="display:none;margin-top:10px">
+      <button class="btn btn-gold" onclick="copyEl('obj-reply-out', this)">📋 Скопіювати відповідь</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="modal-box">
+    <div class="modal-title">✏️ Редагувати гостя</div>
+    <div class="form-grid">
+      <div><label>Ім'я</label><input type="text" id="e-name"></div>
+      <div><label>Контакт</label><input type="text" id="e-contact"></div>
+      <div><label>Телефон</label><input type="text" id="e-phone"></div>
+      <div><label>Івент</label>
+        <select id="e-event">
+          <option>💌 Свої Дівчата</option><option>♠️ Козирна</option>
+          <option>💸 Мені Можна Більше</option><option>💍 Нормальний Існує</option>
+          <option>✨ Головна Героїня</option><option>👯 Ми Match?</option>
+        </select>
+      </div>
+      <div><label>Дата івенту</label><input type="date" id="e-date"></div>
+      <div><label>Тип</label>
+        <select id="e-type">
+          <option value="paid">💳 Платний</option>
+          <option value="blogger">🎁 Блогер</option>
+          <option value="cancelled">❌ Скасовано</option>
+        </select>
+      </div>
+      <div><label>Ціна квитка</label>
+        <select id="e-price">
+          <option value="1590">🎟 Early bird — 1 590 грн</option>
+          <option value="1790">🎟 Standard — 1 790 грн</option>
+          <option value="1990">🎟 Last seats — 1 990 грн</option>
+          <option value="0">🎁 Блогер — безкоштовно</option>
+        </select>
+      </div>
+      <div><label>Спосіб оплати</label>
+        <select id="e-paytype">
+          <option value="parts">💳 Передоплата + доплата</option>
+          <option value="full">💳 Повна оплата одразу</option>
+        </select>
+      </div>
+      <div><label>Передоплата</label>
+        <select id="e-pre">
+          <option value="no">❌ Не оплачено</option>
+          <option value="yes">✅ Оплачено</option>
+        </select>
+      </div>
+      <div><label>Дата передоплати</label><input type="date" id="e-predate"></div>
+      <div><label>Доплата</label>
+        <select id="e-full">
+          <option value="no">❌ Не оплачено</option>
+          <option value="yes">✅ Оплачено</option>
+        </select>
+      </div>
+      <div><label>Дата доплати</label><input type="date" id="e-fulldate"></div>
+      <div class="full"><label>Примітка</label><input type="text" id="e-note"></div>
+    </div>
+    <br>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-gold" onclick="saveEdit()">💾 Зберегти</button>
+      <button class="btn btn-gray btn-sm" onclick="closeModal()">Скасувати</button>
+      <button class="btn btn-red btn-sm" onclick="deleteGuest()">🗑️ Видалити</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyWyFiG0lYSXBIZDGgFIYopgEEt39YvobY5uQlveu5ru5jDUYfZZsfozpqz4jxX9Aw/exec";
+
+let guests = [];
+let editIdx = null;
+
+// ── GOOGLE SHEETS ──
+async function loadFromSheets() {
+  showSync('Завантаження з Google Sheets...');
+  try {
+    const res = await fetch(SHEET_URL + '?action=get');
+    const data = await res.json();
+    if (data.guests && data.guests.length > 0) {
+      guests = data.guests;
+      localStorage.setItem('herera_guests', JSON.stringify(guests));
+    } else {
+      loadLocal();
+    }
+  } catch(e) {
+    loadLocal();
+  }
+  hideSync();
+  updateAll();
+}
+
+function loadLocal() {
+  try { guests = JSON.parse(localStorage.getItem('herera_guests') || '[]'); } catch(e) { guests = []; }
+}
+
+async function saveToSheets(guest) {
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: guest.name,
+        instagram: guest.contact,
+        telegram: guest.contact,
+        phone: guest.phone,
+        event: guest.event,
+        eventDate: guest.eventDate,
+        paymentType: guest.paytype === 'full' ? 'Повна оплата' : 'Передоплата + доплата',
+        amount: guest.price,
+        status: getStatus(guest).label,
+        prepayment: guest.prePaid === 'yes' ? '✅' : '❌',
+        remainder: (guest.price && guest.prePaid === 'yes' && guest.fullPaid !== 'yes') ? String(parseInt(guest.price) - 1000) : (guest.fullPaid === 'yes' ? '0' : guest.price),
+        promo: '',
+        notes: guest.note || ''
+      })
+    });
+  } catch(e) { console.log('Sheets save error:', e); }
+}
+
+function showSync(msg) {
+  document.getElementById('syncBar').classList.add('show');
+  document.getElementById('syncMsg').textContent = msg;
+}
+function hideSync() {
+  document.getElementById('syncBar').classList.remove('show');
+}
+
+function save() {
+  localStorage.setItem('herera_guests', JSON.stringify(guests));
+  updateAll();
+}
+
+// ── NAV ──
+function show(sec, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  if (btn) btn.classList.add('active');
+  updateAll();
+}
+
+// ── STATUS ──
+function getStatus(g) {
+  if (g.type === 'blogger') return {key:'blogger', label:'🎁 Блогер', cls:'s-blogger'};
+  if (g.type === 'cancelled') return {key:'cancelled', label:'❌ Скасовано', cls:'s-cancelled'};
+  if (g.fullPaid === 'yes') return {key:'full', label:'🟢 Повна оплата', cls:'s-full'};
+  if (g.prePaid === 'yes') return {key:'partial', label:'🟡 Є передоплата', cls:'s-partial'};
+  return {key:'wait', label:'⏳ Очікує передоплати', cls:'s-wait'};
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return 999;
+  const d = new Date(dateStr);
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
+}
+
+function getReminders() {
+  const list = [];
+  guests.forEach((g, i) => {
+    if (g.type === 'blogger' || g.type === 'cancelled') return;
+    const days = daysUntil(g.eventDate);
+    if (g.prePaid !== 'yes' && days > 0) {
+      list.push({type:'urgent', idx:i, guest:g,
+        title:`${g.name} — не оплатила передоплату!`,
+        sub:`Івент: ${g.event} · ${days} дн. до івенту`,
+        msg:`Привіт, ${g.name}! 💗 Нагадуємо що для підтвердження місця на ${g.event} потрібна передоплата 1000 грн. Якщо оплата не надійде протягом 24 год — місце буде звільнено. Реквізити: [твоя карта] — Діана, HER ERA`
+      });
+    }
+    if (g.prePaid === 'yes' && g.fullPaid !== 'yes' && days <= 7 && days > 0) {
+      const dop = g.price ? (parseInt(g.price) - 1000) : '???';
+      list.push({type: days <= 3 ? 'urgent' : 'warn', idx:i, guest:g,
+        title:`${g.name} — нагадати про доплату (${days} дн.)`,
+        sub:`Івент: ${g.event} · доплата ${dop} грн`,
+        msg:`Отримала твою передоплату ✅\n\nНагадуємо — до ${g.event} залишилось ${days} дн.!\n\n💰 Доплата: ${dop} грн\n💳 Картка: [твоя карта]\n⏰ Дедлайн: за 3 дні до вечора\n\nПісля оплати надішли скріншот 🙏\n— Діана, HER ERA`
+      });
+    }
+  });
+  return list;
+}
+
+function updateAll() {
+  const reminders = getReminders();
+  document.getElementById('badgeCount').textContent = reminders.length;
+  const paid = guests.filter(g => g.type !== 'blogger' && g.type !== 'cancelled');
+  document.getElementById('s1').textContent = guests.length;
+  document.getElementById('s2').textContent = paid.filter(g => g.fullPaid === 'yes').length;
+  document.getElementById('s3').textContent = paid.filter(g => g.prePaid === 'yes' && g.fullPaid !== 'yes').length;
+  document.getElementById('s4').textContent = reminders.length;
+  const dr = document.getElementById('dashReminders');
+  dr.innerHTML = reminders.length === 0 ? '<div class="empty">Нагадувань поки немає 🎉</div>' : reminders.slice(0,3).map(r => renderReminder(r)).join('');
+  const preTotal = guests.filter(g => g.prePaid === 'yes' && g.type === 'paid').length * 1000;
+  const fullTotal = guests.filter(g => g.fullPaid === 'yes' && g.type === 'paid').length;
+  document.getElementById('dashMoney').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--gold)">${preTotal.toLocaleString()} грн</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">Передоплат зібрано</div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--green)">${fullTotal}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">Повних оплат</div>
+    </div>
+  </div>`;
+  renderGuests();
+  renderReminders();
+}
+
+function renderReminder(r) {
+  const msgEsc = r.msg.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
+  return `<div class="reminder r-${r.type}">
+    <div class="r-icon">${r.type==='urgent'?'🚨':'⚠️'}</div>
+    <div class="r-text" style="flex:1">
+      <strong>${r.title}</strong><span>${r.sub}</span>
+      <div class="copy-msg" onclick="copyMsg('${msgEsc}',this)">${r.msg}</div>
+      <div class="copy-hint">👆 Натисни щоб скопіювати</div>
+    </div>
+  </div>`;
+}
+
+function renderReminders() {
+  const list = getReminders();
+  const el = document.getElementById('reminderList');
+  el.innerHTML = list.length === 0 ? '<div class="empty">Всі оплати в порядку! 🎉</div>' : list.map(r => renderReminder(r)).join('');
+}
+
+function renderGuests() {
+  const filterEv = document.getElementById('filterEvent')?.value || '';
+  const filterSt = document.getElementById('filterStatus')?.value || '';
+  const el = document.getElementById('guestList');
+  if (!el) return;
+  let filtered = guests.map((g,i) => ({...g,_i:i}));
+  if (filterEv) filtered = filtered.filter(g => g.event === filterEv);
+  if (filterSt) filtered = filtered.filter(g => getStatus(g).key === filterSt);
+  if (filtered.length === 0) { el.innerHTML = '<div class="empty">Гостей не знайдено</div>'; return; }
+  el.innerHTML = filtered.map(g => {
+    const st = getStatus(g);
+    const days = daysUntil(g.eventDate);
+    const daysStr = days > 0 ? `${days} дн.` : days === 0 ? 'сьогодні!' : 'минув';
+    return `<div class="guest-item">
+      <div class="guest-avatar">${(g.name||'?')[0]}</div>
+      <div class="guest-info">
+        <div class="guest-name">${g.name} ${g.contact?'<span style="font-weight:400;color:var(--muted)">'+g.contact+'</span>':''}</div>
+        <div class="guest-sub">${g.event||'—'} · ${g.eventDate?daysStr:'—'} · ${g.price?g.price+' грн':''}${g.note?' · '+g.note:''}</div>
+      </div>
+      <span class="status-badge ${st.cls}">${st.label}</span>
+      <div class="guest-actions">
+        <button class="btn btn-sm btn-gold" onclick="openEdit(${g._i})">✏️</button>
+        ${g.prePaid!=='yes'&&g.type==='paid'?`<button class="btn btn-sm btn-green" onclick="quickPay(${g._i},'pre')">💳 Передоплата</button>`:''}
+        ${g.prePaid==='yes'&&g.fullPaid!=='yes'&&g.type==='paid'?`<button class="btn btn-sm btn-green" onclick="quickPay(${g._i},'full')">✅ Доплата</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function addGuest() {
+  const name = document.getElementById('f-name').value.trim();
+  const event = document.getElementById('f-event').value;
+  if (!name || !event) { alert("Введи ім'я і вибери івент!"); return; }
+  const guest = {
+    name, contact: document.getElementById('f-contact').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    event, eventDate: document.getElementById('f-date').value,
+    type: document.getElementById('f-type').value,
+    price: document.getElementById('f-price').value,
+    paytype: document.getElementById('f-paytype').value,
+    prePaid: document.getElementById('f-pre').value,
+    preDate: document.getElementById('f-predate').value,
+    fullPaid: document.getElementById('f-full').value,
+    fullDate: document.getElementById('f-fulldate').value,
+    note: document.getElementById('f-note').value.trim(),
+    bookedDate: new Date().toISOString().split('T')[0]
+  };
+  guests.push(guest);
+  save();
+  showSync('Збереження в Google Sheets...');
+  await saveToSheets(guest);
+  hideSync();
+  ['f-name','f-contact','f-phone','f-date','f-note','f-predate','f-fulldate'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f-event').value='';
+  document.getElementById('f-pre').value='no';
+  document.getElementById('f-full').value='no';
+  document.getElementById('f-type').value='paid';
+  document.getElementById('f-price').value='1590';
+  document.getElementById('f-paytype').value='parts';
+  alert('✅ Гостя додано і збережено в Google Sheets!');
+  show('guests', document.querySelectorAll('.nav-btn')[2]);
+}
+
+function quickPay(idx, type) {
+  const today = new Date().toISOString().split('T')[0];
+  if (type==='pre') { guests[idx].prePaid='yes'; guests[idx].preDate=today; }
+  else { guests[idx].fullPaid='yes'; guests[idx].fullDate=today; }
+  save();
+}
+
+function openEdit(idx) {
+  editIdx = idx;
+  const g = guests[idx];
+  document.getElementById('e-name').value = g.name||'';
+  document.getElementById('e-contact').value = g.contact||'';
+  document.getElementById('e-phone').value = g.phone||'';
+  document.getElementById('e-event').value = g.event||'';
+  document.getElementById('e-date').value = g.eventDate||'';
+  document.getElementById('e-type').value = g.type||'paid';
+  document.getElementById('e-price').value = g.price||'1590';
+  document.getElementById('e-paytype').value = g.paytype||'parts';
+  document.getElementById('e-pre').value = g.prePaid||'no';
+  document.getElementById('e-predate').value = g.preDate||'';
+  document.getElementById('e-full').value = g.fullPaid||'no';
+  document.getElementById('e-fulldate').value = g.fullDate||'';
+  document.getElementById('e-note').value = g.note||'';
+  document.getElementById('editModal').classList.add('open');
+}
+
+function saveEdit() {
+  const g = guests[editIdx];
+  g.name=document.getElementById('e-name').value.trim();
+  g.contact=document.getElementById('e-contact').value.trim();
+  g.phone=document.getElementById('e-phone').value.trim();
+  g.event=document.getElementById('e-event').value;
+  g.eventDate=document.getElementById('e-date').value;
+  g.type=document.getElementById('e-type').value;
+  g.price=document.getElementById('e-price').value;
+  g.paytype=document.getElementById('e-paytype').value;
+  g.prePaid=document.getElementById('e-pre').value;
+  g.preDate=document.getElementById('e-predate').value;
+  g.fullPaid=document.getElementById('e-full').value;
+  g.fullDate=document.getElementById('e-fulldate').value;
+  g.note=document.getElementById('e-note').value.trim();
+  save(); closeModal();
+}
+
+function deleteGuest() {
+  if (!confirm('Видалити гостя?')) return;
+  guests.splice(editIdx,1); save(); closeModal();
+}
+
+function closeModal() {
+  document.getElementById('editModal').classList.remove('open'); editIdx=null;
+}
+
+function copyMsg(msg, el) {
+  const decoded = msg.replace(/\\n/g,'\n').replace(/\\'/g,"'");
+  navigator.clipboard.writeText(decoded).then(() => {
+    const orig = el.style.background;
+    el.style.background='rgba(42,122,32,0.1)';
+    const origText = el.textContent;
+    el.textContent='✅ Скопійовано!';
+    setTimeout(() => { el.style.background=orig; el.textContent=origText; },2000);
+  });
+}
+
+// ── MESSAGE GENERATOR ──
+function generateMsg() {
+  const paytype=document.getElementById('msg-paytype').value;
+  const event=document.getElementById('msg-event').value;
+  const dateVal=document.getElementById('msg-date').value;
+  const name=document.getElementById('msg-name').value.trim();
+  const eventStr=event||'[назва івенту]';
+  const dateStr=dateVal?new Date(dateVal).toLocaleDateString('uk-UA',{day:'numeric',month:'long',year:'numeric'}):'[дата]';
+  const nameStr=name?name+', ':'';
+  let msg='';
+  if (paytype==='pre') {
+    msg=`Отримала, дякую! ✅\n\n${nameStr}твоє місце на ${eventStr} підтверджено 💗\n\n📅 Дата: ${dateStr}\n💰 Передоплата: 1 000 грн ✅\n💰 Залишок: нагадаю за 7 днів до вечора\n\nЩоб внести тебе до списку гостей, надішли:\n👤 Ім'я\n📱 Instagram: @\n✈️ Telegram: @\n📞 Телефон\n\n— Діана, HER ERA 💗`;
+  } else if (paytype.startsWith('dop')) {
+    const d={'dop590':'590','dop790':'790','dop990':'990'};
+    const t={'dop590':'1 590','dop790':'1 790','dop990':'1 990'};
+    msg=`Отримала, дякую! ✅\n\n${nameStr}твоє місце на ${eventStr} повністю оплачено 💗\n\n📅 Дата: ${dateStr}\n💰 Передоплата: 1 000 грн ✅\n💰 Доплата: ${d[paytype]} грн ✅\n💰 Разом: ${t[paytype]} грн ✅\n\nДо зустрічі на вечорі! ✨\n\n— Діана, HER ERA 💗`;
+  } else {
+    const p={'full1590':'1 590','full1790':'1 790','full1990':'1 990'};
+    msg=`Отримала, дякую! ✅\n\n${nameStr}твоє місце на ${eventStr} повністю підтверджено 💗\n\n📅 Дата: ${dateStr}\n💰 Оплата: ${p[paytype]} грн ✅\n\nЩоб внести тебе до списку гостей, надішли:\n👤 Ім'я\n📱 Instagram: @\n✈️ Telegram: @\n📞 Телефон\n\n— Діана, HER ERA 💗`;
+  }
+  document.getElementById('msg-output').textContent=msg;
+}
+
+function copyGeneratedMsg() {
+  const text=document.getElementById('msg-output').textContent;
+  if (text.includes('←')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn=document.getElementById('copyMsgBtn');
+    btn.textContent='✅ Скопійовано!'; btn.style.background='#2a7a20';
+    setTimeout(()=>{btn.textContent='📋 Скопіювати повідомлення';btn.style.background='';},2500);
+  });
+}
+
+// ── SALES ──
+const MONO={
+  pre_standard:'https://pay.mbnk.biz/ehD_FvcdKbCn',
+  full_early:'https://pay.mbnk.biz/07lny6GYqQO1',
+  full_standard:'https://pay.mbnk.biz/bxvNm_j3sKoF',
+  full_last:'https://pay.mbnk.biz/HI68Vpu_ZOst'
+};
+const LOCATIONS={
+  flora:'Flora Hub, просп. Лобановського 4ж (м. Олімпійська)',
+  s004:'Студія 004, вул. Володимирська 10 (м. Театральна)',
+  tbd:'естетична фотостудія в центрі Києва (адресу надішлю за день)'
+};
+const eventInfo={
+  svoi:{name:'💌 Свої Дівчата',desc12:'Закритий жіночий вечір — знайомство, фотосесія, шампанське. Dress-code: total black 🖤 До 12 дівчат.',hook:'Киянко, є 4 останніх місця на закритий жіночий вечір HER ERA 💗'},
+  poker:{name:'♠️ Козирна',desc12:'Luxury poker night — чорна сукня, шампанське, покер з фішками, фотосесія. Gatsby style ♠️ До 12 дівчат.',hook:'Киянко, залишилось 4 місця на закритий poker night для дівчат 💗'},
+  money:{name:'💸 Мені Можна Більше',desc12:'Вечір про гроші, зростання і нетворкінг. Гра про фінанси, фотосесія. Wolf of Wall Street girls 💸 До 12 дівчат.',hook:'Киянко, є кілька місць на закритий жіночий вечір про гроші і зростання 💗'},
+  tinder:{name:'💍 Нормальний Існує',desc12:'Вечір про dating — психологічний тест, розбір Tinder профілів. Dress-code: як на перше побачення 💋 До 12 дівчат.',hook:'Киянко, є місця на закритий вечір де розберемо чому нормальний досі не знайшовся 💗'},
+  carpet:{name:'✨ Головна Героїня',desc12:'Red Carpet Night — справжня червона доріжка, відеограф, зіркові фото. Одягни те плаття зі шкафу ✨ До 12 дівчат.',hook:'Киянко, є останні місця на Red Carpet вечір 💗'},
+  bestie:{name:'👯 Ми Match?',desc12:'Speed dating для пошуку подруги — 11 раундів по 5 хв, Match Card 💗 До 12 дівчат.',hook:'Киянко, є місця на вечір де за 2 години знаходять найкращу подругу 💗'}
+};
+const upsellMap={svoi:['tinder','bestie'],poker:['carpet','money'],money:['tinder','carpet'],tinder:['money','bestie'],carpet:['poker','svoi'],bestie:['tinder','money']};
+
+function genFirst() {
+  const platform=document.getElementById('s-platform')?.value||'tg';
+  const ev=document.getElementById('s-event')?.value||'svoi';
+  const cap=document.getElementById('s-capacity')?.value||'12';
+  const fname=document.getElementById('s-first-name')?.value?.trim()||'[Ім\'я]';
+  const info=eventInfo[ev];
+  const desc=cap==='24'?(info.desc12.replace('До 12','До 24')):info.desc12;
+  let msg='';
+  if (platform==='tg'||platform==='ig') {
+    msg=`${info.hook}\n\n${desc}\n\n💰 Ціни:\n🎟 4 місця — 1 590 грн\n🎟 Standard — 1 790 грн\n🎟 Last seats — 1 990 грн\n\nЯкщо цікаво — напиши і розповім деталі 💌\n\n— Діана, HER ERA`;
+  } else {
+    const s=upsellMap[ev]||['tinder','money'];
+    const e1=eventInfo[s[0]],e2=eventInfo[s[1]];
+    msg=`${fname}, дякую що була вчора з нами 💗\n\nВже відкриваю наступні вечори — для тих хто вже з нами є місця по 1 590 грн.\n\nВаріант 1 — ${e1.name}\n${e1.desc12}\n\nВаріант 2 — ${e2.name}\n${e2.desc12}\n\n💰 Зараз обидва по 1 590 грн (4 місця)\nПотім: 1 790 → 1 990 грн\n\nЯкий цікавить? 💌\n\n— Діана, HER ERA`;
+  }
+  document.getElementById('first-msg-out').textContent=msg;
+}
+
+function getObjVals() {
+  return {
+    ev:document.getElementById('obj-event')?.value||'svoi',
+    cap:document.getElementById('obj-capacity')?.value||'12',
+    date:document.getElementById('obj-date')?.value||'',
+    loc:document.getElementById('obj-location')?.value||'tbd',
+    name:document.getElementById('obj-name')?.value?.trim()||''
+  };
+}
+
+function genObjReply() {
+  const val=document.getElementById('s-obj').value;
+  if (!val) return;
+  const v=getObjVals();
+  const info=eventInfo[v.ev];
+  const locStr=LOCATIONS[v.loc];
+  const dateStr=v.date?new Date(v.date).toLocaleDateString('uk-UA',{day:'numeric',month:'long',year:'numeric'}):null;
+  const dateLine=dateStr?`\n📅 Дата: ${dateStr}`:'\nДата: уточнюємо — одразу повідомлю';
+  const namePrefix=v.name?`${v.name}, `:'';
+  const replies={
+    plus:`Чудово! 💗\n\nЗалишилось кілька місць за 1 590 грн — це найнижча ціна.\n\nЩоб зафіксувати місце — передоплата 1 000 грн протягом 24 год:\n💳 ${MONO.pre_standard}\n\nНадішли скріншот після оплати! ✨`,
+    price_q:`Є три ціни:\n\n🎟 Early bird — 1 590 грн → ${MONO.full_early}\n🎟 Standard — 1 790 грн → ${MONO.full_standard}\n🎟 Last seats — 1 990 грн → ${MONO.full_last}\n\nАбо передоплата 1 000 грн → ${MONO.pre_standard}\n\nЗараз ще є early bird — бронюємо? 💗`,
+    what_is:`Розповім! ✨\n\n${info.name}\n${info.desc12}${dateLine}\n📍 ${locStr}\n\nЗалишилось кілька місць за 1 590 грн. Бронюємо? 💗`,
+    when:dateStr?`${dateLine.trim()} — записуй! 💗\n\n📍 ${locStr}\n\nМісця за 1 590 грн ще є. Зафіксувати місце? 😊`:`Дата поки фінально не підтверджена — але місця заповнюються вже зараз 💗\nЦіна 1 590 грн фіксується передоплатою вже сьогодні.\n\nЗафіксувати місце? 😊`,
+    where:`📍 ${locStr}\n\nАдресу з деталями надішлю за день до вечора 💗\n\nЗалишилось кілька місць за 1 590 грн. Бронюємо? ✨`,
+    alone:`Звичайно! 💗 Більшість дівчат приходять самі — і знаходять нових своїх людей.\n\nЗалишилось кілька місць за 1 590 грн. Бронюємо? 😊`,
+    with_friend:`Звичайно, можна з подругою! 💗\n\nПередоплата 1 000 грн × 2 фіксує обидва місця:\n💳 ${MONO.pre_standard}\n\nБронюємо на вас двох? 😊`,
+    think:`Розумію 😊\n\nЗараз 4 місця по 1 590 грн, далі ціна 1 790. Різниця 200 грн за те саме місце.\n\nЩо вирішуєш? 😊`,
+    expensive:`Розумію 💗\n\nПохід в ресторан обійдеться дорожче, а фото і нових людей не буде 😄\n\nПередоплата лише 1 000 грн → ${MONO.pre_standard}\nРешту доплачуєш за тиждень. Спробуємо? 💗`,
+    busy:`Зрозуміло 😊\n\nМісце і ціна 1 590 грн фіксуються зараз. Якщо дата не підійде — перенесемо, передоплата зберігається 💗\n\nЗафіксувати ціну? 😊`,
+    next_time:`Наступного разу ціна вже буде 1 790 грн і вище 😊\n\nАле якщо не твій момент — напиши коли будеш готова! 💗`,
+    no_money:`Розумію 💗\n\nПередоплата зараз лише 1 000 грн — решту доплачуєш за тиждень до вечора.\n\nТобто сьогодні тільки 1 000 грн → ${MONO.pre_standard}\n\nПідходить? 😊`,
+    no:`Зрозуміла, без проблем! 💗\n\nЯкщо колись зміниш думку — ми тут. Гарного дня! ✨`,
+    ghosting:`${namePrefix}просто нагадую 💗\n\nЗалишилось ще кілька місць за 1 590 грн. Якщо цікаво — дай знати! 😊`,
+    ghosting48:`${namePrefix}востаннє нагадаю 💗\n\nМісця за 1 590 грн майже закінчились. Будеш? 😊`,
+    how_pay:`Передоплата 1 000 грн:\n💳 ${MONO.pre_standard}\n\nАбо одразу повний квиток:\n🎟 Early bird 1 590 грн → ${MONO.full_early}\n🎟 Standard 1 790 грн → ${MONO.full_standard}\n🎟 Last seats 1 990 грн → ${MONO.full_last}\n\nПісля оплати надішли скріншот! 💗`,
+    paid:`Отримала, дякую! ✅\n\nМісце підтверджено 💗\n\nЩоб внести тебе до списку, надішли:\n👤 Ім'я\n📱 Instagram: @\n✈️ Telegram: @\n📞 Телефон\n\n— Діана, HER ERA 💗`
+  };
+  const out=document.getElementById('obj-reply-out');
+  const btn=document.getElementById('obj-copy-btn');
+  out.textContent=replies[val]||'';
+  out.style.display='block'; btn.style.display='block';
+}
+
+function copyEl(id, btn) {
+  const text=document.getElementById(id).textContent;
+  if (!text||text.includes('←')) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig=btn.textContent; btn.textContent='✅ Скопійовано!'; btn.style.background='#2a7a20';
+    setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2500);
+  });
+}
+
+// Init
+loadLocal();
+updateAll();
+genFirst();
+loadFromSheets();
+</script>
+</body>
+</html>
