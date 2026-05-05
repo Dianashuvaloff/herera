@@ -522,7 +522,7 @@ async function handlePay(type, url) {
     `💳 <b>Тип оплати:</b> ${payLabel}`;
 
   await sendToTelegram(msg);
-  window.open(url, '_blank');
+  window.location.href = url;
 
   document.getElementById('modalBody').innerHTML = `
     <div class="success-box">
