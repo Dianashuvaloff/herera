@@ -322,6 +322,9 @@ body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--text);}
       <input type="text" class="fi" id="fTg" placeholder="@нікнейм в Telegram">
       <label class="fl">Телефон *</label>
       <input type="tel" class="fi" id="fPhone" placeholder="+380...">
+      <label class="fl">Промокод подруги</label>
+      <input type="text" class="fi" id="fRefcode" placeholder="Наприклад: YULIYA-S5FF" style="text-transform:uppercase" oninput="checkRefcode()">
+      <div id="refcodeHint" style="font-size:12px;margin-top:4px;min-height:16px"></div>
       <div class="mdiv"></div>
       <div class="pay-lbl">Обери спосіб оплати 👇</div>
       <div class="pay-opts" id="payOpts"></div>
@@ -359,20 +362,32 @@ body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--text);}
 </div>
 
 <script>
-// ── TELEGRAM ──
-const TG_TOKEN = '8563723668:AAHO2VLG23EI7PeGn4AJ6NBXgiFzfXJPsuE';
-const TG_CHATS = [959203791, 786991728];
+// ── API ──
+const API_URL = 'https://herera.demo.autopilot-smm.info';
+let refcodeValid = false;
+let refcodeTimer = null;
 
-async function sendToTelegram(msg) {
-  for (const chatId of TG_CHATS) {
+async function checkRefcode() {
+  const code = document.getElementById('fRefcode').value.trim().toUpperCase();
+  const hint = document.getElementById('refcodeHint');
+  if (!code || code.length < 6) { hint.innerHTML = ''; refcodeValid = false; return; }
+  clearTimeout(refcodeTimer);
+  refcodeTimer = setTimeout(async () => {
     try {
-      await fetch('https://api.telegram.org/bot' + TG_TOKEN + '/sendMessage', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({chat_id: chatId, text: msg, parse_mode: 'HTML'})
+      const r = await fetch(API_URL + '/api/validate-refcode', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({code})
       });
-    } catch(e) { console.log('TG error', e); }
-  }
+      const d = await r.json();
+      if (d.valid) {
+        hint.innerHTML = '<span style="color:#22c55e">✅ Промокод діє! Знижка ' + d.discount_pct + '%</span>';
+        refcodeValid = true;
+      } else {
+        hint.innerHTML = '<span style="color:#ef4444">❌ Промокод не знайдено</span>';
+        refcodeValid = false;
+      }
+    } catch(e) { hint.innerHTML = ''; refcodeValid = false; }
+  }, 500);
 }
 
 // ── STATE ──
@@ -481,6 +496,9 @@ function openModal(i) {
   document.getElementById('fInsta').value = '';
   document.getElementById('fTg').value = '';
   document.getElementById('fPhone').value = '';
+  document.getElementById('fRefcode').value = '';
+  document.getElementById('refcodeHint').innerHTML = '';
+  refcodeValid = false;
 
   document.getElementById('payOpts').innerHTML = `
     <div class="pay-opt" onclick="handlePay('pre','${pi.mono_pre}')">
@@ -497,11 +515,12 @@ function openModal(i) {
   document.body.style.overflow = 'hidden';
 }
 
-async function handlePay(type, url) {
+async function handlePay(type, fallbackUrl) {
   const name = document.getElementById('fName').value.trim();
   const insta = document.getElementById('fInsta').value.trim();
   const tg = document.getElementById('fTg').value.trim();
   const phone = document.getElementById('fPhone').value.trim();
+  const refcode = document.getElementById('fRefcode').value.trim().toUpperCase();
 
   if (!name || !phone) {
     alert("Будь ласка, заповни Ім'я і Телефон!");
@@ -510,35 +529,71 @@ async function handlePay(type, url) {
 
   const e = EVENTS[currentEventIdx];
   const pi = getPriceInfo(e.sold);
-  const payLabel = type === 'pre' ? 'Передоплата 1 000 грн' : 'Повна оплата ' + pi.price;
-
-  const msg = `🎉 <b>НОВЕ БРОНЮВАННЯ HER ERA!</b>\n\n` +
-    `👤 <b>Ім'я:</b> ${name}\n` +
-    `📱 <b>Instagram:</b> ${insta || '—'}\n` +
-    `✈️ <b>Telegram:</b> ${tg || '—'}\n` +
-    `📞 <b>Телефон:</b> ${phone}\n\n` +
-    `🎪 <b>Івент:</b> ${e.emoji} ${e.name}\n` +
-    `📅 <b>Дата:</b> ${e.date}\n` +
-    `💳 <b>Тип оплати:</b> ${payLabel}`;
-
-  await sendToTelegram(msg);
+  const priceNum = parseInt(pi.price.replace(/\D/g,''));
+  const amount = type === 'pre' ? 1000 : priceNum;
 
   document.getElementById('modalBody').innerHTML = `
     <div class="success-box">
-      <div class="si">🎉</div>
-      <div class="st">Дякуємо, ${name}!</div>
-      <div class="sd">
-        Твої дані збережено!<br><br>
-        Натисни кнопку нижче щоб завершити оплату:
-      </div>
-      <a href="${url}" style="display:inline-block;margin-top:20px;background:var(--burg);color:white;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;">
-        💳 Перейти до оплати →
-      </a>
-      <div style="font-size:12px;color:var(--muted);margin-top:16px;line-height:1.6;">
-        Після оплати ми зв'яжемось з тобою 💗
-      </div>
+      <div class="si" style="font-size:40px">⏳</div>
+      <div class="st">Створюємо оплату...</div>
     </div>
   `;
+
+  try {
+    const resp = await fetch(API_URL + '/api/booking', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name, phone, instagram: insta, telegram: tg,
+        event_name: e.emoji + ' ' + e.name,
+        event_date: e.date,
+        event_location: e.tags.find(t => t.includes('Flora') || t.includes('Студія')) || '',
+        payment_type: type === 'pre' ? 'Передоплата' : 'Повна оплата',
+        refcode: refcodeValid ? refcode : '',
+        amount
+      })
+    });
+    const data = await resp.json();
+
+    if (data.success && data.payUrl) {
+      document.getElementById('modalBody').innerHTML = `
+        <div class="success-box">
+          <div class="si">🎉</div>
+          <div class="st">Дякуємо, ${name}!</div>
+          <div class="sd">
+            Твої дані збережено!${refcodeValid ? '<br>🎟 Промокод застосовано — знижка 10%!' : ''}<br><br>
+            Натисни кнопку нижче щоб завершити оплату:
+          </div>
+          <a href="${data.payUrl}" style="display:inline-block;margin-top:20px;background:var(--burg);color:white;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;">
+            💳 Перейти до оплати →
+          </a>
+          <div style="font-size:12px;color:var(--muted);margin-top:16px;line-height:1.6;">
+            Після оплати ми зв'яжемось з тобою 💗
+          </div>
+        </div>
+      `;
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch(err) {
+    console.error('Booking API error:', err);
+    document.getElementById('modalBody').innerHTML = `
+      <div class="success-box">
+        <div class="si">🎉</div>
+        <div class="st">Дякуємо, ${name}!</div>
+        <div class="sd">
+          Твої дані збережено!<br><br>
+          Натисни кнопку нижче щоб завершити оплату:
+        </div>
+        <a href="${fallbackUrl}" style="display:inline-block;margin-top:20px;background:var(--burg);color:white;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;">
+          💳 Перейти до оплати →
+        </a>
+        <div style="font-size:12px;color:var(--muted);margin-top:16px;line-height:1.6;">
+          Після оплати ми зв'яжемось з тобою 💗
+        </div>
+      </div>
+    `;
+  }
 }
 
 function closeModal() {
