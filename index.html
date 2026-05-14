@@ -233,7 +233,7 @@ body{background:var(--cream);font-family:'Inter',sans-serif;color:var(--text);}
         <a href="#how" class="btn-out">Як це працює</a>
       </div>
       <div class="hero-stats">
-        <div><div class="stat-n">6</div><div class="stat-l">вечорів сезону</div></div>
+        <div><div class="stat-n" id="statCount">6</div><div class="stat-l">вечорів сезону</div></div>
         <div><div class="stat-n">12–20</div><div class="stat-l">дівчат на вечорі</div></div>
         <div><div class="stat-n">щосб</div><div class="stat-l">о 17:00</div></div>
       </div>
@@ -402,13 +402,13 @@ async function checkRefcode() {
 }
 
 // ── STATE ──
-const DEFAULT_EVENTS = [
-  {id:'svoi',emoji:'💌',name:'Свої Дівчата',date:'09.05.2026 · Субота · 17:00',desc:'Знайомство, фотосесія з аксесуарами, шампанське і жива гра.',tags:['До 12 дівчат','Flora Hub','Total Black 🖤'],sold:0,capacity:12},
-  {id:'poker',emoji:'♠️',name:'Козирна',date:'16.05.2026 · Субота · 17:00',desc:'Luxury Poker Night — чорна сукня, шампанське і покер з фішками.',tags:['До 12 дівчат','Flora Hub','Black + Red Lips'],sold:0,capacity:12},
-  {id:'money',emoji:'💸',name:'Мені Можна Більше',date:'23.05.2026 · Субота · 17:00',desc:'Вечір про гроші, зростання і нетворкінг. Wolf of Wall Street girls.',tags:['До 12 дівчат','Flora Hub','Business Chic'],sold:0,capacity:12},
-  {id:'tinder',emoji:'💍',name:'Нормальний Існує',date:'30.05.2026 · Субота · 17:00',desc:'Tinder Night — психотест типажу і аудит анкет на проекторі.',tags:['До 20 дівчат','Студія 004','Date Night Look 💋'],sold:0,capacity:20},
-  {id:'carpet',emoji:'✨',name:'Головна Героїня',date:'06.06.2026 · Субота · 17:00',desc:'Red Carpet Night — червона доріжка, відеограф, зіркові фото.',tags:['До 20 дівчат','Студія 004','Вечірній образ'],sold:0,capacity:20},
-  {id:'bestie',emoji:'👯',name:'Ми Match?',date:'13.06.2026 · Субота · 17:00',desc:'Speed Bestie Dating — 11 раундів по 5 хвилин і Match Card.',tags:['До 12 дівчат','Flora Hub','Your Vibe Your Rules'],sold:0,capacity:12},
+const FALLBACK_EVENTS = [
+  {emoji:'💌',name:'Свої Дівчата',date:'09.05.2026 · Субота · 17:00',desc:'Знайомство, фотосесія з аксесуарами, шампанське і жива гра.',tags:['До 12 дівчат','Flora Hub','Total Black 🖤'],sold:0,capacity:12,location:'Flora Hub'},
+  {emoji:'♠️',name:'Козирна',date:'16.05.2026 · Субота · 17:00',desc:'Luxury Poker Night — чорна сукня, шампанське і покер з фішками.',tags:['До 12 дівчат','Flora Hub','Black + Red Lips'],sold:0,capacity:12,location:'Flora Hub'},
+  {emoji:'💸',name:'Мені Можна Більше',date:'23.05.2026 · Субота · 17:00',desc:'Вечір про гроші, зростання і нетворкінг. Wolf of Wall Street girls.',tags:['До 12 дівчат','Flora Hub','Business Chic'],sold:0,capacity:12,location:'Flora Hub'},
+  {emoji:'💍',name:'Нормальний Існує',date:'30.05.2026 · Субота · 17:00',desc:'Tinder Night — психотест типажу і аудит анкет на проекторі.',tags:['До 20 дівчат','Студія 004','Date Night Look 💋'],sold:0,capacity:20,location:'Студія 004'},
+  {emoji:'✨',name:'Головна Героїня',date:'06.06.2026 · Субота · 17:00',desc:'Red Carpet Night — червона доріжка, відеограф, зіркові фото.',tags:['До 20 дівчат','Студія 004','Вечірній образ'],sold:0,capacity:20,location:'Студія 004'},
+  {emoji:'👯',name:'Ми Match?',date:'13.06.2026 · Субота · 17:00',desc:'Speed Bestie Dating — 11 раундів по 5 хвилин і Match Card.',tags:['До 12 дівчат','Flora Hub','Your Vibe Your Rules'],sold:0,capacity:12,location:'Flora Hub'},
 ];
 
 const MONO = {
@@ -430,16 +430,35 @@ const FAQ_DATA = [
   {q:'Як оплатити?',a:'Натисни "Забронювати" → заповни дані → обери спосіб оплати → перейдеш на Monobank.'},
 ];
 
-function loadState() {
-  try { return JSON.parse(localStorage.getItem('herera_events')) || DEFAULT_EVENTS; }
-  catch(e) { return DEFAULT_EVENTS; }
-}
-function saveState(events) {
-  try { localStorage.setItem('herera_events', JSON.stringify(events)); } catch(e) {}
+let EVENTS = FALLBACK_EVENTS;
+let currentEventIdx = null;
+let eventsLoaded = false;
+
+async function loadEventsFromAPI() {
+  try {
+    const r = await fetch(API_URL + '/api/events');
+    const d = await r.json();
+    if (d.events && d.events.length > 0) {
+      EVENTS = d.events;
+      eventsLoaded = true;
+      renderEvents();
+      updateHeroCard();
+    }
+  } catch(e) {
+    console.log('Using fallback events');
+  }
 }
 
-let EVENTS = loadState();
-let currentEventIdx = null;
+function updateHeroCard() {
+  if (!EVENTS.length) return;
+  const ev = EVENTS[0];
+  const titleEl = document.querySelector('.hc-title');
+  const dateEl = document.querySelector('.hc-date');
+  const countEl = document.getElementById('statCount');
+  if (titleEl) titleEl.textContent = ev.name;
+  if (dateEl) dateEl.textContent = '📅 ' + ev.date;
+  if (countEl) countEl.textContent = EVENTS.length;
+}
 
 function getWave(sold) {
   if (sold < 4) return 'early';
@@ -558,7 +577,7 @@ async function handlePay(type, fallbackUrl) {
         name, phone, instagram: insta, telegram: tg,
         event_name: e.emoji + ' ' + e.name,
         event_date: e.date,
-        event_location: e.tags.find(t => t.includes('Flora') || t.includes('Студія')) || '',
+        event_location: e.location || e.tags.find(t => t.includes('Flora') || t.includes('Студія')) || '',
         payment_type: type === 'pre' ? 'Передоплата' : 'Повна оплата',
         refcode: refcodeValid ? refcode : '',
         amount
@@ -703,11 +722,10 @@ function saveAdmin() {
     e.sold = s;
     e.capacity = c;
   });
-  saveState(EVENTS);
   renderEvents();
   renderAdmin();
   document.getElementById('adminPanel').classList.remove('open');
-  alert('✅ Збережено!');
+  alert('✅ Збережено (локально до перезавантаження)!');
 }
 
 function closeNav() {
@@ -716,6 +734,7 @@ function closeNav() {
 
 renderEvents();
 renderFAQ();
+loadEventsFromAPI();
 </script>
 </body>
 </html>
