@@ -123,14 +123,14 @@ REDEEM_NOT_ENOUGH = (
 INFO = (
     "🖤 <b>HER ERA</b> — закритий клуб жіночих вечорів у Києві.\n\n"
     "Знайомства, фотосесія, шампанське, нетворкінг, покер, тематичні вечори.\n\n"
-    "Instagram: @her.era.kyiv\n"
+    'Instagram: <a href="https://instagram.com/her.era.kyiv">@her.era.kyiv</a>\n'
     "Telegram: @dianashuvaloff"
 )
 
 CONTACT = (
     "📩 Зв'язок з організатором:\n\n"
     "Telegram: @dianashuvaloff\n"
-    "Instagram: @her.era.kyiv"
+    'Instagram: <a href="https://instagram.com/her.era.kyiv">@her.era.kyiv</a>'
 )
 
 HELP = (
