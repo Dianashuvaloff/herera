@@ -593,6 +593,65 @@ def add_points_record(girl_id: str, girl_name: str, action: str, points: int, co
     ], value_input_option="USER_ENTERED")
 
 
+# --- OCR Learning Dictionary ---
+
+_ws_ocr_dict = None
+
+
+def get_ws_ocr_dict():
+    global _ws_ocr_dict
+    if _ws_ocr_dict is None:
+        _ws_ocr_dict = _get_or_create_sheet("OCR словник", [
+            "Поле", "Claude побачив", "Правильний текст", "Кількість",
+        ])
+    return _ws_ocr_dict
+
+
+def ocr_learn(field: str, raw_chars: str, correct_text: str):
+    ws = get_ws_ocr_dict()
+    data = ws.get_all_values()
+    raw_norm = raw_chars.strip().lower()
+    correct_norm = correct_text.strip()
+
+    for i, row in enumerate(data[1:], start=2):
+        if len(row) >= 3 and row[0] == field and row[1].strip().lower() == raw_norm:
+            ws.update_cell(i, 3, correct_norm)
+            count = int(row[3] or 0) if len(row) > 3 else 0
+            ws.update_cell(i, 4, str(count + 1))
+            return
+
+    ws.append_row([field, raw_chars.strip(), correct_norm, "1"],
+                  value_input_option="USER_ENTERED")
+
+
+def ocr_lookup(field: str, raw_chars: str) -> str | None:
+    ws = get_ws_ocr_dict()
+    data = ws.get_all_values()
+    if len(data) <= 1:
+        return None
+    raw_norm = raw_chars.strip().lower()
+    for row in data[1:]:
+        if len(row) >= 3 and row[0] == field and row[1].strip().lower() == raw_norm:
+            return row[2]
+    return None
+
+
+def ocr_find_similar(field: str, raw_chars: str) -> list[str]:
+    ws = get_ws_ocr_dict()
+    data = ws.get_all_values()
+    if len(data) <= 1:
+        return []
+    results = []
+    raw_words = set(raw_chars.strip().lower().split())
+    for row in data[1:]:
+        if len(row) >= 3 and row[0] == field:
+            stored_words = set(row[1].strip().lower().split())
+            overlap = len(raw_words & stored_words)
+            if overlap >= max(1, len(raw_words) // 2):
+                results.append(row[2])
+    return results[:3]
+
+
 def check_story_tag_awarded(girl_id: str, event_name: str) -> bool:
     data = ws_points.get_all_values()
     for row in data[1:]:

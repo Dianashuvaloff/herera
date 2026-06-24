@@ -21,6 +21,9 @@ from sheets import (
     get_girls_with_chat_id,
     get_upcoming_events,
     log_broadcast,
+    ocr_find_similar,
+    ocr_learn,
+    ocr_lookup,
     update_girl_profile,
     write_match_blank,
 )
@@ -284,12 +287,44 @@ async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
     uf = unclear_queue[index]
     field = uf["field"]
     label = FIELD_LABELS.get(field, field)
+    raw = uf.get("raw_chars", "?")
     readings = uf.get("possible_readings", [])[:3]
+
+    # Check learned dictionary — exact match auto-resolves
+    learned = ocr_lookup(field, raw)
+    if learned:
+        fsm_data = await state.get_data()
+        profile = fsm_data["profile"]
+        profile[field] = learned
+        await state.update_data(profile=profile, unclear_index=index + 1)
+        if edit:
+            try:
+                await message.edit_text(
+                    f"✅ <b>{label}</b>: {learned} <i>(з словника)</i>",
+                    parse_mode=ParseMode.HTML,
+                )
+            except Exception:
+                pass
+        else:
+            await message.answer(
+                f"✅ <b>{label}</b>: {learned} <i>(з словника)</i>",
+                parse_mode=ParseMode.HTML,
+            )
+        import asyncio as _aio
+        await _aio.sleep(0.5)
+        await _send_unclear_choice(message, state, edit=False)
+        return
+
+    # Check for similar entries in dictionary — add as first options
+    similar = ocr_find_similar(field, raw)
+    if similar:
+        readings = similar + [r for r in readings if r not in similar]
+        readings = readings[:4]
 
     text = (
         f"🔍 <b>Нечітке поле ({index + 1}/{len(unclear_queue)})</b>\n\n"
         f"📝 <b>{label}</b>\n"
-        f"Бачу: «{uf.get('raw_chars', '?')}»\n\n"
+        f"Бачу: «{raw}»\n\n"
         f"Обери правильний варіант або <b>напиши свій текстом</b>:"
     )
 
@@ -330,8 +365,12 @@ async def cb_unclear_pick(callback: CallbackQuery, state: FSMContext):
         field = uf["field"]
         readings = uf.get("possible_readings", [])
         if reading_idx < len(readings):
-            profile[field] = readings[reading_idx]
+            chosen = readings[reading_idx]
+            profile[field] = chosen
             await state.update_data(profile=profile)
+            raw = uf.get("raw_chars", "")
+            if raw:
+                ocr_learn(field, raw, chosen)
 
     await state.update_data(unclear_index=field_idx + 1)
     await _send_unclear_choice(callback.message, state, edit=True)
@@ -359,9 +398,14 @@ async def on_unclear_manual_input(message: Message, state: FSMContext):
     profile = fsm_data["profile"]
 
     if index < len(unclear_queue):
-        field = unclear_queue[index]["field"]
-        profile[field] = message.text.strip()
+        uf = unclear_queue[index]
+        field = uf["field"]
+        manual_text = message.text.strip()
+        profile[field] = manual_text
         await state.update_data(profile=profile, unclear_index=index + 1)
+        raw = uf.get("raw_chars", "")
+        if raw:
+            ocr_learn(field, raw, manual_text)
 
     await _send_unclear_choice(message, state, edit=False)
 
