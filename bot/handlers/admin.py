@@ -290,7 +290,7 @@ async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
         f"🔍 <b>Нечітке поле ({index + 1}/{len(unclear_queue)})</b>\n\n"
         f"📝 <b>{label}</b>\n"
         f"Бачу: «{uf.get('raw_chars', '?')}»\n\n"
-        f"Обери правильний варіант:"
+        f"Обери правильний варіант або <b>напиши свій текстом</b>:"
     )
 
     buttons = []
@@ -346,6 +346,24 @@ async def cb_unclear_skip(callback: CallbackQuery, state: FSMContext):
     field_idx = int(callback.data.replace("uf_skip:", ""))
     await state.update_data(unclear_index=field_idx + 1)
     await _send_unclear_choice(callback.message, state, edit=True)
+
+
+@router.message(BlankFSM.resolving_unclear, F.text)
+async def on_unclear_manual_input(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+
+    fsm_data = await state.get_data()
+    unclear_queue = fsm_data.get("unclear_queue", [])
+    index = fsm_data.get("unclear_index", 0)
+    profile = fsm_data["profile"]
+
+    if index < len(unclear_queue):
+        field = unclear_queue[index]["field"]
+        profile[field] = message.text.strip()
+        await state.update_data(profile=profile, unclear_index=index + 1)
+
+    await _send_unclear_choice(message, state, edit=False)
 
 
 async def _send_final_confirm(message, state: FSMContext, profile: dict, match_data: dict,
