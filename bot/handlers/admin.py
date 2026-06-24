@@ -452,9 +452,15 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
     girl = find_girl_by_name_and_event(name, event_name)
 
     if not girl:
-        await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
-        await state.clear()
-        return
+        # Create new girl record with data from blank
+        from sheets import register_girl
+        result = register_girl(chat_id="", username="", full_name=name)
+        girl = find_girl_by_name_and_event(name, event_name)
+        if not girl:
+            await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
+            await state.clear()
+            return
+        log.info("Created new girl record for blank: %s", name)
 
     seeking = profile.get("seeking", {})
     profile_update = {}

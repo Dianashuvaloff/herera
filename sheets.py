@@ -163,17 +163,38 @@ def find_girl_by_phone(phone: str) -> dict | None:
     return None
 
 
-def find_girl_by_name_and_event(name: str, event_name: str) -> dict | None:
+def find_girl_by_name(name: str) -> dict | None:
     data = ws_girls.get_all_values()
     headers = data[0]
     name_col = headers.index("Імʼя") if "Імʼя" in headers else None
     if name_col is None:
         return None
     name_lower = name.lower().strip()
+
+    # Exact match
     for i, row in enumerate(data[1:], start=2):
         if len(row) > name_col and row[name_col].lower().strip() == name_lower:
             return {"row": i, "data": dict(zip(headers, row))}
+
+    # Starts-with match (Софія matches Софія Коваленко)
+    for i, row in enumerate(data[1:], start=2):
+        if len(row) > name_col:
+            row_name = row[name_col].lower().strip()
+            if row_name.startswith(name_lower) or name_lower.startswith(row_name):
+                return {"row": i, "data": dict(zip(headers, row))}
+
+    # Contains match
+    for i, row in enumerate(data[1:], start=2):
+        if len(row) > name_col:
+            row_name = row[name_col].lower().strip()
+            if name_lower in row_name or row_name in name_lower:
+                return {"row": i, "data": dict(zip(headers, row))}
+
     return None
+
+
+def find_girl_by_name_and_event(name: str, event_name: str) -> dict | None:
+    return find_girl_by_name(name)
 
 
 def update_phone(row: int, phone: str):
