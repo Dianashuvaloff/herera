@@ -554,7 +554,13 @@ def write_match_blank(girl_id: str, girl_name: str, event_name: str, event_date:
     record_id = f"MB-{len(data):04d}"
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    padded_slots = (slots + [""] * 24)[:24]
+    # Prefix "+" with apostrophe to prevent Sheets treating it as formula
+    padded_slots = []
+    for s in (slots + [""] * 24)[:24]:
+        if s == "+":
+            padded_slots.append("'+" )
+        else:
+            padded_slots.append(s)
 
     row = [record_id, str(girl_id), girl_name, event_name, event_date,
            str(blank_number)] + padded_slots + [now]
