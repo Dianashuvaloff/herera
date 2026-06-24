@@ -323,20 +323,22 @@ async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
         readings = similar + [r for r in readings if r not in similar]
         readings = readings[:4]
 
+    num_emoji = ["1️⃣", "2️⃣", "3️⃣", "4️⃣"]
+    variants_text = "\n".join(f"{num_emoji[i]} {r}" for i, r in enumerate(readings))
+
     text = (
         f"🔍 <b>Нечітке поле ({index + 1}/{len(unclear_queue)})</b>\n\n"
         f"📝 <b>{label}</b>\n"
         f"Бачу: «{raw}»\n\n"
-        f"Обери правильний варіант або <b>напиши свій текстом</b>:"
+        f"{variants_text}\n\n"
+        f"Обери номер або <b>напиши свій текстом</b>:"
     )
 
     buttons = []
+    row = []
     for i, reading in enumerate(readings):
-        display = reading
-        buttons.append([InlineKeyboardButton(
-            text=display,
-            callback_data=f"uf_pick:{index}:{i}",
-        )])
+        row.append(InlineKeyboardButton(text=num_emoji[i], callback_data=f"uf_pick:{index}:{i}"))
+    buttons.append(row)
     buttons.append([InlineKeyboardButton(text="⏭ Залишити як є", callback_data=f"uf_skip:{index}")])
     buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
 

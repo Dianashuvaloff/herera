@@ -242,6 +242,39 @@ def _get_client():
     return anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
 
 
+def _clean_raw_chars(text: str) -> str:
+    if not text:
+        return text
+    # If every other char is a space (letter-by-letter), join them
+    # Detect: "у і л ю с т р а т о р а" → all single chars separated by spaces
+    parts = text.split()
+    if len(parts) > 3 and all(len(p) <= 2 for p in parts):
+        return "".join(parts)
+    # Remove dashes between single chars: "у-і-л-ю-с-т-р" → "уілюстр"
+    if "-" in text:
+        dash_parts = text.split("-")
+        if all(len(p.strip()) <= 2 for p in dash_parts):
+            return "".join(p.strip() for p in dash_parts)
+    # Remove pipes between single chars
+    if "|" in text:
+        pipe_parts = text.split("|")
+        if all(len(p.strip()) <= 2 for p in pipe_parts):
+            return "".join(p.strip() for p in pipe_parts)
+    return text
+
+
+def _clean_unclear_fields(data: dict) -> dict:
+    for uf in data.get("unclear_fields", []):
+        if "raw_chars" in uf:
+            uf["raw_chars"] = _clean_raw_chars(uf["raw_chars"])
+        cleaned_readings = []
+        for r in uf.get("possible_readings", []):
+            cleaned_readings.append(_clean_raw_chars(r))
+        if cleaned_readings:
+            uf["possible_readings"] = cleaned_readings
+    return data
+
+
 def _extract_json(text: str) -> dict:
     text = text.strip()
     if text.startswith("```"):
@@ -498,6 +531,9 @@ async def recognize_profile(image_bytes: bytes, media_type: str = "image/jpeg") 
         log.info("Running second pass for unclear fields...")
         profile = await _reread_unclear_fields(processed, profile)
         profile = validate_profile(profile)
+
+    # Clean up letter-by-letter artifacts in raw_chars
+    profile = _clean_unclear_fields(profile)
 
     return profile
 
