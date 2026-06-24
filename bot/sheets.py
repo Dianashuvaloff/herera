@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import random
 import string
@@ -8,6 +9,8 @@ from pathlib import Path
 import gspread
 
 from config import CREDENTIALS_FILE, FREE_TICKET_COST, SPREADSHEET_ID, STATUSES
+
+log = logging.getLogger(__name__)
 
 _creds_env = os.getenv("GOOGLE_CREDENTIALS_JSON")
 if _creds_env:
@@ -27,6 +30,47 @@ ws_points = sh.worksheet("Бали історія")
 ws_codes = sh.worksheet("Коди")
 ws_events = sh.worksheet("Івенти")
 
+# New Phase 2 sheets — created lazily
+_ws_matches = None
+_ws_broadcasts = None
+
+
+def _get_or_create_sheet(name: str, headers: list[str]):
+    try:
+        ws = sh.worksheet(name)
+    except gspread.exceptions.WorksheetNotFound:
+        ws = sh.add_worksheet(title=name, rows=1000, cols=len(headers))
+        ws.append_row(headers, value_input_option="USER_ENTERED")
+        log.info("Created sheet: %s", name)
+    return ws
+
+
+def get_ws_matches():
+    global _ws_matches
+    if _ws_matches is None:
+        _ws_matches = _get_or_create_sheet("Матч-бланки", [
+            "ID запису", "ID дівчини", "Імʼя", "Назва івенту", "Дата івенту",
+            "Номер на бланку",
+            "Слот 1", "Слот 2", "Слот 3", "Слот 4", "Слот 5", "Слот 6",
+            "Слот 7", "Слот 8", "Слот 9", "Слот 10", "Слот 11", "Слот 12",
+            "Слот 13", "Слот 14", "Слот 15", "Слот 16", "Слот 17", "Слот 18",
+            "Слот 19", "Слот 20", "Слот 21", "Слот 22", "Слот 23", "Слот 24",
+            "Дата запису",
+        ])
+    return _ws_matches
+
+
+def get_ws_broadcasts():
+    global _ws_broadcasts
+    if _ws_broadcasts is None:
+        _ws_broadcasts = _get_or_create_sheet("Розсилки", [
+            "ID розсилки", "Дата", "Тип", "Івент", "Текст",
+            "Кількість отримувачів", "Статус",
+        ])
+    return _ws_broadcasts
+
+
+# --- Helpers ---
 
 def _transliterate(name: str) -> str:
     table = {
@@ -52,6 +96,15 @@ def _generate_refcode(name: str) -> str:
     return f"{prefix}-{suffix}"
 
 
+def _normalize_phone(phone: str) -> str:
+    digits = "".join(c for c in phone if c.isdigit())
+    if digits.startswith("0") and len(digits) == 10:
+        digits = "380" + digits[1:]
+    if digits.startswith("80") and len(digits) == 11:
+        digits = "3" + digits
+    return digits
+
+
 def get_status_label(total_points: float) -> str:
     label = STATUSES[0][1]
     for threshold, name in STATUSES:
@@ -59,6 +112,15 @@ def get_status_label(total_points: float) -> str:
             label = name
     return label
 
+
+def get_next_status_info(total_points: float) -> dict | None:
+    for threshold, name in STATUSES:
+        if total_points < threshold:
+            return {"status": name, "threshold": threshold, "points_left": threshold - total_points}
+    return None
+
+
+# --- Girls CRUD ---
 
 def find_girl_by_chat_id(chat_id: str) -> dict | None:
     data = ws_girls.get_all_values()
@@ -84,15 +146,6 @@ def find_girl_by_username(username: str) -> dict | None:
     return None
 
 
-def _normalize_phone(phone: str) -> str:
-    digits = "".join(c for c in phone if c.isdigit())
-    if digits.startswith("0") and len(digits) == 10:
-        digits = "380" + digits[1:]
-    if digits.startswith("80") and len(digits) == 11:
-        digits = "3" + digits
-    return digits
-
-
 def find_girl_by_phone(phone: str) -> dict | None:
     normalized = _normalize_phone(phone)
     if len(normalized) < 10:
@@ -110,11 +163,31 @@ def find_girl_by_phone(phone: str) -> dict | None:
     return None
 
 
+def find_girl_by_name_and_event(name: str, event_name: str) -> dict | None:
+    data = ws_girls.get_all_values()
+    headers = data[0]
+    name_col = headers.index("Імʼя") if "Імʼя" in headers else None
+    if name_col is None:
+        return None
+    name_lower = name.lower().strip()
+    for i, row in enumerate(data[1:], start=2):
+        if len(row) > name_col and row[name_col].lower().strip() == name_lower:
+            return {"row": i, "data": dict(zip(headers, row))}
+    return None
+
+
 def update_phone(row: int, phone: str):
     data = ws_girls.row_values(1)
     col = data.index("Телефон") + 1 if "Телефон" in data else None
     if col:
         ws_girls.update_cell(row, col, _normalize_phone(phone))
+
+
+def update_chat_id(row: int, chat_id: str):
+    data = ws_girls.row_values(1)
+    col = data.index("Telegram chat id") + 1 if "Telegram chat id" in data else None
+    if col:
+        ws_girls.update_cell(row, col, str(chat_id))
 
 
 def register_girl(chat_id: str, username: str, full_name: str, phone: str = "") -> dict:
@@ -155,7 +228,7 @@ def register_girl(chat_id: str, username: str, full_name: str, phone: str = "") 
         f"{full_name} (ID:{next_id})",
         "Знижка %",
         "10",
-        "100",
+        "50",
         "",
         "0",
         "",
@@ -167,12 +240,18 @@ def register_girl(chat_id: str, username: str, full_name: str, phone: str = "") 
     return {"id": next_id, "name": full_name, "refcode": refcode}
 
 
-def update_chat_id(row: int, chat_id: str):
-    data = ws_girls.row_values(1)
-    col = data.index("Telegram chat id") + 1 if "Telegram chat id" in data else None
-    if col:
-        ws_girls.update_cell(row, col, str(chat_id))
+def update_girl_profile(row: int, profile_data: dict):
+    headers = ws_girls.row_values(1)
+    col_map = {h: i + 1 for i, h in enumerate(headers)}
+    updates = []
+    for field, value in profile_data.items():
+        if field in col_map and value is not None:
+            updates.append((row, col_map[field], str(value)))
+    for r, c, v in updates:
+        ws_girls.update_cell(r, c, v)
 
+
+# --- Balance ---
 
 def get_balance(girl_data: dict) -> dict:
     total = float(girl_data.get("Total балів", 0) or 0)
@@ -205,6 +284,8 @@ def get_referrals(refcode: str) -> list[dict]:
             referrals.append({"name": row[name_col] if len(row) > name_col else "?"})
     return referrals
 
+
+# --- Events ---
 
 def get_upcoming_events() -> list[dict]:
     data = ws_events.get_all_values()
@@ -297,6 +378,8 @@ def get_events_for_site() -> list[dict]:
     return result
 
 
+# --- Refcodes ---
+
 def validate_refcode(code: str) -> dict | None:
     data = ws_codes.get_all_values()
     headers = data[0]
@@ -308,6 +391,8 @@ def validate_refcode(code: str) -> dict | None:
             return d
     return None
 
+
+# --- Bookings ---
 
 def create_booking(
     event_name: str,
@@ -386,3 +471,132 @@ def update_booking_status(invoice_id: str, status: str = "Повна оплат�
                 ws_bookings.update_cell(i, date_col + 1, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             return {"row": i, "data": dict(zip(headers, row))}
     return None
+
+
+def get_bookings_for_event(event_date: str) -> list[dict]:
+    data = ws_bookings.get_all_values()
+    if len(data) <= 1:
+        return []
+    headers = data[0]
+    date_col = headers.index("Дата івенту") if "Дата івенту" in headers else None
+    if date_col is None:
+        return []
+    results = []
+    for row in data[1:]:
+        if len(row) > date_col and row[date_col].strip()[:10] == event_date.strip()[:10]:
+            results.append(dict(zip(headers, row)))
+    return results
+
+
+def get_girls_with_chat_id() -> list[dict]:
+    data = ws_girls.get_all_values()
+    headers = data[0]
+    chat_col = headers.index("Telegram chat id") if "Telegram chat id" in headers else None
+    if chat_col is None:
+        return []
+    results = []
+    for row in data[1:]:
+        if len(row) > chat_col and row[chat_col].strip():
+            results.append(dict(zip(headers, row)))
+    return results
+
+
+def get_girls_for_event(event_date: str) -> list[dict]:
+    bookings = get_bookings_for_event(event_date)
+    if not bookings:
+        return []
+    girls_data = ws_girls.get_all_values()
+    headers = girls_data[0]
+    id_col = headers.index("ID") if "ID" in headers else None
+    chat_col = headers.index("Telegram chat id") if "Telegram chat id" in headers else None
+    if id_col is None or chat_col is None:
+        return []
+
+    girl_map = {}
+    for row in girls_data[1:]:
+        if len(row) > max(id_col, chat_col) and row[chat_col].strip():
+            girl_map[str(row[id_col])] = dict(zip(headers, row))
+
+    results = []
+    for b in bookings:
+        girl_id = b.get("ID дівчини", "")
+        if girl_id in girl_map:
+            results.append({**girl_map[girl_id], "_booking": b})
+    return results
+
+
+# --- Match blanks ---
+
+def write_match_blank(girl_id: str, girl_name: str, event_name: str, event_date: str,
+                      blank_number: int, slots: list[str]):
+    ws = get_ws_matches()
+    data = ws.get_all_values()
+    record_id = f"MB-{len(data):04d}"
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    padded_slots = (slots + [""] * 24)[:24]
+
+    row = [record_id, str(girl_id), girl_name, event_name, event_date,
+           str(blank_number)] + padded_slots + [now]
+    ws.append_row(row, value_input_option="USER_ENTERED")
+    return record_id
+
+
+def get_match_blanks_for_event(event_name: str) -> list[dict]:
+    ws = get_ws_matches()
+    data = ws.get_all_values()
+    if len(data) <= 1:
+        return []
+    headers = data[0]
+    results = []
+    for row in data[1:]:
+        d = dict(zip(headers, row))
+        if d.get("Назва івенту", "").strip() == event_name.strip():
+            results.append(d)
+    return results
+
+
+def get_girl_events_with_blanks(girl_id: str) -> list[str]:
+    ws = get_ws_matches()
+    data = ws.get_all_values()
+    if len(data) <= 1:
+        return []
+    headers = data[0]
+    events = set()
+    for row in data[1:]:
+        d = dict(zip(headers, row))
+        if str(d.get("ID дівчини", "")) == str(girl_id):
+            events.add(d.get("Назва івенту", ""))
+    return sorted(events)
+
+
+# --- Broadcasts ---
+
+def log_broadcast(broadcast_type: str, event_name: str, text: str, count: int):
+    ws = get_ws_broadcasts()
+    data = ws.get_all_values()
+    broadcast_id = f"BC-{len(data):04d}"
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ws.append_row([
+        broadcast_id, now, broadcast_type, event_name, text[:200],
+        str(count), "Надіслано",
+    ], value_input_option="USER_ENTERED")
+    return broadcast_id
+
+
+# --- Points history ---
+
+def add_points_record(girl_id: str, girl_name: str, action: str, points: int, comment: str = ""):
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ws_points.append_row([
+        now, str(girl_id), girl_name, action, str(points), comment,
+    ], value_input_option="USER_ENTERED")
+
+
+def check_story_tag_awarded(girl_id: str, event_name: str) -> bool:
+    data = ws_points.get_all_values()
+    for row in data[1:]:
+        if len(row) >= 6:
+            if str(row[1]) == str(girl_id) and "story_tag" in str(row[3]) and event_name in str(row[5]):
+                return True
+    return False

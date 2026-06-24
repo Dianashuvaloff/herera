@@ -3,7 +3,7 @@ WELCOME_NEW = (
     "Ласкаво просимо до <b>HER ERA</b> — закритий клуб жіночих вечорів у Києві.\n\n"
     "Твій персональний реферальний код:\n"
     "🎟 <code>{refcode}</code>\n\n"
-    "Поділись ним з подругою — вона отримає знижку 10%, а ти +100 балів!\n\n"
+    "Поділись ним з подругою — вона отримає знижку 10%, а ти +50 балів!\n\n"
     "{next_event}"
 )
 
@@ -39,7 +39,7 @@ REFCODE = (
     "<code>{refcode}</code>\n\n"
     "Що він дає:\n"
     "• Подрузі — знижка 10% на перший вечір\n"
-    "• Тобі — +100 балів за кожну нову подругу"
+    "• Тобі — +50 балів за кожну нову подругу"
 )
 
 SHARECODE = (
@@ -73,8 +73,9 @@ MYCARD = (
 
 STATUS_EMOJI = {
     "Гостя": "🤍",
-    "Постійна": "💜",
-    "VIP": "👑",
+    "HER ERA Girl": "💜",
+    "ERA Regular": "💎",
+    "ERA VIP": "👑",
 }
 
 MYREFS_HEADER = "👯 <b>Подруги які прийшли по твоєму коду:</b>\n\n"
@@ -91,19 +92,17 @@ EVENTS_ITEM = (
 )
 
 HOWTOVIP = (
-    "🏆 <b>Як стати VIP?</b>\n\n"
+    "🏆 <b>Як отримати статус?</b>\n\n"
     "Збирай бали за активність:\n\n"
-    "🎉 Прийшла на вечір — <b>+50</b>\n"
-    "👯 Привела нову подругу — <b>+100</b>\n"
-    "🔄 Привела повторно — <b>+30</b>\n"
-    "📸 Сторіс з міткою — <b>+30</b>\n"
-    "✍️ Залишила відгук — <b>+20</b>\n"
-    "🎂 День народження — <b>+200</b>\n"
-    "🎟 Використала чийсь код — <b>+50</b>\n\n"
+    "🎉 Прийшла на вечір — <b>+100</b>\n"
+    "👯 Привела подругу — <b>+50</b> (обом!)\n"
+    "📸 Відмітила в сторіс — <b>+25</b>\n"
+    "🎂 День народження у нас — <b>+200</b>\n\n"
     "Статуси:\n"
     "• 0-499 балів — 🤍 Гостя\n"
-    "• 500-1999 балів — 💜 Постійна\n"
-    "• 2000+ балів — 👑 <b>VIP</b>\n\n"
+    "• 500-999 балів — 💜 <b>HER ERA Girl</b> (пріоритетний доступ)\n"
+    "• 1000-1999 балів — 💎 <b>ERA Regular</b> (знижка 200 грн)\n"
+    "• 2000+ балів — 👑 <b>ERA VIP</b> (безкоштовний вечір раз на сезон)\n\n"
     "🎁 1000 Available балів = безкоштовний квиток!"
 )
 
@@ -141,8 +140,9 @@ HELP = (
     "/sharecode — переслати код подрузі\n"
     "/myrefs — хто прийшов по моєму коду\n"
     "/events — найближчі вечори\n"
-    "/howtovip — як стати VIP\n"
+    "/howtovip — як отримати статус\n"
     "/redeem — обміняти бали на квиток\n"
+    "/matches — мої матчі з вечорів\n"
     "/info — про HER ERA\n"
     "/contact — зв'язок з організатором"
 )
@@ -158,3 +158,121 @@ ADMIN_NEW_REG = (
     "Telegram: @{username}\n"
     "Реф-код: <code>{refcode}</code>"
 )
+
+# --- Reminders ---
+
+REMINDER_BEFORE_EVENT = (
+    "Привіт, {name}! 💗\n\n"
+    "Нагадуємо — вже скоро твій вечір <b>HER ERA</b>!\n\n"
+    "{emoji} <b>{event_name}</b>\n"
+    "📅 {event_date} о {event_time}\n"
+    "📍 {event_location}\n\n"
+    "{payment_note}"
+    "Чекаємо на тебе! 🖤"
+)
+
+REMINDER_PAYMENT_NOTE = "💰 Залишок до оплати: <b>{remaining} грн</b>\n\n"
+
+REMINDER_DAY_OF_UNPAID = (
+    "Привіт, {name}! 💗\n\n"
+    "Сьогодні твій вечір <b>HER ERA</b>!\n\n"
+    "💰 В тебе ще залишок: <b>{remaining} грн</b>\n"
+    "Будь ласка, оплати до початку вечора 🙏\n\n"
+    "Чекаємо! 🖤"
+)
+
+REMINDER_4H_BEFORE = (
+    "До зустрічі через кілька годин! 💗\n\n"
+    "{emoji} <b>{event_name}</b>\n"
+    "📍 {event_location}\n"
+    "👗 Дрес-код: {dress_code}\n\n"
+    "{reels_note}"
+    "Чекаємо на тебе! 🖤"
+)
+
+REMINDER_REELS_NOTE = '🎬 Як доїхати: <a href="{reels_link}">дивись тут</a>\n\n'
+
+REMINDER_POST_EVENT = (
+    "Дякуємо за чудовий вечір, {name}! 💗\n\n"
+    "Маємо для тебе подарунок — <b>знижка 10%</b> на наступний вечір!\n\n"
+    '💬 Напиши нам в <a href="{dm_link}">Директ</a> щоб забронювати 🖤'
+)
+
+# --- Points post-event ---
+
+POINTS_POST_EVENT = (
+    "💰 <b>Твої бали після вечора</b>\n\n"
+    "Зараз: <b>{available}</b> балів\n"
+    "Статус: {status_emoji} <b>{status}</b>\n\n"
+    "{next_perk_text}"
+    "{story_tag_text}"
+    "{free_ticket_text}"
+)
+
+POINTS_NEXT_PERK = "🎯 До <b>{next_status}</b>: ще {points_left} балів ({perk})\n\n"
+POINTS_ALREADY_MAX = "🎯 Ти вже на максимальному рівні — <b>ERA VIP</b> 👑\n\n"
+
+POINTS_STORY_TAG = "📸 Відмітила нас в сторіс? Натисни кнопку нижче — отримаєш <b>+25 балів</b>!\n\n"
+POINTS_STORY_ALREADY = "📸 Бали за сторіс вже нараховані для цього вечора ✅\n\n"
+
+POINTS_FREE_TICKET = "🎁 До безкоштовного квитка: ще <b>{events_left}</b> оплачених вечорів\n"
+
+# --- Matches ---
+
+MATCHES_SELECT_EVENT = "💗 <b>Мої матчі</b>\n\nОбери вечір щоб побачити матчі:"
+
+MATCHES_EMPTY = "На цьому вечорі поки немає взаємних матчів 😔"
+
+MATCHES_NO_EVENTS = "Поки немає вечорів з матчами. Приходь на наступний вечір! 💗"
+
+MATCH_CARD = (
+    "💗 <b>{name}</b>, {age}\n"
+    "💼 {occupation}\n"
+    "🎯 {hobbies}\n\n"
+    "✨ Збіглось: {match_reasons}\n\n"
+    "{socials}"
+)
+
+MATCH_SOCIALS = (
+    "{instagram_line}"
+    "{tiktok_line}"
+    "{telegram_line}"
+)
+
+# --- Broadcasts ---
+
+BROADCAST_SELECT_EVENT = "📢 Обери івент для розсилки:"
+BROADCAST_SELECT_AUDIENCE = "📢 Обери аудиторію:"
+BROADCAST_ENTER_TEXT = "✏️ Введи текст розсилки:"
+BROADCAST_CONFIRM = (
+    "📢 <b>Підтвердження розсилки</b>\n\n"
+    "Аудиторія: {audience}\n"
+    "Отримувачів: {count}\n\n"
+    "Текст:\n{text}\n\n"
+    "Надіслати?"
+)
+BROADCAST_DONE = "✅ Розсилку надіслано: {sent}/{total} отримувачів"
+
+# --- Admin ---
+
+ADMIN_PANEL = (
+    "🔧 <b>Адмін-панель HER ERA</b>\n\n"
+    "Обери дію:"
+)
+
+BLANK_SEND_PHOTO = "📋 Надішли фото заповненого бланку гості"
+BLANK_SELECT_EVENT = "📋 Для якого вечора цей бланк?"
+BLANK_CONFIRM = (
+    "📋 <b>Розпізнані дані:</b>\n\n"
+    "👤 {name}, {age}\n"
+    "💼 {occupation}\n"
+    "🎯 {hobbies}\n"
+    "✅ Краща риса: {best_trait}\n"
+    "❌ Найгірша: {worst_trait}\n\n"
+    "🔍 Шукає: {seeking}\n\n"
+    "📊 Матч-сітка: {match_count} відміток\n\n"
+    "Зберегти?"
+)
+BLANK_SAVED = "✅ Дані збережено для <b>{name}</b>"
+BLANK_NOT_FOUND = "❌ Не вдалось знайти гостю в таблиці. Перевір імʼя та номер."
+BLANK_ERROR = "❌ Помилка розпізнавання. Спробуй ще раз або завантаж чіткіше фото."
