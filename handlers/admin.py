@@ -71,6 +71,13 @@ class BroadcastFSM(StatesGroup):
     confirming = State()
 
 
+_ADMIN_KB = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="📋 Розпізнати бланк", callback_data="admin_blank")],
+    [InlineKeyboardButton(text="📢 Розіслати контент", callback_data="admin_broadcast_content")],
+    [InlineKeyboardButton(text="📨 Довільна розсилка", callback_data="admin_broadcast_custom")],
+])
+
+
 # --- Admin panel ---
 
 @router.message(Command("admin"))
@@ -78,15 +85,16 @@ async def cmd_admin(message: Message, state: FSMContext):
     if not _is_admin(message.from_user.id):
         return
     await state.clear()
-    await message.answer(
-        ADMIN_PANEL,
-        parse_mode=ParseMode.HTML,
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📋 Розпізнати бланк", callback_data="admin_blank")],
-            [InlineKeyboardButton(text="📢 Розіслати контент", callback_data="admin_broadcast_content")],
-            [InlineKeyboardButton(text="📨 Довільна розсилка", callback_data="admin_broadcast_custom")],
-        ]),
-    )
+    await message.answer(ADMIN_PANEL, parse_mode=ParseMode.HTML, reply_markup=_ADMIN_KB)
+
+
+@router.callback_query(F.data == "admin_panel")
+async def cb_admin_panel(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    await state.clear()
+    await callback.message.edit_text(ADMIN_PANEL, parse_mode=ParseMode.HTML, reply_markup=_ADMIN_KB)
 
 
 # --- Blank recognition flow ---

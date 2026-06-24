@@ -11,7 +11,7 @@ from aiogram.types import (
     Message,
 )
 
-from config import ADMIN_CHAT_ID
+from config import ADMIN_CHAT_ID, ADMIN_CHAT_IDS
 from sheets import (
     find_girl_by_chat_id,
     find_girl_by_phone,
@@ -59,8 +59,8 @@ router = Router()
 PHONE_PATTERN = re.compile(r"^[\+]?[\d\s\-\(\)]{9,15}$")
 
 
-def _main_menu_kb():
-    return InlineKeyboardMarkup(inline_keyboard=[
+def _main_menu_kb(user_id: int = 0):
+    rows = [
         [
             InlineKeyboardButton(text="💰 Баланс", callback_data="balance"),
             InlineKeyboardButton(text="🖤 Моя картка", callback_data="mycard"),
@@ -80,7 +80,10 @@ def _main_menu_kb():
         [
             InlineKeyboardButton(text="📩 Контакт", callback_data="contact"),
         ],
-    ])
+    ]
+    if user_id in ADMIN_CHAT_IDS:
+        rows.append([InlineKeyboardButton(text="🔧 Адмін-панель", callback_data="admin_panel")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 def _back_kb():
@@ -166,7 +169,7 @@ async def cmd_start(message: Message):
                 next_event=next_event_text,
             ),
             parse_mode=ParseMode.HTML,
-            reply_markup=_main_menu_kb(),
+            reply_markup=_main_menu_kb(message.from_user.id),
         )
         return
 
@@ -185,7 +188,7 @@ async def cmd_start(message: Message):
             next_event=next_event_text,
         ),
         parse_mode=ParseMode.HTML,
-        reply_markup=_main_menu_kb(),
+        reply_markup=_main_menu_kb(message.from_user.id),
     )
 
     bot = message.bot
@@ -216,7 +219,7 @@ async def cb_menu(callback: CallbackQuery):
             next_event=next_event_text,
         ),
         parse_mode=ParseMode.HTML,
-        reply_markup=_main_menu_kb(),
+        reply_markup=_main_menu_kb(callback.from_user.id),
     )
 
 
@@ -541,7 +544,7 @@ async def on_contact(message: Message):
             f"Знайшла тебе — {girl['data'].get('Імʼя', '')}!\n"
             f"💰 {int(bal['available'])} балів · {bal['status']}",
             parse_mode=ParseMode.HTML,
-            reply_markup=_main_menu_kb(),
+            reply_markup=_main_menu_kb(message.from_user.id),
         )
     else:
         name = message.from_user.full_name
@@ -552,7 +555,7 @@ async def on_contact(message: Message):
                 next_event=_format_next_event(get_upcoming_events()),
             ),
             parse_mode=ParseMode.HTML,
-            reply_markup=_main_menu_kb(),
+            reply_markup=_main_menu_kb(message.from_user.id),
         )
         bot = message.bot
         await bot.send_message(
@@ -592,7 +595,7 @@ async def on_text_phone(message: Message):
             f"Знайшла тебе — {girl['data'].get('Імʼя', '')}! 💗\n\n"
             f"💰 {int(bal['available'])} балів · {bal['status']}",
             parse_mode=ParseMode.HTML,
-            reply_markup=_main_menu_kb(),
+            reply_markup=_main_menu_kb(message.from_user.id),
         )
     else:
         await message.answer(
