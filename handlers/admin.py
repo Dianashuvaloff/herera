@@ -55,6 +55,7 @@ class BlankFSM(StatesGroup):
     waiting_profile_photo = State()
     waiting_match_photo = State()
     waiting_event = State()
+    resolving_unclear = State()
     confirming = State()
 
 
@@ -233,45 +234,144 @@ async def cb_blank_event(callback: CallbackQuery, state: FSMContext):
         seeking_parts.append(profile["seeking_custom"])
     seeking_text = ", ".join(seeking_parts) if seeking_parts else "—"
 
-    # Build validation warnings
-    warnings = ""
-    validation_errors = profile.get("_validation_errors", [])
-    if validation_errors:
-        warnings += "\n⚠️ <b>Валідація:</b>\n"
-        for err in validation_errors:
-            warnings += f"  • {err}\n"
-
+    # Collect unclear fields that need resolution
     unclear = profile.get("unclear_fields", [])
+    unclear = [uf for uf in unclear if len(uf.get("possible_readings", [])) > 1]
+    await state.update_data(unclear_queue=unclear, unclear_index=0)
+
+    # If there are unclear fields, resolve them first
     if unclear:
-        warnings += "\n🔍 <b>Нечіткі поля:</b>\n"
-        for uf in unclear:
-            alts = ", ".join(uf.get("possible_readings", []))
-            warnings += f"  • {uf['field']}: бачу «{uf.get('raw_chars', '?')}» → варіанти: {alts}\n"
+        await state.set_state(BlankFSM.resolving_unclear)
+        await _send_unclear_choice(callback.message, state, edit=True)
+    else:
+        await _send_final_confirm(callback.message, state, profile, match_data, seeking_text, filled, edit=True)
 
-    match_unclear = match_data.get("unclear_slots", [])
-    if match_unclear:
-        warnings += f"\n🔍 <b>Нечіткі слоти матч-сітки:</b> {len(match_unclear)} шт\n"
 
-    await state.set_state(BlankFSM.confirming)
-    await callback.message.edit_text(
-        BLANK_CONFIRM.format(
-            name=profile.get("name", "?"),
-            age=profile.get("age", "?"),
-            occupation=profile.get("occupation", "?"),
-            hobbies=profile.get("hobbies", "?"),
-            best_trait=profile.get("best_trait", "?"),
-            worst_trait=profile.get("worst_trait", "?"),
-            seeking=seeking_text,
-            match_count=filled,
-        ) + warnings,
-        parse_mode=ParseMode.HTML,
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [
-                InlineKeyboardButton(text="✅ Зберегти", callback_data="blank_save"),
-                InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel"),
-            ],
-        ]),
+FIELD_LABELS = {
+    "name": "Ім'я",
+    "age": "Вік",
+    "occupation": "Чим займається",
+    "hobbies": "Хобі",
+    "best_trait": "Краща риса",
+    "worst_trait": "Найгірша риса",
+}
+
+
+async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
+    fsm_data = await state.get_data()
+    unclear_queue = fsm_data.get("unclear_queue", [])
+    index = fsm_data.get("unclear_index", 0)
+
+    if index >= len(unclear_queue):
+        # All unclear fields resolved — go to final confirm
+        profile = fsm_data["profile"]
+        match_data = fsm_data["match_data"]
+        slots = match_data.get("slots", {})
+        filled = sum(1 for v in slots.values() if v)
+        seeking = profile.get("seeking", {})
+        seeking_parts = []
+        if seeking.get("подругу"): seeking_parts.append("подругу")
+        if seeking.get("знайомства"): seeking_parts.append("знайомства")
+        if seeking.get("колаборацію"): seeking_parts.append("колаборацію")
+        if seeking.get("бізнес"): seeking_parts.append("бізнес")
+        if seeking.get("романтика"): seeking_parts.append("романтику")
+        if profile.get("seeking_custom"): seeking_parts.append(profile["seeking_custom"])
+        seeking_text = ", ".join(seeking_parts) if seeking_parts else "—"
+        await state.set_state(BlankFSM.confirming)
+        await _send_final_confirm(message, state, profile, match_data, seeking_text, filled, edit=edit)
+        return
+
+    uf = unclear_queue[index]
+    field = uf["field"]
+    label = FIELD_LABELS.get(field, field)
+    readings = uf.get("possible_readings", [])[:3]
+
+    text = (
+        f"🔍 <b>Нечітке поле ({index + 1}/{len(unclear_queue)})</b>\n\n"
+        f"📝 <b>{label}</b>\n"
+        f"Бачу: «{uf.get('raw_chars', '?')}»\n\n"
+        f"Обери правильний варіант:"
     )
+
+    buttons = []
+    for i, reading in enumerate(readings):
+        display = reading[:60] + "..." if len(reading) > 60 else reading
+        buttons.append([InlineKeyboardButton(
+            text=display,
+            callback_data=f"uf_pick:{index}:{i}",
+        )])
+    buttons.append([InlineKeyboardButton(text="⏭ Залишити як є", callback_data=f"uf_skip:{index}")])
+    buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
+
+    if edit:
+        await message.edit_text(text, parse_mode=ParseMode.HTML,
+                                reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    else:
+        await message.answer(text, parse_mode=ParseMode.HTML,
+                             reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+
+@router.callback_query(F.data.startswith("uf_pick:"), BlankFSM.resolving_unclear)
+async def cb_unclear_pick(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+
+    parts = callback.data.replace("uf_pick:", "").split(":")
+    field_idx = int(parts[0])
+    reading_idx = int(parts[1])
+
+    fsm_data = await state.get_data()
+    unclear_queue = fsm_data.get("unclear_queue", [])
+    profile = fsm_data["profile"]
+
+    if field_idx < len(unclear_queue):
+        uf = unclear_queue[field_idx]
+        field = uf["field"]
+        readings = uf.get("possible_readings", [])
+        if reading_idx < len(readings):
+            profile[field] = readings[reading_idx]
+            await state.update_data(profile=profile)
+
+    await state.update_data(unclear_index=field_idx + 1)
+    await _send_unclear_choice(callback.message, state, edit=True)
+
+
+@router.callback_query(F.data.startswith("uf_skip:"), BlankFSM.resolving_unclear)
+async def cb_unclear_skip(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+
+    field_idx = int(callback.data.replace("uf_skip:", ""))
+    await state.update_data(unclear_index=field_idx + 1)
+    await _send_unclear_choice(callback.message, state, edit=True)
+
+
+async def _send_final_confirm(message, state: FSMContext, profile: dict, match_data: dict,
+                               seeking_text: str, filled: int, edit: bool = False):
+    text = BLANK_CONFIRM.format(
+        name=profile.get("name", "?"),
+        age=profile.get("age", "?"),
+        occupation=profile.get("occupation", "?"),
+        hobbies=profile.get("hobbies", "?"),
+        best_trait=profile.get("best_trait", "?"),
+        worst_trait=profile.get("worst_trait", "?"),
+        seeking=seeking_text,
+        match_count=filled,
+    )
+
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text="✅ Зберегти", callback_data="blank_save"),
+            InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel"),
+        ],
+    ])
+
+    if edit:
+        await message.edit_text(text, parse_mode=ParseMode.HTML, reply_markup=kb)
+    else:
+        await message.answer(text, parse_mode=ParseMode.HTML, reply_markup=kb)
 
 
 @router.callback_query(F.data == "blank_save")
