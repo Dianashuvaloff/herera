@@ -16,6 +16,7 @@ from aiogram.types import (
 from config import ADMIN_CHAT_ID, ADMIN_CHAT_IDS
 from sheets import (
     find_girl_by_name_and_event,
+    find_girls_by_name,
     get_bookings_for_event,
     get_girls_for_event,
     get_girls_with_chat_id,
@@ -60,6 +61,7 @@ class BlankFSM(StatesGroup):
     waiting_event = State()
     resolving_unclear = State()
     confirming = State()
+    selecting_girl = State()
 
 
 class BroadcastFSM(StatesGroup):
@@ -449,12 +451,33 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
     event_date = fsm_data["event_date"]
 
     name = profile.get("name", "")
-    girl = find_girl_by_name_and_event(name, event_name)
+    candidates = find_girls_by_name(name)
 
-    if not girl:
-        # Create new girl record with data from blank
+    if len(candidates) > 1:
+        # Multiple matches — let Diana choose
+        await state.update_data(girl_candidates=[(c["row"], c["data"].get("Імʼя", ""), c["data"].get("ID", "")) for c in candidates])
+        await state.set_state(BlankFSM.selecting_girl)
+        buttons = []
+        for i, c in enumerate(candidates[:6]):
+            d = c["data"]
+            label = f"{d.get('Імʼя', '?')} (ID:{d.get('ID', '?')}, {d.get('Телефон', '') or d.get('Instagram', '') or '—'})"
+            label = label[:60]
+            buttons.append([InlineKeyboardButton(text=label, callback_data=f"girl_pick:{c['row']}")])
+        buttons.append([InlineKeyboardButton(text="➕ Створити нову", callback_data="girl_pick:new")])
+        buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
+        await callback.message.edit_text(
+            f"👥 Знайдено <b>{len(candidates)}</b> збігів для «{name}».\nОбери правильну:",
+            parse_mode=ParseMode.HTML,
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+        )
+        return
+
+    if len(candidates) == 1:
+        girl = candidates[0]
+    else:
+        # No match — create new
         from sheets import register_girl
-        result = register_girl(chat_id="", username="", full_name=name)
+        register_girl(chat_id="", username="", full_name=name)
         girl = find_girl_by_name_and_event(name, event_name)
         if not girl:
             await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
@@ -462,6 +485,50 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
             return
         log.info("Created new girl record for blank: %s", name)
 
+    await _save_blank_data(callback, state, girl, profile, match_data, event_name, event_date)
+
+
+@router.callback_query(F.data.startswith("girl_pick:"), BlankFSM.selecting_girl)
+async def cb_girl_pick(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+
+    pick = callback.data.replace("girl_pick:", "")
+    fsm_data = await state.get_data()
+    profile = fsm_data["profile"]
+    match_data = fsm_data["match_data"]
+    event_name = fsm_data["event_name"]
+    event_date = fsm_data["event_date"]
+    name = profile.get("name", "")
+
+    if pick == "new":
+        from sheets import register_girl
+        register_girl(chat_id="", username="", full_name=name)
+        girl = find_girl_by_name_and_event(name, event_name)
+        if not girl:
+            await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
+            await state.clear()
+            return
+        log.info("Created new girl from pick: %s", name)
+    else:
+        row = int(pick)
+        from sheets import ws_girls
+        data = ws_girls.get_all_values()
+        headers = data[0]
+        girl_row = data[row - 1] if row <= len(data) else None
+        if not girl_row:
+            await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
+            await state.clear()
+            return
+        girl = {"row": row, "data": dict(zip(headers, girl_row))}
+
+    await state.set_state(BlankFSM.confirming)
+    await _save_blank_data(callback, state, girl, profile, match_data, event_name, event_date)
+
+
+async def _save_blank_data(callback, state, girl, profile, match_data, event_name, event_date):
+    name = profile.get("name", "")
     seeking = profile.get("seeking", {})
     profile_update = {}
     if profile.get("age"):
@@ -490,7 +557,7 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
 
     write_match_blank(
         girl_id=girl["data"].get("ID", ""),
-        girl_name=name,
+        girl_name=girl["data"].get("Імʼя", name),
         event_name=event_name,
         event_date=event_date,
         blank_number=int(profile.get("number", 0) or 0),
@@ -498,7 +565,7 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
     )
 
     await callback.message.edit_text(
-        BLANK_SAVED.format(name=name),
+        BLANK_SAVED.format(name=girl["data"].get("Імʼя", name)),
         parse_mode=ParseMode.HTML,
     )
     await state.clear()
