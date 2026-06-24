@@ -332,7 +332,7 @@ async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
 
     buttons = []
     for i, reading in enumerate(readings):
-        display = reading[:60] + "..." if len(reading) > 60 else reading
+        display = reading
         buttons.append([InlineKeyboardButton(
             text=display,
             callback_data=f"uf_pick:{index}:{i}",
@@ -412,8 +412,27 @@ async def on_unclear_manual_input(message: Message, state: FSMContext):
     await _send_unclear_choice(message, state, edit=False)
 
 
-async def _send_final_confirm(message, state: FSMContext, profile: dict, match_data: dict,
-                               seeking_text: str, filled: int, edit: bool = False):
+async def _send_final_confirm(message, state: FSMContext, profile: dict = None,
+                               match_data: dict = None, seeking_text: str = "",
+                               filled: int = 0, edit: bool = False):
+    # Always read fresh data from state to include manual corrections
+    fsm_data = await state.get_data()
+    profile = fsm_data.get("profile", profile or {})
+    match_data = match_data or fsm_data.get("match_data", {})
+
+    slots = match_data.get("slots", {})
+    filled = sum(1 for v in slots.values() if v)
+
+    seeking = profile.get("seeking", {})
+    seeking_parts = []
+    if seeking.get("подругу"): seeking_parts.append("подругу")
+    if seeking.get("знайомства"): seeking_parts.append("знайомства")
+    if seeking.get("колаборацію"): seeking_parts.append("колаборацію")
+    if seeking.get("бізнес"): seeking_parts.append("бізнес")
+    if seeking.get("романтика"): seeking_parts.append("романтику")
+    if profile.get("seeking_custom"): seeking_parts.append(profile["seeking_custom"])
+    seeking_text = ", ".join(seeking_parts) if seeking_parts else "—"
+
     text = BLANK_CONFIRM.format(
         name=profile.get("name", "?"),
         age=profile.get("age", "?"),
