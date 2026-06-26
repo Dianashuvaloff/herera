@@ -238,8 +238,6 @@ async def cb_blank_event(callback: CallbackQuery, state: FSMContext):
         seeking_parts.append("подругу")
     if seeking.get("знайомства"):
         seeking_parts.append("нові знайомства в Києві")
-    if seeking.get("переїхала_match"):
-        seeking_parts.append("нещодавно переїхала/MATCH")
     if seeking.get("колаборацію"):
         seeking_parts.append("колаборацію/контент")
     if seeking.get("бізнес"):
@@ -578,7 +576,6 @@ async def _save_blank_data(callback, state, girl, profile, match_data, event_nam
 
     profile_update["Шукаю: подругу"] = "✓" if seeking.get("подругу") else "✗"
     profile_update["Шукаю: нові знайомства в Києві"] = "✓" if seeking.get("знайомства") else "✗"
-    profile_update["Шукаю: нещодавно переїхала/MATCH"] = "✓" if seeking.get("переїхала_match") else "✗"
     profile_update["Шукаю: колаборацію/знімати контент разом"] = "✓" if seeking.get("колаборацію") else "✗"
     profile_update["Шукаю: партнера по роботі/бізнесу"] = "✓" if seeking.get("бізнес") else "✗"
     profile_update["Шукаю: романтичні стосунки"] = "✓" if seeking.get("романтика") else "✗"
