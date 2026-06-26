@@ -237,13 +237,17 @@ async def cb_blank_event(callback: CallbackQuery, state: FSMContext):
     if seeking.get("подругу"):
         seeking_parts.append("подругу")
     if seeking.get("знайомства"):
-        seeking_parts.append("знайомства")
+        seeking_parts.append("нові знайомства в Києві")
+    if seeking.get("переїхала_match"):
+        seeking_parts.append("нещодавно переїхала/MATCH")
     if seeking.get("колаборацію"):
-        seeking_parts.append("колаборацію")
+        seeking_parts.append("колаборацію/контент")
     if seeking.get("бізнес"):
-        seeking_parts.append("бізнес")
+        seeking_parts.append("партнера по роботі/бізнесу")
     if seeking.get("романтика"):
-        seeking_parts.append("романтику")
+        seeking_parts.append("романтичні стосунки")
+    if seeking.get("tinder"):
+        seeking_parts.append("Tinder-вечір")
     if profile.get("seeking_custom"):
         seeking_parts.append(profile["seeking_custom"])
     seeking_text = ", ".join(seeking_parts) if seeking_parts else "—"
@@ -573,10 +577,12 @@ async def _save_blank_data(callback, state, girl, profile, match_data, event_nam
         profile_update["Моя найгірша риса"] = profile["worst_trait"]
 
     profile_update["Шукаю: подругу"] = "✓" if seeking.get("подругу") else "✗"
-    profile_update["Шукаю: знайомства"] = "✓" if seeking.get("знайомства") else "✗"
-    profile_update["Шукаю: колаборацію"] = "✓" if seeking.get("колаборацію") else "✗"
-    profile_update["Шукаю: бізнес"] = "✓" if seeking.get("бізнес") else "✗"
-    profile_update["Шукаю: романтику"] = "✓" if seeking.get("романтика") else "✗"
+    profile_update["Шукаю: нові знайомства в Києві"] = "✓" if seeking.get("знайомства") else "✗"
+    profile_update["Шукаю: нещодавно переїхала/MATCH"] = "✓" if seeking.get("переїхала_match") else "✗"
+    profile_update["Шукаю: колаборацію/знімати контент разом"] = "✓" if seeking.get("колаборацію") else "✗"
+    profile_update["Шукаю: партнера по роботі/бізнесу"] = "✓" if seeking.get("бізнес") else "✗"
+    profile_update["Шукаю: романтичні стосунки"] = "✓" if seeking.get("романтика") else "✗"
+    profile_update["Шукаю: Tinder-вечір"] = "✓" if seeking.get("tinder") else "✗"
     if profile.get("seeking_custom"):
         profile_update["Шукаю: свій варіант"] = profile["seeking_custom"]
 
