@@ -73,6 +73,7 @@ class BroadcastFSM(StatesGroup):
 
 _ADMIN_KB = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="📋 Розпізнати бланк", callback_data="admin_blank")],
+    [InlineKeyboardButton(text="💗 Розіслати матчі", callback_data="admin_send_matches")],
     [InlineKeyboardButton(text="📢 Розіслати контент", callback_data="admin_broadcast_content")],
     [InlineKeyboardButton(text="📨 Довільна розсилка", callback_data="admin_broadcast_custom")],
 ])
@@ -761,3 +762,133 @@ async def cb_bc_cancel(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await state.clear()
     await callback.message.edit_text("❌ Розсилку скасовано", parse_mode=ParseMode.HTML)
+
+
+# --- Send matches to all girls at event ---
+
+@router.callback_query(F.data == "admin_send_matches")
+async def cb_admin_send_matches(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    await state.clear()
+
+    events = _get_recent_and_upcoming_events()
+    buttons = []
+    for ev in events:
+        name = ev.get("Назва івенту", "").strip()
+        date = ev.get("Дата івенту", "")[:10]
+        buttons.append([InlineKeyboardButton(
+            text=f"{name} ({date})",
+            callback_data=f"send_matches:{name[:40]}|{date}",
+        )])
+    buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
+
+    await callback.message.edit_text(
+        "💗 <b>Розіслати матчі</b>\n\nОбери івент:",
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+    )
+
+
+@router.callback_query(F.data.startswith("send_matches:"))
+async def cb_send_matches_event(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+
+    parts = callback.data.replace("send_matches:", "").split("|")
+    event_name = parts[0]
+    event_date = parts[1] if len(parts) > 1 else ""
+
+    from sheets import get_match_blanks_for_event, ws_girls
+    from services.match_engine import find_mutual_matches, MATCH_CODE_LABELS
+    from texts import MATCH_CARD
+
+    blanks = get_match_blanks_for_event(event_name)
+    if not blanks:
+        await callback.message.edit_text(
+            f"❌ Немає бланків для івенту «{event_name}»",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    girls_data = ws_girls.get_all_values()
+    headers = girls_data[0]
+    chat_col = headers.index("Telegram chat id") if "Telegram chat id" in headers else None
+    id_col = headers.index("ID") if "ID" in headers else None
+
+    girl_chat_ids = {}
+    if chat_col and id_col:
+        for row in girls_data[1:]:
+            if len(row) > max(chat_col, id_col) and row[chat_col].strip():
+                girl_chat_ids[str(row[id_col])] = row[chat_col].strip()
+
+    await callback.message.edit_text(
+        f"⏳ Розсилаю матчі для «{event_name}»...",
+        parse_mode=ParseMode.HTML,
+    )
+
+    sent = 0
+    no_matches = 0
+    no_chat = 0
+    bot: Bot = callback.bot
+
+    for blank in blanks:
+        girl_id = str(blank.get("ID дівчини", ""))
+        chat_id = girl_chat_ids.get(girl_id)
+
+        if not chat_id:
+            no_chat += 1
+            continue
+
+        matches = find_mutual_matches(girl_id, event_name)
+        if not matches:
+            no_matches += 1
+            continue
+
+        text = f"💗 <b>Твої матчі з вечора «{event_name}»!</b>\n\n"
+        text += f"У тебе <b>{len(matches)}</b> взаємних матчів:\n\n"
+
+        for m in matches[:10]:
+            socials = ""
+            if m.get("instagram"):
+                socials += f'📸 <a href="https://instagram.com/{m["instagram"].strip("@")}">Instagram</a>\n'
+            if m.get("tiktok"):
+                socials += f"🎵 TikTok: {m['tiktok']}\n"
+            if m.get("telegram"):
+                socials += f"✈️ Telegram: @{m['telegram'].strip('@')}\n"
+
+            reasons = ", ".join(m.get("match_reasons", [])) or "взаємний інтерес"
+
+            text += MATCH_CARD.format(
+                name=m["name"],
+                age=m.get("age") or "—",
+                occupation=m.get("occupation") or "—",
+                hobbies=m.get("hobbies") or "—",
+                match_reasons=reasons,
+                socials=socials,
+            )
+            text += "\n─────────────────\n\n"
+
+        text += "Натисни 💗 <b>Мої матчі</b> в меню бота щоб переглянути матчі з інших вечорів!"
+
+        try:
+            await bot.send_message(
+                int(chat_id), text,
+                parse_mode="HTML",
+                disable_web_page_preview=True,
+            )
+            sent += 1
+            await asyncio.sleep(0.05)
+        except Exception as e:
+            log.warning("Send matches error to %s: %s", chat_id, e)
+
+    await callback.message.edit_text(
+        f"💗 <b>Матчі розіслано!</b>\n\n"
+        f"✅ Надіслано: {sent}\n"
+        f"🔇 Без матчів: {no_matches}\n"
+        f"📵 Без Telegram: {no_chat}\n"
+        f"📊 Всього бланків: {len(blanks)}",
+        parse_mode=ParseMode.HTML,
+    )
