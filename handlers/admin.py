@@ -263,6 +263,43 @@ async def cb_blank_event(callback: CallbackQuery, state: FSMContext):
         await _send_final_confirm(callback.message, state, profile, match_data, seeking_text, filled, edit=True)
 
 
+def _get_all_girls_for_picker() -> list[dict]:
+    from sheets import ws_girls
+    data = ws_girls.get_all_values()
+    headers = data[0]
+    result = []
+    for i, row in enumerate(data[1:], start=2):
+        d = dict(zip(headers, row))
+        if d.get("Імʼя", "").strip():
+            result.append({"row": i, "data": d})
+    return result[-20:]
+
+
+async def _show_girl_picker(callback, state, name, candidates, no_match=False):
+    await state.update_data(
+        girl_candidates=[(c["row"], c["data"].get("Імʼя", ""), c["data"].get("ID", "")) for c in candidates]
+    )
+    await state.set_state(BlankFSM.selecting_girl)
+    buttons = []
+    for c in candidates[:10]:
+        d = c["data"]
+        label = f"{d.get('Імʼя', '?')} (ID:{d.get('ID', '?')}, {d.get('Телефон', '') or d.get('Instagram', '') or '—'})"
+        buttons.append([InlineKeyboardButton(text=label[:60], callback_data=f"girl_pick:{c['row']}")])
+    buttons.append([InlineKeyboardButton(text="➕ Створити нову", callback_data="girl_pick:new")])
+    buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
+
+    if no_match:
+        header = f"🔍 Гостю «{name}» не знайдено.\nОбери зі списку або створи нову:"
+    else:
+        header = f"👥 Знайдено <b>{len(candidates)}</b> збігів для «{name}».\nОбери правильну:"
+
+    await callback.message.edit_text(
+        header,
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+    )
+
+
 FIELD_LABELS = {
     "name": "Ім'я",
     "age": "Вік",
@@ -351,6 +388,8 @@ async def _send_unclear_choice(message, state: FSMContext, edit: bool = False):
         row.append(InlineKeyboardButton(text=num_emoji[i], callback_data=f"uf_pick:{index}:{i}"))
     buttons.append(row)
     buttons.append([InlineKeyboardButton(text="⏭ Залишити як є", callback_data=f"uf_skip:{index}")])
+    if index > 0:
+        buttons.append([InlineKeyboardButton(text="◀️ Назад", callback_data=f"uf_back:{index}")])
     buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
 
     if edit:
@@ -400,6 +439,50 @@ async def cb_unclear_skip(callback: CallbackQuery, state: FSMContext):
     field_idx = int(callback.data.replace("uf_skip:", ""))
     await state.update_data(unclear_index=field_idx + 1)
     await _send_unclear_choice(callback.message, state, edit=True)
+
+
+@router.callback_query(F.data.startswith("uf_back:"), BlankFSM.resolving_unclear)
+async def cb_unclear_back(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    field_idx = int(callback.data.replace("uf_back:", ""))
+    await state.update_data(unclear_index=max(0, field_idx - 1))
+    await _send_unclear_choice(callback.message, state, edit=True)
+
+
+@router.callback_query(F.data == "blank_back_to_unclear", BlankFSM.confirming)
+async def cb_back_to_unclear(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    fsm_data = await state.get_data()
+    unclear_queue = fsm_data.get("unclear_queue", [])
+    if unclear_queue:
+        await state.update_data(unclear_index=len(unclear_queue) - 1)
+        await state.set_state(BlankFSM.resolving_unclear)
+        await _send_unclear_choice(callback.message, state, edit=True)
+    else:
+        await state.set_state(BlankFSM.waiting_event)
+        await callback.message.edit_text(
+            "◀️ Повертаюсь до вибору івенту...",
+            parse_mode=ParseMode.HTML,
+        )
+        events = _get_recent_and_upcoming_events()
+        buttons = []
+        for ev in events:
+            name = ev.get("Назва івенту", "").strip()
+            date = ev.get("Дата івенту", "")[:10]
+            buttons.append([InlineKeyboardButton(
+                text=f"{name} ({date})",
+                callback_data=f"blank_event:{name}|{date}",
+            )])
+        buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
+        await callback.message.answer(
+            BLANK_SELECT_EVENT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+        )
 
 
 @router.message(BlankFSM.resolving_unclear, F.text)
@@ -460,6 +543,9 @@ async def _send_final_confirm(message, state: FSMContext, profile: dict = None,
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(text="✅ Зберегти", callback_data="blank_save"),
+            InlineKeyboardButton(text="◀️ Назад", callback_data="blank_back_to_unclear"),
+        ],
+        [
             InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel"),
         ],
     ])
@@ -485,37 +571,17 @@ async def cb_blank_save(callback: CallbackQuery, state: FSMContext):
     name = profile.get("name", "")
     candidates = find_girls_by_name(name)
 
-    if len(candidates) > 1:
-        # Multiple matches — let Diana choose
-        await state.update_data(girl_candidates=[(c["row"], c["data"].get("Імʼя", ""), c["data"].get("ID", "")) for c in candidates])
-        await state.set_state(BlankFSM.selecting_girl)
-        buttons = []
-        for i, c in enumerate(candidates[:6]):
-            d = c["data"]
-            label = f"{d.get('Імʼя', '?')} (ID:{d.get('ID', '?')}, {d.get('Телефон', '') or d.get('Instagram', '') or '—'})"
-            label = label[:60]
-            buttons.append([InlineKeyboardButton(text=label, callback_data=f"girl_pick:{c['row']}")])
-        buttons.append([InlineKeyboardButton(text="➕ Створити нову", callback_data="girl_pick:new")])
-        buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")])
-        await callback.message.edit_text(
-            f"👥 Знайдено <b>{len(candidates)}</b> збігів для «{name}».\nОбери правильну:",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
-        )
-        return
-
     if len(candidates) == 1:
         girl = candidates[0]
+    elif len(candidates) > 1:
+        # Multiple matches — let Diana choose
+        await _show_girl_picker(callback, state, name, candidates)
+        return
     else:
-        # No match — create new
-        from sheets import register_girl
-        register_girl(chat_id="", username="", full_name=name)
-        girl = find_girl_by_name_and_event(name, event_name)
-        if not girl:
-            await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
-            await state.clear()
-            return
-        log.info("Created new girl record for blank: %s", name)
+        # No match — show all girls for this event (or recent) to pick from
+        all_girls = _get_all_girls_for_picker()
+        await _show_girl_picker(callback, state, name, all_girls, no_match=True)
+        return
 
     await _save_blank_data(callback, state, girl, profile, match_data, event_name, event_date)
 
@@ -536,13 +602,9 @@ async def cb_girl_pick(callback: CallbackQuery, state: FSMContext):
 
     if pick == "new":
         from sheets import register_girl
-        register_girl(chat_id="", username="", full_name=name)
-        girl = find_girl_by_name_and_event(name, event_name)
-        if not girl:
-            await callback.message.edit_text(BLANK_NOT_FOUND, parse_mode=ParseMode.HTML)
-            await state.clear()
-            return
-        log.info("Created new girl from pick: %s", name)
+        result = register_girl(chat_id="", username="", full_name=name)
+        girl = {"row": result["row"], "data": result["data"]}
+        log.info("Created new girl from pick: %s (row %s)", name, result["row"])
     else:
         row = int(pick)
         from sheets import ws_girls
@@ -629,6 +691,7 @@ async def cb_broadcast_content(callback: CallbackQuery, state: FSMContext):
             text=f"{name} ({date})",
             callback_data=f"bc_event:{name}|{date}",
         )])
+    buttons.append([InlineKeyboardButton(text="📋 Всі дівчата", callback_data="bc_event:__all__")])
     buttons.append([InlineKeyboardButton(text="❌ Скасувати", callback_data="bc_cancel")])
 
     await state.set_state(BroadcastFSM.selecting_event)
@@ -804,8 +867,123 @@ async def cb_send_matches_event(callback: CallbackQuery, state: FSMContext):
     event_name = parts[0]
     event_date = parts[1] if len(parts) > 1 else ""
 
+    from sheets import get_match_blanks_for_event
+    blanks = get_match_blanks_for_event(event_name)
+    if not blanks:
+        await callback.message.edit_text(
+            f"❌ Немає бланків для івенту «{event_name}»",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    await state.update_data(match_event_name=event_name, match_event_date=event_date)
+    await _show_blanks_preview(callback.message, event_name, blanks, edit=True)
+
+
+async def _show_blanks_preview(message, event_name, blanks, edit=False):
+    text = f"📋 <b>Бланки для «{event_name}»</b>\n\n"
+    for i, b in enumerate(blanks):
+        name = b.get("Імʼя", "?")
+        number = b.get("Номер на бланку", "?")
+        girl_id = b.get("ID дівчини", "?")
+        slots_filled = sum(1 for j in range(1, 25) if b.get(f"Слот {j}", "").strip())
+        text += f"{i+1}. <b>{name}</b> (№{number}, ID:{girl_id}) — {slots_filled} відміток\n"
+
+    text += f"\n📊 Всього: <b>{len(blanks)}</b> бланків"
+
+    buttons = [
+        [InlineKeyboardButton(text="✅ Розіслати матчі", callback_data=f"confirm_matches:{event_name}")],
+        [InlineKeyboardButton(text="🗑 Видалити бланк", callback_data=f"del_blank_list:{event_name}")],
+        [InlineKeyboardButton(text="❌ Скасувати", callback_data="blank_cancel")],
+    ]
+
+    if edit:
+        await message.edit_text(text, parse_mode=ParseMode.HTML,
+                                reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    else:
+        await message.answer(text, parse_mode=ParseMode.HTML,
+                             reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+
+@router.callback_query(F.data.startswith("del_blank_list:"))
+async def cb_del_blank_list(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    event_name = callback.data.replace("del_blank_list:", "")
+
+    from sheets import get_match_blanks_for_event
+    blanks = get_match_blanks_for_event(event_name)
+
+    buttons = []
+    for i, b in enumerate(blanks):
+        name = b.get("Імʼя", "?")
+        number = b.get("Номер на бланку", "?")
+        record_id = b.get("ID запису", "")
+        buttons.append([InlineKeyboardButton(
+            text=f"🗑 {name} (№{number})",
+            callback_data=f"del_blank:{record_id}|{event_name}",
+        )])
+    buttons.append([InlineKeyboardButton(text="◀️ Назад", callback_data=f"back_blanks:{event_name}")])
+
+    await callback.message.edit_text(
+        f"🗑 <b>Видалити бланк</b>\nОбери який видалити:",
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+    )
+
+
+@router.callback_query(F.data.startswith("del_blank:"))
+async def cb_del_blank(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+
+    raw = callback.data.replace("del_blank:", "")
+    parts = raw.split("|")
+    record_id = parts[0]
+    event_name = parts[1] if len(parts) > 1 else ""
+
+    from sheets import delete_match_blank
+    deleted = delete_match_blank(record_id)
+
+    if deleted:
+        await callback.message.answer(f"✅ Бланк {record_id} видалено", parse_mode=ParseMode.HTML)
+    else:
+        await callback.message.answer(f"❌ Бланк {record_id} не знайдено", parse_mode=ParseMode.HTML)
+
+    from sheets import get_match_blanks_for_event
+    blanks = get_match_blanks_for_event(event_name)
+    if blanks:
+        await _show_blanks_preview(callback.message, event_name, blanks, edit=False)
+    else:
+        await callback.message.answer("📋 Бланків більше немає", parse_mode=ParseMode.HTML)
+
+
+@router.callback_query(F.data.startswith("back_blanks:"))
+async def cb_back_blanks(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    event_name = callback.data.replace("back_blanks:", "")
+
+    from sheets import get_match_blanks_for_event
+    blanks = get_match_blanks_for_event(event_name)
+    if blanks:
+        await _show_blanks_preview(callback.message, event_name, blanks, edit=True)
+    else:
+        await callback.message.edit_text("📋 Бланків немає", parse_mode=ParseMode.HTML)
+
+
+@router.callback_query(F.data.startswith("confirm_matches:"))
+async def cb_confirm_matches(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        return
+    await callback.answer()
+    event_name = callback.data.replace("confirm_matches:", "")
+
     from sheets import get_match_blanks_for_event, ws_girls
-    from services.match_engine import find_mutual_matches, MATCH_CODE_LABELS
+    from services.match_engine import find_mutual_matches
     from texts import MATCH_CARD
 
     blanks = get_match_blanks_for_event(event_name)

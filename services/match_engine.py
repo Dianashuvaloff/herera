@@ -9,14 +9,38 @@ from sheets import (
 
 log = logging.getLogger(__name__)
 
-MATCH_CODE_LABELS = {
+# Maps both single-letter codes AND full text to human-readable labels
+_CODE_TO_LABEL = {
     "П": "подругу",
     "К": "колаборацію",
     "Б": "бізнес-партнера",
     "Т": "travel-партнера",
     "+": "більше спілкування",
     "?": "щось цікаве",
+    "подруга": "подругу",
+    "колаборація": "колаборацію",
+    "бізнес": "бізнес-партнера",
+    "travel": "travel-партнера",
+    "хочу більше спілкуватись": "більше спілкування",
 }
+
+
+def _slot_to_reasons(slot_value: str) -> list[str]:
+    """Parse a slot value (may contain multiple codes separated by comma) into reason labels."""
+    reasons = []
+    for part in slot_value.split(","):
+        part = part.strip().lower()
+        if not part:
+            continue
+        for key, label in _CODE_TO_LABEL.items():
+            if key.lower() == part or part.startswith(key.lower()):
+                if label not in reasons:
+                    reasons.append(label)
+                break
+        else:
+            if part and part not in reasons:
+                reasons.append(part)
+    return reasons
 
 
 def find_mutual_matches(girl_id: str, event_name: str) -> list[dict]:
@@ -63,17 +87,14 @@ def find_mutual_matches(girl_id: str, event_name: str) -> list[dict]:
             continue
 
         i_marked_her = my_slots.get(other_number)
-
         her_slot_for_me = other_blank.get(f"Слот {my_number}", "").strip()
 
         if i_marked_her and her_slot_for_me:
             profile = girl_profiles.get(other_id, {})
 
             reasons = set()
-            if i_marked_her in MATCH_CODE_LABELS:
-                reasons.add(MATCH_CODE_LABELS[i_marked_her])
-            if her_slot_for_me in MATCH_CODE_LABELS:
-                reasons.add(MATCH_CODE_LABELS[her_slot_for_me])
+            reasons.update(_slot_to_reasons(i_marked_her))
+            reasons.update(_slot_to_reasons(her_slot_for_me))
 
             matches.append({
                 "girl_id": other_id,

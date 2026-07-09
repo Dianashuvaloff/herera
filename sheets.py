@@ -169,17 +169,37 @@ def find_girls_by_name(name: str) -> list[dict]:
     name_col = headers.index("Імʼя") if "Імʼя" in headers else None
     if name_col is None:
         return []
-    name_lower = name.lower().strip()
+
+    ig_col = headers.index("Instagram") if "Instagram" in headers else None
+    tg_col = headers.index("Telegram username") if "Telegram username" in headers else None
+
+    name_lower = name.lower().strip().lstrip("@")
 
     exact = []
     starts = []
     contains = []
+    socials = []
 
     for i, row in enumerate(data[1:], start=2):
-        if len(row) <= name_col or not row[name_col].strip():
+        if len(row) <= name_col:
+            continue
+        entry = {"row": i, "data": dict(zip(headers, row))}
+
+        # Search by Instagram/Telegram handle
+        if ig_col and len(row) > ig_col:
+            ig = row[ig_col].lower().strip().lstrip("@")
+            if ig and (ig == name_lower or name_lower in ig):
+                socials.append(entry)
+                continue
+        if tg_col and len(row) > tg_col:
+            tg = row[tg_col].lower().strip().lstrip("@")
+            if tg and (tg == name_lower or name_lower in tg):
+                socials.append(entry)
+                continue
+
+        if not row[name_col].strip():
             continue
         row_name = row[name_col].lower().strip()
-        entry = {"row": i, "data": dict(zip(headers, row))}
 
         if row_name == name_lower:
             exact.append(entry)
@@ -188,7 +208,7 @@ def find_girls_by_name(name: str) -> list[dict]:
         elif name_lower in row_name or row_name in name_lower:
             contains.append(entry)
 
-    return exact + starts + contains
+    return exact + socials + starts + contains
 
 
 def find_girl_by_name_and_event(name: str, event_name: str) -> dict | None:
@@ -241,6 +261,7 @@ def register_girl(chat_id: str, username: str, full_name: str, phone: str = "") 
         new_row[col["Статус дівчини"]] = "Гостя"
 
     ws_girls.append_row(new_row, value_input_option="USER_ENTERED")
+    new_row_num = len(data) + 1
 
     ws_codes.append_row([
         refcode,
@@ -257,7 +278,8 @@ def register_girl(chat_id: str, username: str, full_name: str, phone: str = "") 
         "",
     ], value_input_option="USER_ENTERED")
 
-    return {"id": next_id, "name": full_name, "refcode": refcode}
+    return {"id": next_id, "name": full_name, "refcode": refcode, "row": new_row_num,
+            "data": dict(zip(headers, new_row))}
 
 
 def update_girl_profile(row: int, profile_data: dict):
@@ -580,6 +602,20 @@ def get_match_blanks_for_event(event_name: str) -> list[dict]:
         if d.get("Назва івенту", "").strip() == event_name.strip():
             results.append(d)
     return results
+
+
+def delete_match_blank(record_id: str) -> bool:
+    ws = get_ws_matches()
+    data = ws.get_all_values()
+    if len(data) <= 1:
+        return False
+    headers = data[0]
+    id_col = headers.index("ID запису") if "ID запису" in headers else 0
+    for i, row in enumerate(data[1:], start=2):
+        if len(row) > id_col and row[id_col].strip() == record_id.strip():
+            ws.delete_rows(i)
+            return True
+    return False
 
 
 def get_girl_events_with_blanks(girl_id: str) -> list[str]:
