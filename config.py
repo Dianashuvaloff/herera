@@ -8,6 +8,7 @@ SPREADSHEET_ID = "1-wE2i0gLv_tgMjRaW_i1Y99QYMMA1b3Cbf8wIdRuE8Q"
 CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "her-era-crm-d1b87ac0d0c9.json")
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+MANYCHAT_API_KEY = os.getenv("MANYCHAT_API_KEY", "")
 
 POINTS = {
     "event_visit": 100,

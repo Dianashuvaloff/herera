@@ -168,6 +168,32 @@ async def api_booking(request: Request):
     return JSONResponse({"success": True, "payUrl": pay_url, "bookingId": booking_id})
 
 
+@app.post("/api/instagram-dm")
+async def api_instagram_dm(request: Request):
+    from services.instagram_dm import process_dm, send_manychat_message
+
+    data = await request.json()
+    subscriber_id = str(data.get("subscriber_id", ""))
+    message_text = data.get("last_input_text", "") or data.get("text", "")
+    user_name = data.get("first_name", "") or data.get("name", "")
+
+    if not subscriber_id or not message_text:
+        return JSONResponse({"status": "error", "reason": "missing data"}, status_code=400)
+
+    log.info("Instagram DM from %s (%s): %s", user_name, subscriber_id, message_text[:100])
+
+    reply = await process_dm(subscriber_id, message_text, user_name)
+    if not reply:
+        return JSONResponse({"status": "error", "reason": "ai_failed"}, status_code=500)
+
+    sent = await send_manychat_message(subscriber_id, reply)
+
+    return JSONResponse({
+        "status": "ok" if sent else "send_failed",
+        "reply": reply,
+    })
+
+
 @app.post("/api/mono-webhook")
 async def api_mono_webhook(request: Request):
     from sheets import update_booking_status
