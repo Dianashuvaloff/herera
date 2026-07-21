@@ -1,4 +1,7 @@
 [build]
   publish = "."
-  command = "echo 'Static site, no build needed'"
-  ignore = "bot/"
+  command = "# Static site"
+  base = "."
+
+[build.environment]
+  PYTHON_VERSION = ""
