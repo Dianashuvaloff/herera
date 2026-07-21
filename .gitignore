@@ -1,6 +1,4 @@
 __pycache__/
 *.pyc
-*.json
-!requirements.txt
 .env
 users.json
