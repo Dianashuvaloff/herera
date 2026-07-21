@@ -1,7 +1,3 @@
 [build]
   publish = "."
-  command = "# Static site"
-  base = "."
-
-[build.environment]
-  PYTHON_VERSION = ""
+  command = "echo static"
